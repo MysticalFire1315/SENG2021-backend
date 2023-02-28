@@ -1,18 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { ApiService } from './api.service';
 
 @Controller('api')
 export class ApiController {
-  constructor(private apiService: ApiService) {};
+  constructor(private apiService: ApiService) {}
 
   @Put()
-  async invoiceCreate(@Body invoiceFile: File) {
+  async invoiceCreate(@Body() invoiceFile: File) {
     const invoice = await this.apiService.invoiceCreate(invoiceFile);
     return invoice;
   }
 
   @Get()
-  async invoiceReceive() {
-    const invoice = await this.apiService.invoiceReceive();
+  async invoiceReceive(@Param('token') token: string) {
+    const invoice = await this.apiService.invoiceReceive(token);
     return invoice;
   }
 }
