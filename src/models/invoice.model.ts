@@ -1,17 +1,21 @@
+import { readFileSync } from 'fs';
+
 export class InvoiceModel {
   // Attributes
+  private invoiceData: InvoiceSpecification;
 
   // Constructor probably not needed... TBC
 
   /**
    * Parse a file containing raw invoice data.
    *
-   * Note: Pick a data format and PLEASE SPECIFY!!
+   * Note: The file must be in JSON format!
    *
    * @param invoiceFile The file containing raw invoice data to parse.
    */
   async parse(invoiceFile: File): Promise<void> {
-    // Do work here
+    // Read file
+    this.invoiceData = JSON.parse(invoice);
   }
 
   /**
@@ -24,3 +28,50 @@ export class InvoiceModel {
     return './invoice1.xml';
   }
 }
+
+type InvoiceSpecification = {
+  SpecificationId: string;
+  InvoiceNumber: number;
+  IssueDate: string;
+  // etc
+  SellerName: RegistrationName;
+  BuyerName: RegistrationName;
+  SellerPostalAddress: PostalAddress;
+  BuyerPostalAddress: PostalAddress;
+  InvoiceLineArray: InvoiceLine[];
+};
+
+type PostalAddress = {
+  StreetName: string;
+  CityName: string;
+  PostalZone: string;
+  Country: { IdentificationCode: string };
+};
+
+type RegistrationName = string;
+
+type InvoiceLine = {
+  ID: number;
+  // etc
+};
+
+// const exampleObj = {
+//   SpecificationId: '20asdlfjk2423',
+//   InvoiceNumber: 5465231,
+//   IssueDate: 'YYYY-MM-DD',
+//   // etc
+//   SellerPostalAddress: {
+//     StreetName: 'Somewhere',
+//     CityName: 'Sydney',
+//     PostalZone: '2154',
+//     Country: { IdentificationCode: '34o8asdflk' },
+//   },
+// };
+
+// const jsonStr = JSON.stringify(exampleObj, null, 2);
+
+// console.log(jsonStr);
+
+// const jsonObj = JSON.parse(jsonStr);
+
+// console.log(jsonObj);

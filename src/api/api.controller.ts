@@ -11,6 +11,12 @@ export class ApiController {
     return invoice;
   }
 
+  /**
+   * app.put('', (req, res) => {
+   *   const invoice = await this.apiService.invoice
+   * })
+   */
+
   @Get()
   async invoiceReceive(@Param('token') token: string) {
     const invoice = await this.apiService.invoiceReceive(token);
