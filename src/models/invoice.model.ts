@@ -30,14 +30,15 @@ export class InvoiceModel {
 }
 
 type InvoiceSpecification = {
-  SpecificationId: string;
-  InvoiceNumber: number;
-  IssueDate: string;
+  SpecificationId: string;                            // BR-01
+  InvoiceNumber: number;                              // BR-02
+  IssueDate: string;                                  // BR-03
   // etc
-  SellerName: RegistrationName;
-  BuyerName: RegistrationName;
-  SellerPostalAddress: PostalAddress;
-  BuyerPostalAddress: PostalAddress;
+  SellerName: RegistrationName;                       // BR-06
+  BuyerName: RegistrationName;                        // BR-07
+  SellerPostalAddress: PostalAddress;                 // BR-08 + BR-09
+  BuyerPostalAddress: PostalAddress;                  // BR-10 + BR-11
+  // etc
   InvoiceLineArray: InvoiceLine[];
 };
 
