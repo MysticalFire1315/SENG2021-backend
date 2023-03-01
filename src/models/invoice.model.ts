@@ -29,32 +29,6 @@ export class InvoiceModel {
   }
 }
 
-type InvoiceSpecification = {
-  SpecificationId: string;                            // BR-01
-  InvoiceNumber: number;                              // BR-02
-  IssueDate: string;                                  // BR-03
-  // etc
-  SellerName: RegistrationName;                       // BR-06
-  BuyerName: RegistrationName;                        // BR-07
-  SellerPostalAddress: PostalAddress;                 // BR-08 + BR-09
-  BuyerPostalAddress: PostalAddress;                  // BR-10 + BR-11
-  // etc
-  InvoiceAmtwithTax: number;                          // BR-14
-  InvoiceAmt: number;                                 // BR-13
-  AmountDue: number;                                  // BR-15
-  InvoiceLineArray: InvoiceLine[];                    // BR-16; at least 1 invoice line in invoice
-  
-};
-
-type PostalAddress = {
-  StreetName: string;
-  CityName: string;
-  PostalZone: string;
-  Country: { IdentificationCode: string };
-};
-
-type RegistrationName = string;
-
 type InvoiceLine = {
   ID: number;                                         // BR-21
   ItemName: number;                                   // BR-25
