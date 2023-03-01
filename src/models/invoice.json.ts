@@ -1,5 +1,3 @@
-import { Paramtype } from '@nestjs/common';
-
 /**
  * Invoice specification
  * @namespace Invoice
