@@ -39,7 +39,11 @@ type InvoiceSpecification = {
   SellerPostalAddress: PostalAddress;                 // BR-08 + BR-09
   BuyerPostalAddress: PostalAddress;                  // BR-10 + BR-11
   // etc
-  InvoiceLineArray: InvoiceLine[];
+  InvoiceAmtwithTax: number;                          // BR-14
+  InvoiceAmt: number;                                 // BR-13
+  AmountDue: number;                                  // BR-15
+  InvoiceLineArray: InvoiceLine[];                    // BR-16; at least 1 invoice line in invoice
+  
 };
 
 type PostalAddress = {
@@ -52,7 +56,12 @@ type PostalAddress = {
 type RegistrationName = string;
 
 type InvoiceLine = {
-  ID: number;
+  ID: number;                                         // BR-21
+  ItemName: number;                                   // BR-25
+  ItemNetPrice: number;                               // BR-26 this is for just 1 single invoice line
+  InvoiceQuantity: number;                            // BR-22
+  MeasurementUnitCode: string;                        // BR-23 simply the units for an item; i.e 5kg of pork, 10Oz of pencils
+  CurrentNetAmount: number;                           // BR-12
   // etc
 };
 
