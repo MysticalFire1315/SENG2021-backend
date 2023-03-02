@@ -124,6 +124,35 @@ type InvoiceSpecification = {
    * @cardinality 1..1
    */
   AccountingBuyerParty: Party;
+
+  /**
+   * When tax currency code is provided, two instances of the tax total must be
+   * present, but only one with tax subtotal.
+   *
+   * @namespace TaxTotal
+   * @memberof Invoice
+   * @cardinality 1..2
+   */
+  TaxTotal: TaxTotal;
+
+  /**
+   * A group of business terms providing the monetary totals for the Invoice.
+   *
+   * @namespace LegalMonetaryTotal
+   * @memberof Invoice
+   * @cardinality 1..1
+   */
+  LegalMonetaryTotal: Total;
+
+  /**
+   * A group of business terms providing information on individual Invoice
+   * lines.
+   *
+   * @namespace InvoiceLine
+   * @memberof Invoice
+   * @cardinality 1..n
+   */
+  InvoiceLine: InvoiceLine[];
 };
 
 /**
@@ -305,5 +334,105 @@ type Party = {
      * @optional
      */
     ElectronicMail?: string;
+  };
+};
+
+type TaxTotal = {
+  /**
+   * The total VAT amount for the Invoice or the VAT total amount expressed in
+   * the accounting currency accepted or required in the country of the Seller.
+   * Must be rounded to maximum 2 decimals.
+   *
+   * @name TaxAmount
+   * @memberof TaxTotal
+   * @cardinality 1..1
+   */
+  TaxAmount: number;
+
+  /**
+   * A group of business terms providing information about VAT breakdown by
+   * different categories, rates and exemption reasons.
+   *
+   * @namespace TaxSubtotal
+   * @memberof TaxTotal
+   * @cardinality 0..n
+   * @optional only if another instance of `TaxTotal` already contains this
+   * field
+   */
+  TaxSubtotal?: {
+    /**
+     * Sum of all taxable amounts subject to a specific VAT category code and
+     * VAT category rate (if the VAT category rate is applicable). Must be
+     * rounded to maximum 2 decimals.
+     *
+     * @name TaxableAmount
+     * @memberof TaxSubtotal
+     * @cardinality 1..1
+     */
+    TaxableAmount: number;
+
+    /**
+     * The total VAT amount for a given VAT category. Must be rounded to
+     * maximum 2 decimals.
+     *
+     * @name TaxAmount
+     * @memberof TaxSubtotal
+     * @cardinality 1..1
+     */
+    TaxAmount: number;
+
+    /**
+     * A group of business terms providing information about the VAT category.
+     *
+     * @namespace TaxCategory
+     * @memberof TaxSubtotal
+     * @cardinality 1..1
+     */
+    TaxCategory: {
+      /**
+       * Coded identification of a VAT category.
+       *
+       * @name ID
+       * @memberof TaxCategory
+       * @cardinality 1..1
+       */
+      ID: string;
+
+      /**
+       * The VAT rate, represented as percentage that applies for the relevant
+       * VAT category.
+       *
+       * @name Percent
+       * @memberof TaxCategory
+       * @cardinality 0..1
+       * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
+       * `O` or `K`)
+       */
+      Percent?: number;
+
+      /**
+       * A textual statement of the reason why the amount is exempted from VAT
+       * or why no VAT is being charged.
+       *
+       * @name TaxExemptionReason
+       * @memberof TaxCategory
+       * @cardinality 0..1
+       * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
+       * `O` or `K`)
+       */
+      TaxExemptionReason?: string;
+
+      /**
+       * The tax scheme under which tax falls.
+       * 
+       * @name TaxScheme
+       * @memberof TaxCategory
+       * @cardinality 1..1
+       * @optional defaults to `VAT`
+       */
+      TaxScheme: {
+        ID: string;
+      }
+    };
   };
 };
