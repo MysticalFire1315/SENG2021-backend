@@ -226,9 +226,7 @@ type InvoiceSpecification = {
          * @cardinality 1..1
          * @optional defaults to `VAT`
          */
-        TaxScheme: {
-          ID: string;
-        };
+        TaxScheme: { ID: string };
       };
     };
   };
@@ -244,7 +242,7 @@ type InvoiceSpecification = {
     /**
      * Sum of all Invoice line net amounts in the Invoice. Must be rounded to
      * maximum 2 decimals.
-     * 
+     *
      * @name LineExtensionAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 1..1
@@ -254,7 +252,7 @@ type InvoiceSpecification = {
     /**
      * The total amount of the Invoice without VAT. Must be rounded to maximum
      * 2 decimals.
-     * 
+     *
      * @name TaxExclusiveAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 1..1
@@ -264,7 +262,7 @@ type InvoiceSpecification = {
     /**
      * The total amount of the Invoice with VAT. Must be rounded to maximum 2
      * decimals.
-     * 
+     *
      * @name TaxInclusiveAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 1..1
@@ -274,7 +272,7 @@ type InvoiceSpecification = {
     /**
      * Sum of all allowances on document level in the Invoice. Must be rounded
      * to maximum 2 decimals.
-     * 
+     *
      * @name AllowanceTotalAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 0..1
@@ -285,7 +283,7 @@ type InvoiceSpecification = {
     /**
      * Sum of all charges on document level in the Invoice. Must be rounded to
      * maximum 2 decimals.
-     * 
+     *
      * @name ChargeTotalAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 0..1
@@ -296,7 +294,7 @@ type InvoiceSpecification = {
     /**
      * The sum of amounts which have been paid in advance. Must be rounded to
      * maximum 2 decimals.
-     * 
+     *
      * @name PrepaidAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 0..1
@@ -307,7 +305,7 @@ type InvoiceSpecification = {
     /**
      * The amount to be added to the invoice total to round the amount to be
      * paid. Must be rounded to maximum 2 decimals.
-     * 
+     *
      * @name PayableRoundingAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 0..1
@@ -318,7 +316,7 @@ type InvoiceSpecification = {
     /**
      * The outstanding amount that is requested to be paid. Must be rounded to
      * maximum 2 decimals.
-     * 
+     *
      * @name PayableAmount
      * @memberof LegalMonetaryTotal
      * @cardinality 1..1
@@ -334,7 +332,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..n
    */
-  InvoiceLine: InvoiceLine[];
+  InvoiceLine: InvoiceLineDetails[];
 };
 
 /**
@@ -516,5 +514,154 @@ type Party = {
      * @optional
      */
     ElectronicMail?: string;
+  };
+};
+
+/**
+ * @namespace InvoiceLineDetails
+ * @memberof InvoiceLine
+ */
+type InvoiceLineDetails = {
+  /**
+   * A unique identifier for the individual line within the Invoice.
+   *
+   * @name ID
+   * @memberof InvoiceLineDetails
+   * @cardinality 1..1
+   */
+  ID: number;
+
+  /**
+   * A textual note that gives unstructured information that is relevant to the
+   * Invoice line.
+   *
+   * @name Note
+   * @memberof InvoiceLineDetails
+   * @cardinality 0..1
+   * @optional
+   */
+  Note?: string;
+
+  /**
+   * The quantity of items (goods or services) that is charged in the Invoice
+   * line.
+   *
+   * @name InvoicedQuantity
+   * @memberof InvoiceLineDetails
+   * @cardinality 1..1
+   */
+  InvoicedQuantity: number;
+
+  /**
+   * The total amount of the Invoice line. The amount is “net” without VAT,
+   * i.e. inclusive of line level allowances and charges as well as other
+   * relevant taxes. Must be rounded to maximum 2 decimals.
+   *
+   * @name LineExtensionAmount
+   * @memberof InvoiceLineDetails
+   * @cardinality 1..1
+   */
+  LineExtensionAmount: number;
+
+  /**
+   * A group of business terms providing information about the goods and
+   * services invoiced.
+   *
+   * @namespace Item
+   * @memberof InvoiceLineDetails
+   * @cardinality 1..1
+   */
+  Item: {
+    /**
+     * A description for an item.The item description allows for describing the
+     * item and its features in more detail than the Item name.
+     *
+     * @name Description
+     * @memberof Item
+     * @cardinality 0..1
+     * @optional
+     */
+    Description?: string;
+
+    /**
+     * A name for an item.
+     *
+     * @name Name
+     * @memberof Item
+     * @cardinality 1..1
+     */
+    Name: string;
+
+    /**
+     * A group of business terms providing information about the VAT applicable
+     * for the goods and services invoiced on the Invoice line.
+     *
+     * @namespace ClassifiedTaxCategory
+     * @memberof Item
+     * @cardinality 1..1
+     */
+    ClassifiedTaxCategory: {
+      /**
+       * The VAT category code for the invoiced item.
+       *
+       * @name ID
+       * @memberof ClassifiedTaxCategory
+       * @cardinality 1..1
+       */
+      ID: number;
+
+      /**
+       * The VAT rate, represented as percentage that applies to the invoiced
+       * item.
+       *
+       * @name Percent
+       * @memberof ClassifiedTaxCategory
+       * @cardinality 0..1
+       * @optional
+       */
+      Percent?: number;
+
+      /**
+       * The tax scheme under which tax falls.
+       *
+       * @name TaxScheme
+       * @memberof ClassifiedTaxCategory
+       * @cardinality 1..1
+       * @optional defaults to `VAT`
+       */
+      TaxScheme: { ID: string };
+    };
+  };
+
+  /**
+   * A group of business terms providing information about the price applied
+   * for the goods and services invoiced on the Invoice line.
+   *
+   * @namespace Price
+   * @memberof InvoiceLineDetails
+   * @cardinality 1..1
+   */
+  Price: {
+    /**
+     * The price of an item, exclusive of VAT, after subtracting item price
+     * discount. The Item net price has to be equal with the Item gross price
+     * less the Item price discount, if they are both provided. Item price can
+     * not be negative.
+     *
+     * @name PriceAmount
+     * @memberof Price
+     * @cardinality 1..1
+     */
+    PriceAmount: number;
+
+    /**
+     * The number of item units to which the price applies.
+     *
+     * @name BaseQuantity
+     * @memberof Price
+     * @cardinality 0..1
+     * @optional
+     */
+    BaseQuantity?: number;
   };
 };
