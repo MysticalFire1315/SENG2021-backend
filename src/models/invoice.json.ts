@@ -240,7 +240,91 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  LegalMonetaryTotal: Total;
+  LegalMonetaryTotal: {
+    /**
+     * Sum of all Invoice line net amounts in the Invoice. Must be rounded to
+     * maximum 2 decimals.
+     * 
+     * @name LineExtensionAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 1..1
+     */
+    LineExtensionAmount: number;
+
+    /**
+     * The total amount of the Invoice without VAT. Must be rounded to maximum
+     * 2 decimals.
+     * 
+     * @name TaxExclusiveAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 1..1
+     */
+    TaxExclusiveAmount: number;
+
+    /**
+     * The total amount of the Invoice with VAT. Must be rounded to maximum 2
+     * decimals.
+     * 
+     * @name TaxInclusiveAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 1..1
+     */
+    TaxInclusiveAmount: number;
+
+    /**
+     * Sum of all allowances on document level in the Invoice. Must be rounded
+     * to maximum 2 decimals.
+     * 
+     * @name AllowanceTotalAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 0..1
+     * @optional
+     */
+    AllowanceTotalAmount?: number;
+
+    /**
+     * Sum of all charges on document level in the Invoice. Must be rounded to
+     * maximum 2 decimals.
+     * 
+     * @name ChargeTotalAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 0..1
+     * @optional
+     */
+    ChargeTotalAmount?: number;
+
+    /**
+     * The sum of amounts which have been paid in advance. Must be rounded to
+     * maximum 2 decimals.
+     * 
+     * @name PrepaidAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 0..1
+     * @optional
+     */
+    PrepaidAmount?: number;
+
+    /**
+     * The amount to be added to the invoice total to round the amount to be
+     * paid. Must be rounded to maximum 2 decimals.
+     * 
+     * @name PayableRoundingAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 0..1
+     * @optional
+     */
+    PayableRoundingAmount?: number;
+
+    /**
+     * The outstanding amount that is requested to be paid. Must be rounded to
+     * maximum 2 decimals.
+     * 
+     * @name PayableAmount
+     * @memberof LegalMonetaryTotal
+     * @cardinality 1..1
+     */
+    PayableAmount: number;
+  };
 
   /**
    * A group of business terms providing information on individual Invoice
