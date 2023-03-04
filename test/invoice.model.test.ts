@@ -107,7 +107,70 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 // };
 
 describe('test InvoiceModel parse', () => {
-  test('test Only Mandatory Fields', () => {});
+  test('test Only Mandatory Fields', () => {
+    const invoiceData: InvoiceSpecification = {
+      InvoiceTypeCode: 44,
+      DocumentCurrencyCode: 'AUD',
+      AccountingSupplierParty: {
+        EndpointID: 2541512,
+        PostalAddress: {
+          Country: {
+            IdentificationCode: 'AU',
+          },
+        },
+        PartyLegalEntity: {
+          RegistrationName: 'Mr HD Man',
+        },
+      },
+      AccountingBuyerParty: {
+        EndpointID: 14125112,
+        PostalAddress: {
+          Country: {
+            IdentificationCode: 'AU',
+          },
+        },
+        PartyLegalEntity: {
+          RegistrationName: 'Mrs DN Haver',
+        },
+      },
+      TaxTotal: [
+        {
+          TaxAmount: 100.05,
+        },
+      ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
+      LegalMonetaryTotal: {
+        LineExtensionAmount: 500.68,
+        TaxExclusiveAmount: 500.68,
+        TaxInclusiveAmount: 500.68,
+        AllowanceTotalAmount: 500.68,
+        ChargeTotalAmount: 500.68,
+        PrepaidAmount: 500.68,
+        PayableRoundingAmount: 500.68,
+        PayableAmount: 500.68,
+      },
+      InvoiceLine: [
+        {
+          ID: 124124,
+          Note: 'We take those',
+          InvoicedQuantity: 5,
+          LineExtensionAmount: 1000.05,
+          Item: {
+            Description: 'An HD mark',
+            Name: 'HD Bestower',
+            ClassifiedTaxCategory: {
+              ID: 'E',
+              Percent: 100,
+              TaxScheme: { ID: 'VAT' },
+            },
+          },
+          Price: {
+            PriceAmount: 1000.05,
+            BaseQuantity: 5,
+          },
+        },
+      ],
+    };
+  });
   test('test Mandatory Fields Missing', () => {});
   test('test Several Optional Fields', () => {});
   test('test All Optional Fields', () => {});

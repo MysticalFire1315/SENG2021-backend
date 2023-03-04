@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { InvoiceSpecification } from 'src/models/invoice.json';
 
 export class InvoiceModel {
   // Attributes
@@ -15,7 +16,8 @@ export class InvoiceModel {
    */
   async parse(invoiceFile: File): Promise<void> {
     // Read file
-    this.invoiceData = JSON.parse(invoice);
+    // const invoiceString...
+    this.invoiceData = JSON.parse(invoiceString);
   }
 
   /**
@@ -26,5 +28,8 @@ export class InvoiceModel {
   async createUBL(): Promise<string> {
     // Create the file and return a relative path to the file
     return './invoice1.xml';
+  }
+  async getInvoiceData() {
+    return this.invoiceData;
   }
 }
