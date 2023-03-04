@@ -107,20 +107,18 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 // };
 
 describe('test InvoiceModel parse', () => {
-  test('test Only Mandatory Fields', () => {
-
-  });
+  test('test Only Mandatory Fields', () => {});
   test('test Mandatory Fields Missing', () => {});
   test('test Several Optional Fields', () => {});
   test('test All Optional Fields', () => {});
-  test('test Multiple Invoice Line Mandatory Fields', () => { });
-  test('test Multiple Invoice Line Optional Fields', () => { });
+  test('test Multiple Invoice Line Mandatory Fields', () => {});
+  test('test Multiple Invoice Line Optional Fields', () => {});
 });
 
 describe('test InvoiceModel createUBL', () => {
-  test('test Only Mandatory Fields', () => { });
-  test('test Mandatory Fields Missing', () => { });
-  test('test Several Optional Fields', () => { });
-  test('test All Optional Fields', () => { });
-  test('Complex Mandatory Fields', () => { });
+  test('test Only Mandatory Fields', () => {});
+  test('test Mandatory Fields Missing', () => {});
+  test('test Several Optional Fields', () => {});
+  test('test All Optional Fields', () => {});
+  test('Complex Mandatory Fields', () => {});
 });
