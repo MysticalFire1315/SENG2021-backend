@@ -1,3 +1,5 @@
+export { InvoiceSpecification };
+
 /**
  * Invoice specification
  * @namespace Invoice
@@ -608,7 +610,7 @@ type InvoiceLineDetails = {
        * @memberof ClassifiedTaxCategory
        * @cardinality 1..1
        */
-      ID: number;
+      ID: string;
 
       /**
        * The VAT rate, represented as percentage that applies to the invoiced
