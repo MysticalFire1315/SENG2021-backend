@@ -19,10 +19,12 @@ jobs:
     name: End to end tests
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    
+
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
+        with:
+          node-version: latest
       
       - name: Run test for e2e
         run: npm run test:e2e
@@ -35,6 +37,8 @@ jobs:
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
+        with:
+          node-version: latest
 
       - name: Run test with coverage
         run: npm run test:cov
@@ -53,6 +57,8 @@ jobs:
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
+        with:
+          node-version: latest
       
       - name: Run lint script
         run: npm run lint
