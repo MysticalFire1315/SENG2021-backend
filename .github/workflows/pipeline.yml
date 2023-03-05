@@ -22,9 +22,9 @@ jobs:
 
     steps:
       - name: Setup job
-        uses: nickofthyme/checkout-node-setup@v1
+        uses: MysticalFire1315/checkout-node-setup@v1
         with:
-          node-version: latest
+          node-version: *
       
       - name: Run test for e2e
         run: npm run test:e2e
@@ -36,9 +36,9 @@ jobs:
 
     steps:
       - name: Setup job
-        uses: nickofthyme/checkout-node-setup@v1
+        uses: MysticalFire1315/checkout-node-setup@v1
         with:
-          node-version: latest
+          node-version: *
 
       - name: Run test with coverage
         run: npm run test:cov
@@ -56,9 +56,9 @@ jobs:
 
     steps:
       - name: Setup job
-        uses: nickofthyme/checkout-node-setup@v1
+        uses: MysticalFire1315/checkout-node-setup@v1
         with:
-          node-version: latest
+          node-version: *
       
       - name: Run lint script
         run: npm run lint
