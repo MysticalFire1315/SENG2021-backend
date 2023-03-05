@@ -28,7 +28,7 @@ jobs:
     name: Unit tests with coverage
     steps:
       - name: Setup job
-        uses: nickofthyme/checkout-node-setup
+        uses: nickofthyme/checkout-node-setup@v1
 
       - name: Run test with coverage
         run: npm run test:cov
@@ -43,7 +43,7 @@ jobs:
     name: Lint
     steps:
       - name: Setup job
-        uses: nickofthyme/checkout-node-setup
+        uses: nickofthyme/checkout-node-setup@v1
       
       - name: Run lint script
         run: npm run lint
