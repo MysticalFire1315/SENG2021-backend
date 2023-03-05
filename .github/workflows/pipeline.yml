@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:  
+  test_e2e:
+    name: End to end tests
+    steps:
+      - name: Setup job
+        uses: nickofthyme/checkout-node-setup@v1
+      
+      - name: Run test for e2e
+        runs: npm run test:e2e
+
+  test_unit_coverage:
+    name: Unit tests with coverage
+    steps:
+      - name: Setup job
+        uses: nickofthyme/checkout-node-setup
+
+      - name: Run test with coverage
+        runs: npm run test:cov
+      
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: coverage/
+
+  lint:
+    name: Lint
+    steps:
+      - name: Setup job
+        uses: nickofthyme/checkout-node-setup
+      
+      - name: Run lint script
+        runs: npm run lint
