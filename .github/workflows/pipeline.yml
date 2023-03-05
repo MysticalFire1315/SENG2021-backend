@@ -22,7 +22,7 @@ jobs:
         uses: nickofthyme/checkout-node-setup@v1
       
       - name: Run test for e2e
-        runs: npm run test:e2e
+        run: npm run test:e2e
 
   test_unit_coverage:
     name: Unit tests with coverage
@@ -31,7 +31,7 @@ jobs:
         uses: nickofthyme/checkout-node-setup
 
       - name: Run test with coverage
-        runs: npm run test:cov
+        run: npm run test:cov
       
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
@@ -46,4 +46,4 @@ jobs:
         uses: nickofthyme/checkout-node-setup
       
       - name: Run lint script
-        runs: npm run lint
+        run: npm run lint
