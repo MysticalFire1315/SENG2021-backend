@@ -14,9 +14,10 @@ on:
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:  
+jobs:
   test_e2e:
     name: End to end tests
+    runs-on: ubuntu-latest
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
@@ -26,6 +27,7 @@ jobs:
 
   test_unit_coverage:
     name: Unit tests with coverage
+    runs-on: ubuntu-latest
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
@@ -41,6 +43,7 @@ jobs:
 
   lint:
     name: Lint
+    runs-on: ubuntu-latest
     steps:
       - name: Setup job
         uses: nickofthyme/checkout-node-setup@v1
