@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+    xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+    xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:UBLVersionID>2.0</cbc:UBLVersionID>  <!--Remember to add in final UBLVersionID stuff -->
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>33</cbc:ID>
+  <cbc:IssueDate>2010-11-09</cbc:IssueDate>
+  <cbc:DueDate>2011-01-01</cbc:DueDate>
+  <InvoiceTypeCode>44</InvoiceTypeCode>
+  <cbc:Note>Ni Hao Ma</cbc:Note>
+  <cbc:TaxPointDate>2012-04-05</cbc:TaxPointDate>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:TaxCurrencyCode>AUD</cbc:TaxCurrencyCode>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID>2541512</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>HD Seller</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Smith St</cbc:StreetName>
+        <cbc:AdditionalStreetName>Nothing else</cbc:AdditionalStreetName>
+        <cbc:CityName>Sydney</cbc:CityName>
+        <cbc:PostalZone>The city</cbc:PostalZone>
+        <cbc:CountrySubentity>Region A</cbc:CountrySubentity>
+        <cac:Country>
+          <cbc:IdentificationCode>AU</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Mr HD Man</cbc:RegistrationName>
+        <cbc:CompanyID>1111</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Your Mother</cbc:Name>
+        <cbc:Telephone>0411111111</cbc:Telephone>
+        <cbc:ElectronicMail>givesyouHD@gmail.com</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID>14125112</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>HD Buyer</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>SomewhereElse Ave</cbc:StreetName>
+        <cbc:AdditionalStreetName>Nothing else</cbc:AdditionalStreetName>
+        <cbc:CityName>Sydney</cbc:CityName>
+        <cbc:PostalZone>The city</cbc:PostalZone>
+        <cbc:CountrySubentity>Region A</cbc:CountrySubentity>
+      </cac:PostalAddress>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+</Invoice>
