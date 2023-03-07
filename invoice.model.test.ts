@@ -1,7 +1,5 @@
 import { InvoiceModel } from 'src/models/invoice.model';
 import { InvoiceSpecification } from 'src/models/invoice.json';
-// Remember to add second tax total for invoiceUBL.xml
-// CHange buyer to customer, party as object
 
 // Expected output
 // const invoiceData: InvoiceSpecification = {
@@ -78,6 +76,9 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //           TaxScheme: { ID: "VAT" },
 //         }
 //       }
+//     },
+//     {
+//       TaxAmount: 100.05,
 //     }
 //   ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
 //   LegalMonetaryTotal: {
@@ -125,7 +126,8 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //   TaxPointDate?: 2012 - 04 - 05,
 //   DocumentCurrencyCode: "AUD",
 //   TaxCurrencyCode?: "AUD",
-//   AccountingSupplierParty: {
+//   AccountingSupplierParty: { Party: 
+//    {
 //     EndpointID: 2541512,
 //     PartyName?: { Name: "HD Seller" },
 //     PostalAddress: {
@@ -147,8 +149,10 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //       Telephone?: 0411111111,
 //       ElectronicMail?: "givesyouHD@gmail.com",
 //     }
+//     }
 //   },
-//   AccountingBuyerParty: {
+//   AccountingCustomerParty: { Party: 
+//    {
 //     EndpointID: 14125112,
 //     PartyName?: { Name: "HD Buyer" },
 //     PostalAddress: {
@@ -170,6 +174,7 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //       Telephone?: 0422222222,
 //       ElectronicMail?: "IwantHD@gmail.com",
 //     }
+//     }
 //   },
 //   TaxTotal: [
 //     {
@@ -184,6 +189,9 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //           TaxScheme: { ID: "VAT" },
 //         }
 //       }
+//     },
+//     {
+//       TaxAmount: 100.05,
 //     }
 //   ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
 //   LegalMonetaryTotal: {
@@ -221,7 +229,9 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 
 describe('test InvoiceModel parse', () => {
   test('test Only Mandatory Fields', () => {
-    const invoiceData: InvoiceSpecification = {
+    const invoiceDataInput = {};
+    // ONLY MANDATORY FIELDS
+    const invoiceDataOutput: InvoiceSpecification = {
       InvoiceTypeCode: 44,
       DocumentCurrencyCode: 'AUD',
       AccountingSupplierParty: {
@@ -235,7 +245,7 @@ describe('test InvoiceModel parse', () => {
           RegistrationName: 'Mr HD Man',
         },
       },
-      AccountingBuyerParty: {
+      AccountingCustomerParty: {
         EndpointID: 14125112,
         PostalAddress: {
           Country: {

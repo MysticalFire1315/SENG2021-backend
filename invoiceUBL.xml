@@ -82,6 +82,10 @@
       </cac:TaxCategory>
     </cac:TaxSubtotal>
   </cac:TaxTotal>
+  <!--This is the one without a tax subtotal-->
+  <cac:TaxTotal>
+    <cbc:TaxAmount>100.05</cbc:TaxAmount>
+  </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
     <cbc:LineExtensionAmount>500.68</cbc:LineExtensionAmount>
     <cbc:TaxExclusiveAmount>500.68</cbc:TaxExclusiveAmount>
