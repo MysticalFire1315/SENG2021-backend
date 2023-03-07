@@ -1,6 +1,6 @@
 import { InvoiceModel } from 'src/models/invoice.model';
 import { InvoiceSpecification } from 'src/models/invoice.json';
-
+// Remember to add second tax total for invoiceUBL.xml
 // CHange buyer to customer, party as object
 
 // Expected output
@@ -40,7 +40,7 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 //     }
 //    }
 //    },
-//   AccountingBuyerParty: { Party: 
+//   AccountingCustomerParty: { Party: 
 //    {
 //     EndpointID: 14125112,
 //     PartyName?: { Name: "HD Buyer" },
