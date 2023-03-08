@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { InvoiceSpecification } from 'src/models/invoice.json';
+import { InvoiceSpecification } from './invoice.json';
 
 export class InvoiceModel {
   // Attributes
@@ -14,7 +14,7 @@ export class InvoiceModel {
    *
    * @param invoiceFile The file containing raw invoice data to parse.
    */
-  async parse(invoiceFile: File): Promise<void> {
+  async parse(invoiceFile: String): Promise<void> {
     // Read file
     // const invoiceString...
     this.invoiceData = JSON.parse(invoiceString);

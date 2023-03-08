@@ -1,5 +1,5 @@
-import { InvoiceModel } from 'src/models/invoice.model';
-import { InvoiceSpecification } from 'src/models/invoice.json';
+import { InvoiceModel } from './invoice.model';
+import { InvoiceSpecification } from './invoice.json';
 
 // Expected output
 // const invoiceData: InvoiceSpecification = {
@@ -228,13 +228,13 @@ import { InvoiceSpecification } from 'src/models/invoice.json';
 // };
 
 describe('test InvoiceModel parse', () => {
-  test('test Only Mandatory Fields', () => {
+  test('Mandatory Field Input', () => {
     const invoiceDataInput = {};
     // ONLY MANDATORY FIELDS
     const invoiceDataOutput: InvoiceSpecification = {
       InvoiceTypeCode: 44,
       DocumentCurrencyCode: 'AUD',
-      AccountingSupplierParty: {
+      AccountingSupplierParty: { Party: {
         EndpointID: 2541512,
         PostalAddress: {
           Country: {
@@ -244,8 +244,9 @@ describe('test InvoiceModel parse', () => {
         PartyLegalEntity: {
           RegistrationName: 'Mr HD Man',
         },
-      },
-      AccountingCustomerParty: {
+      }
+    },
+      AccountingCustomerParty: { Party: {
         EndpointID: 14125112,
         PostalAddress: {
           Country: {
@@ -255,7 +256,8 @@ describe('test InvoiceModel parse', () => {
         PartyLegalEntity: {
           RegistrationName: 'Mrs DN Haver',
         },
-      },
+      }
+    },
       TaxTotal: [
         {
           TaxAmount: 100.05,
@@ -293,20 +295,11 @@ describe('test InvoiceModel parse', () => {
         },
       ],
     };
-    expect()
 
   });
-  test('test Mandatory Fields Missing', () => {});
-  test('test Several Optional Fields', () => {});
-  test('test All Optional Fields', () => {});
-  test('test Multiple Invoice Line Mandatory Fields', () => {});
-  test('test Multiple Invoice Line Optional Fields', () => {});
-});
-
-describe('test InvoiceModel createUBL', () => {
-  test('test Only Mandatory Fields', () => {});
-  test('test Mandatory Fields Missing', () => {});
-  test('test Several Optional Fields', () => {});
-  test('test All Optional Fields', () => {});
-  test('Complex Mandatory Fields', () => {});
+  test('Mandatory Fields Missing Input', () => {});
+  test('Mandatory Fields >2 Decimal Place Condition', () => {});
+  test('Optional Field Input', () => {});
+  test('Multiple Invoice Line Mandatory Fields', () => {});
+  test('Multiple Invoice Line Optional Fields', () => {});
 });
