@@ -614,7 +614,7 @@ type InvoiceLineDetails = {
 
       /**
        * The VAT rate, represented as percentage that applies to the invoiced
-       * item.
+       * item. If not present, assume 0
        *
        * @name Percent
        * @memberof ClassifiedTaxCategory

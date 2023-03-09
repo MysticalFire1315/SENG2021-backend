@@ -17,7 +17,7 @@ export class InvoiceModel {
   async parse(invoiceFile: String): Promise<void> {
     // Read file
     // const invoiceString...
-    this.invoiceData = JSON.parse(invoiceString);
+    // JSON.parse(invoiceString);
   }
 
   /**

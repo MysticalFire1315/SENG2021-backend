@@ -1,224 +1,58 @@
 import { InvoiceModel } from "./invoice.model";
 import { InvoiceSpecification } from "./invoice.json";
+const fs = require('fs');
+
+function deleteFile(fileName: String): void {
+  fs.unlink(fileName, (err: Error) => {
+    if (err) throw err;
+    console.log('File is successfully deleted');
+  });
+}
+afterEach(() => {
+  deleteFile('invoice1.xml');
+});
+// Concern about telephone numbers treated as numbers, but start with 0
 
 describe("test InvoiceModel createUBL", () => {
   test("Mandatory Field Input", () => {
     const newInvoice: InvoiceModel = new InvoiceModel();
-    newInvoice.parse("./invoiceMandatoryUBL.xml");
+    newInvoice.parse(""); // Need to parse some kinda file from user input
 
-    newInvoice.createUBL();
-    expect(newInvoice.getInvoiceData()).toStrictEqual({
-      InvoiceTypeCode: 44,
-      DocumentCurrencyCode: "AUD",
-      AccountingSupplierParty: {
-        Party: {
-          EndpointID: 2541512,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: "AU",
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mr HD Man",
-          },
-        },
-      },
-      AccountingCustomerParty: {
-        Party: {
-          EndpointID: 14125112,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: "AU",
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mrs DN Haver",
-          },
-        },
-      },
-      TaxTotal: [
-        {
-          TaxAmount: 100.05,
-        },
-      ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
-      LegalMonetaryTotal: {
-        LineExtensionAmount: 500.68,
-        TaxExclusiveAmount: 500.68,
-        TaxInclusiveAmount: 500.68,
-        AllowanceTotalAmount: 500.68,
-        ChargeTotalAmount: 500.68,
-        PrepaidAmount: 500.68,
-        PayableRoundingAmount: 500.68,
-        PayableAmount: 500.68,
-      },
-      InvoiceLine: [
-        {
-          ID: 124124,
-          Note: "We take those",
-          InvoicedQuantity: 5,
-          LineExtensionAmount: 1000.05,
-          Item: {
-            Description: "An HD mark",
-            Name: "HD Bestower",
-            ClassifiedTaxCategory: {
-              ID: "E",
-              Percent: 100,
-              TaxScheme: { ID: "VAT" },
-            },
-          },
-          Price: {
-            PriceAmount: 1000.05,
-            BaseQuantity: 5,
-          },
-        },
-      ],
-    });
-  });
-  test("Mandatory Fields Missing Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
-    newInvoice.parse("./invoiceMandatoryUBL.xml");
-
-    newInvoice.createUBL();
-    expect(newInvoice.getInvoiceData()).toStrictEqual({
-      InvoiceTypeCode: 44,
-      DocumentCurrencyCode: "AUD",
-      AccountingSupplierParty: {
-        Party: {
-          EndpointID: 2541512,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: null, // ID code is null; not allowed
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mr HD Man",
-          },
-        },
-      },
-      AccountingCustomerParty: {
-        Party: {
-          EndpointID: 14125112,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: "AU",
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mrs DN Haver",
-          },
-        },
-      },
-      TaxTotal: [
-        {
-          TaxAmount: 100.05,
-        },
-      ],
-      LegalMonetaryTotal: {
-        LineExtensionAmount: 500.68,
-        TaxExclusiveAmount: 500.68,
-        TaxInclusiveAmount: 500.68,
-        AllowanceTotalAmount: 500.68,
-        ChargeTotalAmount: 500.68,
-        PrepaidAmount: 500.68,
-        PayableRoundingAmount: 500.68,
-        PayableAmount: 500.68,
-      },
-      InvoiceLine: [
-        {
-          ID: 124124,
-          Note: "We take those",
-          InvoicedQuantity: 5,
-          LineExtensionAmount: 1000.05,
-          Item: {
-            Description: "An HD mark",
-            Name: "HD Bestower",
-            ClassifiedTaxCategory: {
-              ID: "E",
-              Percent: 100,
-              TaxScheme: { ID: "VAT" },
-            },
-          },
-          Price: {
-            PriceAmount: 1000.05,
-            BaseQuantity: 5,
-          },
-        },
-      ],
-    });
+    newInvoice.createUBL(); //Hopefully returns invoice1.xml in same directory
+    const data = fs.readFileSync('./testMandatoryInput/InvoiceLine1M.xml');
+    expect(data).toStrictEqual('./invoice1.xml');
   });
   test("Mandatory Fields >2 Decimal Place Condition", () => {
     const newInvoice: InvoiceModel = new InvoiceModel();
-    newInvoice.parse("./invoiceMandatoryUBL2dec.xml");
+    newInvoice.parse("");
 
     newInvoice.createUBL();
-    expect(newInvoice.getInvoiceData()).toStrictEqual({
-      InvoiceTypeCode: 44,
-      DocumentCurrencyCode: "AUD",
-      AccountingSupplierParty: {
-        Party: {
-          EndpointID: 2541512,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: null, // ID code is null; not allowed
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mr HD Man",
-          },
-        },
-      },
-      AccountingCustomerParty: {
-        Party: {
-          EndpointID: 14125112,
-          PostalAddress: {
-            Country: {
-              IdentificationCode: "AU",
-            },
-          },
-          PartyLegalEntity: {
-            RegistrationName: "Mrs DN Haver",
-          },
-        },
-      },
-      TaxTotal: [
-        {
-          TaxAmount: 100.05,
-        },
-      ],
-      LegalMonetaryTotal: {
-        LineExtensionAmount: 500.68,
-        TaxExclusiveAmount: 500.68,
-        TaxInclusiveAmount: 500.68,
-        AllowanceTotalAmount: 500.68,
-        ChargeTotalAmount: 500.68,
-        PrepaidAmount: 500.68,
-        PayableRoundingAmount: 500.68,
-        PayableAmount: 500.68,
-      },
-      InvoiceLine: [
-        {
-          ID: 124124,
-          Note: "We take those",
-          InvoicedQuantity: 5,
-          LineExtensionAmount: 1000.05,
-          Item: {
-            Description: "An HD mark",
-            Name: "HD Bestower",
-            ClassifiedTaxCategory: {
-              ID: "E",
-              Percent: 100,
-              TaxScheme: { ID: "VAT" },
-            },
-          },
-          Price: {
-            PriceAmount: 1000.05,
-            BaseQuantity: 5,
-          },
-        },
-      ],
-    });
+    const data = fs.readFileSync('./testMandatoryInput/DecimalPointOverM.xml');
+    expect(data).toStrictEqual('./invoice1.xml');
   });
-  test("Optional Field Input", () => {});
-  test("Multiple Invoice Line Mandatory Fields", () => {});
-  test("Multiple Invoice Line Optional Fields", () => {});
+  test("Optional Field Input", () => {
+
+    const newInvoice: InvoiceModel = new InvoiceModel();
+    newInvoice.parse("");
+    newInvoice.createUBL();
+    const data = fs.readFileSync('./testOptionalInput/InvoiceLine1O.xml');
+    expect(data).toStrictEqual('./invoice1.xml');
+  });
+  test("Multiple Invoice Line Mandatory Fields", () => {
+    const newInvoice: InvoiceModel = new InvoiceModel();
+    newInvoice.parse("");
+
+    newInvoice.createUBL();
+    const data = fs.readFileSync('./testMandatoryInput/InvoiceLine2M.xml');
+    expect(data).toStrictEqual('./invoice1.xml');
+
+  });
+  test("Multiple Invoice Line Optional Fields", () => {
+
+    const newInvoice: InvoiceModel = new InvoiceModel();
+    newInvoice.parse("");
+    newInvoice.createUBL();
+    const data = fs.readFileSync('./testOptionalInput/InvoiceLine2O.xml');
+    expect(data).toStrictEqual('./invoice1.xml');
+  });
 });

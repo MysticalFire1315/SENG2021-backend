@@ -35,11 +35,10 @@
     <cbc:TaxAmount>100.05</cbc:TaxAmount>
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount>500.68123</cbc:LineExtensionAmount>    <!-- Greater than 2 decimal places; needs to be shortened -->
-    <cbc:TaxExclusiveAmount>500.68123</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount>500.68123</cbc:TaxInclusiveAmount>
-    <cbc:PayableRoundingAmount>500.68123</cbc:PayableRoundingAmount>
-    <cbc:PayableAmount>500.68123</cbc:PayableAmount>
+    <cbc:LineExtensionAmount>500.68</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount>500.68</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount>500.68</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount>500.68</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
     <cbc:ID>124124</cbc:ID>
@@ -48,7 +47,7 @@
     <cac:Item>
       <cbc:Name>HD Bestower</cbc:Name>
       <cac:ClassifiedTaxCategory>
-        <cbc:ID>E</cbc:ID>
+        <cbc:ID>Z</cbc:ID>
         <cac:TaxScheme>
           <cbc:ID>VAT</cbc:ID>
         </cac:TaxScheme>
@@ -56,6 +55,22 @@
     </cac:Item>
     <cac:Price>
       <cbc:PriceAmount>1000.05</cbc:PriceAmount>
+    </cac:Price>
+
+    <cbc:ID>124125</cbc:ID>
+    <cbc:InvoiceQuantity>1</cbc:InvoiceQuantity>
+    <cbc:LineExtensionAmount>500</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Pocket Money</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>Z</cbc:ID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount>500</cbc:PriceAmount>
     </cac:Price>
   </cac:InvoiceLine>
 </Invoice>

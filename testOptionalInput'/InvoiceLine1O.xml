@@ -73,7 +73,7 @@
       <cbc:TaxableAmount>100.05</cbc:TaxableAmount>
       <cbc:TaxAmount>100.05</cbc:TaxAmount>
       <cac:TaxCategory>
-        <cbc:ID>E</cbc:ID>
+        <cbc:ID>S</cbc:ID>
         <cbc:Percent>100</cbc:Percent>
         <cbc:TaxExemptionReason>Because i said so</cbc:TaxExemptionReason>
         <cac:TaxScheme>
@@ -82,7 +82,7 @@
       </cac:TaxCategory>
     </cac:TaxSubtotal>
   </cac:TaxTotal>
-  <!--This is the one without a tax subtotal-->
+
   <cac:TaxTotal>
     <cbc:TaxAmount>100.05</cbc:TaxAmount>
   </cac:TaxTotal>
@@ -105,7 +105,7 @@
       <cbc:Description>An HD mark</cbc:Description>
       <cbc:Name>HD Bestower</cbc:Name>
       <cac:ClassifiedTaxCategory>
-        <cbc:ID>E</cbc:ID>
+        <cbc:ID>S</cbc:ID>
         <cbc:Percent>100</cbc:Percent>
         <cac:TaxScheme>
           <cbc:ID>VAT</cbc:ID>

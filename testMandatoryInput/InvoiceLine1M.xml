@@ -38,7 +38,6 @@
     <cbc:LineExtensionAmount>500.68</cbc:LineExtensionAmount>
     <cbc:TaxExclusiveAmount>500.68</cbc:TaxExclusiveAmount>
     <cbc:TaxInclusiveAmount>500.68</cbc:TaxInclusiveAmount>
-    <cbc:PayableRoundingAmount>500.68</cbc:PayableRoundingAmount>
     <cbc:PayableAmount>500.68</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
@@ -48,7 +47,7 @@
     <cac:Item>
       <cbc:Name>HD Bestower</cbc:Name>
       <cac:ClassifiedTaxCategory>
-        <cbc:ID>E</cbc:ID>
+        <cbc:ID>Z</cbc:ID>
         <cac:TaxScheme>
           <cbc:ID>VAT</cbc:ID>
         </cac:TaxScheme>

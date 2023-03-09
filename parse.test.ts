@@ -6,14 +6,14 @@ import { InvoiceSpecification } from './invoice.json';
 //   CustomizationID?: "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
 //   ProfileID?: "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
 //   ID?: "33",
-//   IssueDate?: 2010 - 11 - 09,
-//   DueDate?: 2011 - 01 - 01,
+//   IssueDate?: "2010-11-09",
+//   DueDate?: "2011-01-01",
 //   InvoiceTypeCode: 44,
 //   Note?: 'Ni Hao Ma?',
-//   TaxPointDate?: 2012 - 04 - 05,
+//   TaxPointDate?: "2012-04-05",
 //   DocumentCurrencyCode: "AUD",
 //   TaxCurrencyCode?: "AUD",
-//   AccountingSupplierParty: { Party: 
+//   AccountingSupplierParty: { Party:
 //    {
 //     EndpointID: 2541512,
 //     PartyName?: { Name: "HD Seller" },
@@ -33,12 +33,12 @@ import { InvoiceSpecification } from './invoice.json';
 //     },
 //     Contact?: {
 //       Name?: "Your Mother",
-//       Telephone?: 0411111111,
+//       Telephone?: 61411111111,
 //       ElectronicMail?: "givesyouHD@gmail.com",
 //     }
 //    }
 //    },
-//   AccountingCustomerParty: { Party: 
+//   AccountingCustomerParty: { Party:
 //    {
 //     EndpointID: 14125112,
 //     PartyName?: { Name: "HD Buyer" },
@@ -58,7 +58,7 @@ import { InvoiceSpecification } from './invoice.json';
 //     },
 //     Contact?: {
 //       Name?: "Your Father",
-//       Telephone?: 0422222222,
+//       Telephone?: 61422222222,
 //       ElectronicMail?: "IwantHD@gmail.com",
 //     }
 //   }
@@ -70,7 +70,7 @@ import { InvoiceSpecification } from './invoice.json';
 //         TaxableAmount: 100.05,
 //         TaxAmount: 100.05,
 //         TaxCategory: {
-//           ID: "E",
+//           ID: "S",
 //           Percent?: 100,
 //           TaxExemptionReason?: "Because i said so",
 //           TaxScheme: { ID: "VAT" },
@@ -101,7 +101,7 @@ import { InvoiceSpecification } from './invoice.json';
 //         Description?: "An HD mark",
 //         Name: "HD Bestower",
 //         ClassifiedTaxCategory: {
-//           ID: "E",
+//           ID: "S",
 //           Percent?: 100,
 //           TaxScheme: { ID: "VAT" },
 //         }
@@ -126,7 +126,7 @@ import { InvoiceSpecification } from './invoice.json';
 //   TaxPointDate?: 2012 - 04 - 05,
 //   DocumentCurrencyCode: "AUD",
 //   TaxCurrencyCode?: "AUD",
-//   AccountingSupplierParty: { Party: 
+//   AccountingSupplierParty: { Party:
 //    {
 //     EndpointID: 2541512,
 //     PartyName?: { Name: "HD Seller" },
@@ -151,7 +151,7 @@ import { InvoiceSpecification } from './invoice.json';
 //     }
 //     }
 //   },
-//   AccountingCustomerParty: { Party: 
+//   AccountingCustomerParty: { Party:
 //    {
 //     EndpointID: 14125112,
 //     PartyName?: { Name: "HD Buyer" },
@@ -228,6 +228,7 @@ import { InvoiceSpecification } from './invoice.json';
 // };
 
 describe('test InvoiceModel parse', () => {
+  // Test invoice specification info is correct; return error if not
   test('Mandatory Field Input', () => {
     const invoiceDataInput = {};
     // ONLY MANDATORY FIELDS
@@ -267,30 +268,22 @@ describe('test InvoiceModel parse', () => {
         LineExtensionAmount: 500.68,
         TaxExclusiveAmount: 500.68,
         TaxInclusiveAmount: 500.68,
-        AllowanceTotalAmount: 500.68,
-        ChargeTotalAmount: 500.68,
-        PrepaidAmount: 500.68,
-        PayableRoundingAmount: 500.68,
         PayableAmount: 500.68,
       },
       InvoiceLine: [
         {
           ID: 124124,
-          Note: 'We take those',
           InvoicedQuantity: 5,
           LineExtensionAmount: 1000.05,
           Item: {
-            Description: 'An HD mark',
             Name: 'HD Bestower',
             ClassifiedTaxCategory: {
-              ID: 'E',
-              Percent: 100,
+              ID: 'Z',
               TaxScheme: { ID: 'VAT' },
             },
           },
           Price: {
             PriceAmount: 1000.05,
-            BaseQuantity: 5,
           },
         },
       ],
