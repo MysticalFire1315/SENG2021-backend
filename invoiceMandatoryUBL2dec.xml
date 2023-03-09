@@ -35,11 +35,11 @@
     <cbc:TaxAmount>100.05</cbc:TaxAmount>
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount>500.68</cbc:LineExtensionAmount>
-    <cbc:TaxExclusiveAmount>500.68</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount>500.68</cbc:TaxInclusiveAmount>
-    <cbc:PayableRoundingAmount>500.68</cbc:PayableRoundingAmount>
-    <cbc:PayableAmount>500.68</cbc:PayableAmount>
+    <cbc:LineExtensionAmount>500.68123</cbc:LineExtensionAmount>    <!-- Greater than 2 decimal places; needs to be shortened -->
+    <cbc:TaxExclusiveAmount>500.68123</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount>500.68123</cbc:TaxInclusiveAmount>
+    <cbc:PayableRoundingAmount>500.68123</cbc:PayableRoundingAmount>
+    <cbc:PayableAmount>500.68123</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
     <cbc:ID>124124</cbc:ID>
