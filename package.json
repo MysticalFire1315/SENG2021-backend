@@ -359,9 +359,9 @@
     "stack-utils": "^2.0.6",
     "statuses": "^2.0.1",
     "streamsearch": "^1.1.0",
+    "string_decoder": "^1.1.1",
     "string-length": "^4.0.2",
     "string-width": "^4.2.3",
-    "string_decoder": "^1.1.1",
     "strip-ansi": "^6.0.1",
     "strip-bom": "^4.0.0",
     "strip-final-newline": "^2.0.0",
@@ -430,7 +430,9 @@
     "yn": "^3.1.1",
     "yocto-queue": "^0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^29.4.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

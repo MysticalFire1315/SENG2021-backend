@@ -19,32 +19,36 @@ describe("test InvoiceModel createUBL", () => {
     newInvoice.parse(""); // Need to parse some kinda file from user input
 
     newInvoice.createUBL(); //Hopefully returns invoice1.xml in same directory
-    const data = fs.readFileSync('./testMandatoryInput/InvoiceLine1M.xml');
-    expect(data).toStrictEqual('./invoice1.xml');
+    const actual = fs.readFileSync('./invoice1.xml');
+    const expected = fs.readFileSync('./testMandatoryInput/InvoiceLine1M.xml');
+    expect(expected).toStrictEqual(actual);
   });
   test("Mandatory Fields >2 Decimal Place Condition", () => {
     const newInvoice: InvoiceModel = new InvoiceModel();
     newInvoice.parse("");
 
     newInvoice.createUBL();
-    const data = fs.readFileSync('./testMandatoryInput/DecimalPointOverM.xml');
-    expect(data).toStrictEqual('./invoice1.xml');
+    const actual = fs.readFileSync('./invoice1.xml');
+    const expected = fs.readFileSync('./testMandatoryInput/DecimalPointOverM.xml');
+    expect(expected).toStrictEqual(actual);
   });
   test("Optional Field Input", () => {
 
     const newInvoice: InvoiceModel = new InvoiceModel();
     newInvoice.parse("");
     newInvoice.createUBL();
-    const data = fs.readFileSync('./testOptionalInput/InvoiceLine1O.xml');
-    expect(data).toStrictEqual('./invoice1.xml');
+    const actual = fs.readFileSync('./invoice1.xml');
+    const expected = fs.readFileSync('./testOptionalInput/InvoiceLine1O.xml');
+    expect(expected).toStrictEqual(actual);
   });
   test("Multiple Invoice Line Mandatory Fields", () => {
     const newInvoice: InvoiceModel = new InvoiceModel();
     newInvoice.parse("");
 
     newInvoice.createUBL();
-    const data = fs.readFileSync('./testMandatoryInput/InvoiceLine2M.xml');
-    expect(data).toStrictEqual('./invoice1.xml');
+    const actual = fs.readFileSync('./invoice1.xml');
+    const expected = fs.readFileSync('./testMandatoryInput/InvoiceLine2M.xml');
+    expect(expected).toStrictEqual(actual);
 
   });
   test("Multiple Invoice Line Optional Fields", () => {
@@ -52,7 +56,8 @@ describe("test InvoiceModel createUBL", () => {
     const newInvoice: InvoiceModel = new InvoiceModel();
     newInvoice.parse("");
     newInvoice.createUBL();
-    const data = fs.readFileSync('./testOptionalInput/InvoiceLine2O.xml');
-    expect(data).toStrictEqual('./invoice1.xml');
+    const actual = fs.readFileSync('./invoice1.xml');
+    const expected = fs.readFileSync('./testOptionalInput/InvoiceLine2O.xml');
+    expect(expected).toStrictEqual(actual);
   });
 });
