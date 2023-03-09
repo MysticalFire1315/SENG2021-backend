@@ -31,11 +31,7 @@ export class CreationService {
 
   async invoiceDownload(token: string): Promise<StreamableFile> {
     const invoice = this.invoiceList.find((invoice) => invoice.token === token);
-
-    const returnFile = new StreamableFile(
-      Buffer.from(await invoice.object.createUBL()),
-    );
-
-    return returnFile;
+    const document = await invoice.object.createUBL();
+    return new StreamableFile(Buffer.from(document));
   }
 }

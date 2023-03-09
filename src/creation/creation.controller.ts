@@ -1,8 +1,9 @@
 import {
   Controller,
   Get,
-  Param,
+  Header,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,7 +25,9 @@ export class CreationController {
   }
 
   @Get('download')
-  async downloadFile(@Param('token') token: string) {
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename="package.json"')
+  async downloadFile(@Query('token') token: string) {
     const output = await this.creationService.invoiceDownload(token);
     return output;
   }
