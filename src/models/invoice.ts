@@ -5,21 +5,30 @@ import dateFormat from 'dateformat';
 export class InvoiceModel {
   // Attributes
   private _invoiceData: InvoiceSpecification;
-  public readonly invoiceDefaults = {
+  public static invoiceDefaults = {
     CustomizationID:
       'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
     ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
-    ID: 1, // generate id here
-    IssueDate: dateFormat('isoDate'),
   };
 
   public get invoiceData(): InvoiceSpecification {
     return this._invoiceData;
   }
 
+  /**
+   * Replace all object keys with a new key, determined by a provided `getNewKey`
+   * callback.
+   *
+   * @private
+   * @static
+   * @param {object} obj The object whose keys to replace.
+   * @param {(value: object, key: string) => string} getNewKey A function that
+   * receives a value-key pair and returns a string of the new key name.
+   * @memberof InvoiceModel
+   */
   private static replaceAllObjKeys = (
     obj: object,
-    getNewKey: (obj: object, key: string) => string,
+    getNewKey: (value: object, key: string) => string,
   ): object => {
     if (Array.isArray(obj)) {
       for (const element of obj) {
@@ -39,8 +48,19 @@ export class InvoiceModel {
     return obj;
   };
 
-  private static keyMethod = (obj: object, key: string): string => {
-    return (obj instanceof Object ? 'cac:' : 'cbc:') + key;
+  /**
+   * Determines the xml field name for a given invoice key. If the associated
+   * value is an object, `cac:` is inserted before the field name. Otherwise,
+   * `cbc:` is inserted instead.
+   *
+   * @private
+   * @static
+   * @param {object} value The value associated with the key.
+   * @param {string} key The given key.
+   * @memberof InvoiceModel
+   */
+  private static keyMethod = (value: object, key: string): string => {
+    return (value instanceof Object ? 'cac:' : 'cbc:') + key;
   };
 
   /**
@@ -81,12 +101,10 @@ export class InvoiceModel {
         // }
       ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
       LegalMonetaryTotal: {
-        LineExtensionAmount:
-          input.LegalMonetaryTotal.LineExtensionAmount,
+        LineExtensionAmount: input.LegalMonetaryTotal.LineExtensionAmount,
         TaxExclusiveAmount: input.LegalMonetaryTotal.TaxExclusiveAmount,
         TaxInclusiveAmount: input.LegalMonetaryTotal.TaxInclusiveAmount,
-        PayableRoundingAmount:
-          input.LegalMonetaryTotal.PayableRoundingAmount,
+        PayableRoundingAmount: input.LegalMonetaryTotal.PayableRoundingAmount,
         PayableAmount: input.LegalMonetaryTotal.PayableAmount,
       },
       InvoiceLine: [
@@ -161,9 +179,7 @@ export class InvoiceModel {
       this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.PostalZone =
         input.Supplier.Address.PostCode;
     }
-    if (
-      Object.keys(input.Supplier.Address).includes('countrySubdivision')
-    ) {
+    if (Object.keys(input.Supplier.Address).includes('countrySubdivision')) {
       this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.CountrySubentity =
         input.Supplier.Address.countrySubdivision;
     }
@@ -202,9 +218,7 @@ export class InvoiceModel {
       this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress =
         input.Buyer.Address.addressLine1;
     }
-    if (
-      Object.keys(input.Buyer.PostalAddress).includes('addressLine2')
-    ) {
+    if (Object.keys(input.Buyer.PostalAddress).includes('addressLine2')) {
       this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.AdditionalStreetName =
         input.Buyer.Address.addressLine2;
     }
@@ -216,17 +230,13 @@ export class InvoiceModel {
       this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.PostalZone =
         input.Buyer.Address.PostCode;
     }
-    if (
-      Object.keys(input.Buyer.Address).includes('countrySubdivision')
-    ) {
+    if (Object.keys(input.Buyer.Address).includes('countrySubdivision')) {
       this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.CountrySubentity =
         input.Buyer.Address.countrySubdivision;
     }
 
     // Buyer PartyLegalEntity
-    if (
-      Object.keys(input.Buyer.PartyLegalEntity).includes('CompanyID')
-    ) {
+    if (Object.keys(input.Buyer.PartyLegalEntity).includes('CompanyID')) {
       this._invoiceData.AccountingBuyerParty.PartyLegalEntity.CompanyID =
         input.Buyer.PartyLegalEntity.CompanyID;
     }
@@ -269,24 +279,16 @@ export class InvoiceModel {
 
     // LegalMonetaryTotal
     if (
-      Object.keys(input.LegalMonetaryTotal).includes(
-        'AllowanceTotalAmount',
-      )
+      Object.keys(input.LegalMonetaryTotal).includes('AllowanceTotalAmount')
     ) {
       this._invoiceData.LegalMonetaryTotal.AllowanceTotalAmount =
         input.LegalMonetaryTotal.AllowanceTotalAmount;
     }
-    if (
-      Object.keys(input.LegalMonetaryTotal).includes(
-        'ChargeTotalAmount',
-      )
-    ) {
+    if (Object.keys(input.LegalMonetaryTotal).includes('ChargeTotalAmount')) {
       this._invoiceData.LegalMonetaryTotal.ChargeTotalAmount =
         input.LegalMonetaryTotal.ChargeTotalAmount;
     }
-    if (
-      Object.keys(input.LegalMonetaryTotal).includes('PrepaidAmount')
-    ) {
+    if (Object.keys(input.LegalMonetaryTotal).includes('PrepaidAmount')) {
       this._invoiceData.LegalMonetaryTotal.PrepaidAmount =
         input.LegalMonetaryTotal.PrepaidAmount;
     }
@@ -322,15 +324,20 @@ export class InvoiceModel {
    * @returns The generated UBL document as a string.
    */
   public async createUBL(): Promise<string> {
+    // Make a deep clone of the invoice data and add necessary properties
     const cloned = {
-      ...this.invoiceDefaults,
-      ...JSON.parse(JSON.stringify(this._invoiceData)),
+      ...InvoiceModel.invoiceDefaults,
+      ID: 1, // generate unique id here
+      IssueDate: dateFormat('isoDate'),
+      ...JSON.parse(JSON.stringify(this.invoiceData)),
     };
+    // Replace keys in clone with the UBL formatted xml field names
     InvoiceModel.replaceAllObjKeys(cloned, InvoiceModel.keyMethod);
 
+    // Create the xml document
     const root = create({ Invoice: cloned });
     const xml = root.end({ prettyPrint: true });
-    
+
     console.log(xml); // for debugging
 
     return xml;
