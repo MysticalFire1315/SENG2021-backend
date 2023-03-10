@@ -235,8 +235,24 @@ export class InvoiceModel {
      */
     async createUBL(): Promise<string> {
         // Create the file and return a relative path to the file
-        return './invoice1.xml';
+        const { create } = require('xmlbuilder2');
+        const fs = require('fs');
+
+        let req_name = 'post-request';
+
+        const root = create().ele(this.invoiceData);
+        const xml = root.end({ prettyPrint: true });
+        console.log(xml);
+
+        // save into current directory path
+        let filename = "./" + req_name + ".xml";
+        fs.writeFileSync(filename, xml, function (err) {
+            if (err) throw err;
+        });
+
+        return filename;
     }
+
     async getInvoiceData() {
         return this.invoiceData;
     }
