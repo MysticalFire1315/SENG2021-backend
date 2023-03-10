@@ -69,7 +69,18 @@ export class InvoiceModel {
    * @param {string} invoiceString - A JSON string of the invoice.
    */
   public async parse(invoiceString: string): Promise<void> {
-    const input = JSON.parse(invoiceString);
+    const {
+      Supplier,
+      Buyer,
+      TaxTotal,
+      LegalMonetaryTotal,
+      InvoiceLine,
+      ...input
+    } = JSON.parse(invoiceString);
+
+    // fix party stuff (Supplier, Buyer)
+
+
     this._invoiceData = {
       InvoiceTypeCode: input.InvoiceTypeCode,
       DocumentCurrencyCode: input.InvoiceCurrency,
