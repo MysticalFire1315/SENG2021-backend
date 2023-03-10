@@ -116,7 +116,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  AccountingSupplierParty: Party;
+  AccountingSupplierParty: { Party: Party };
 
   /**
    * A group of business terms providing information about the Buyer.
@@ -125,7 +125,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  AccountingBuyerParty: Party;
+  AccountingBuyerParty: { Party: Party };
 
   /**
    * When tax currency code is provided, two instances of the tax total must be
