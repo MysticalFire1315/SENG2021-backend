@@ -1,282 +1,338 @@
-import { readFileSync } from 'fs';
 import { InvoiceSpecification } from 'src/models/invoice.json';
 import { create } from 'xmlbuilder2';
+import dateFormat from 'dateformat';
 
 export class InvoiceModel {
   // Attributes
-  private invoiceData: InvoiceSpecification;
+  private _invoiceData: InvoiceSpecification;
+  public readonly invoiceDefaults = {
+    CustomizationID:
+      'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+    ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+    ID: 1, // generate id here
+    IssueDate: dateFormat('isoDate'),
+  };
 
-  // Constructor probably not needed... TBC
+  public get invoiceData(): InvoiceSpecification {
+    return this._invoiceData;
+  }
+
+  private static replaceAllObjKeys = (
+    obj: object,
+    getNewKey: (obj: object, key: string) => string,
+  ): object => {
+    if (Array.isArray(obj)) {
+      for (const element of obj) {
+        InvoiceModel.replaceAllObjKeys(element, getNewKey);
+      }
+    } else if (typeof obj === 'object') {
+      for (const key in obj) {
+        const newKey = getNewKey(obj[key], key);
+        obj[newKey] = obj[key];
+        if (key !== newKey) {
+          delete obj[key];
+        }
+        InvoiceModel.replaceAllObjKeys(obj[newKey], getNewKey);
+      }
+    }
+
+    return obj;
+  };
+
+  private static keyMethod = (obj: object, key: string): string => {
+    return (obj instanceof Object ? 'cac:' : 'cbc:') + key;
+  };
 
   /**
-   * Parse a file containing raw invoice data.
+   * Parse a string containing raw input data.
    *
-   * Note: The file must be in JSON format!
-   *
-   * @param invoiceFile The file containing raw invoice data to parse.
+   * @param {string} invoiceString - A JSON string of the invoice.
    */
-  async parse(invoiceFile: string): Promise<void> {
-    const invoiceString = JSON.parse(file);
-    this.invoiceData = {
-      InvoiceTypeCode: invoiceString.InvoiceTypeCode,
-      DocumentCurrencyCode: invoiceString.InvoiceCurrency,
+  public async parse(invoiceString: string): Promise<void> {
+    const input = JSON.parse(invoiceString);
+    this._invoiceData = {
+      InvoiceTypeCode: input.InvoiceTypeCode,
+      DocumentCurrencyCode: input.InvoiceCurrency,
       AccountingSupplierParty: {
-        EndpointID: invoiceString.Supplier.ElectronicAddress,
+        EndpointID: input.Supplier.ElectronicAddress,
         PostalAddress: {
           Country: {
-            IdentificationCode: invoiceString.Supplier.Address.CountryCode,
-          }
+            IdentificationCode: input.Supplier.Address.CountryCode,
+          },
         },
         PartyLegalEntity: {
-          RegistrationName: invoiceString.Supplier.PartyLegalEntity.Name
+          RegistrationName: input.Supplier.PartyLegalEntity.Name,
         },
       },
       AccountingBuyerParty: {
-        EndpointID: invoiceString.Buyer.electronicAddress,
+        EndpointID: input.Buyer.electronicAddress,
         PostalAddress: {
           Country: {
-            IdentificationCode: invoiceString.Buyer.Addrress.CountryCode,
-          }
+            IdentificationCode: input.Buyer.Addrress.CountryCode,
+          },
         },
         PartyLegalEntity: {
-          RegistrationName: invoiceString.Buyer.PartyLegalEntity.Name,
+          RegistrationName: input.Buyer.PartyLegalEntity.Name,
         },
       },
       TaxTotal: [
         // {
-        //   TaxAmount: invoiceString.TaxTotal.TaxAmount,
+        //   TaxAmount: input.TaxTotal.TaxAmount,
         // }
       ], // An array of 'TaxTotal' is possible for up to 2 'TaxTotal' elements
       LegalMonetaryTotal: {
-        LineExtensionAmount: invoiceString.LegalMonetaryTotal.LineExtensionAmount,
-        TaxExclusiveAmount: invoiceString.LegalMonetaryTotal.TaxExclusiveAmount,
-        TaxInclusiveAmount: invoiceString.LegalMonetaryTotal.TaxInclusiveAmount,
-        PayableRoundingAmount: invoiceString.LegalMonetaryTotal.PayableRoundingAmount,
-        PayableAmount: invoiceString.LegalMonetaryTotal.PayableAmount,
+        LineExtensionAmount:
+          input.LegalMonetaryTotal.LineExtensionAmount,
+        TaxExclusiveAmount: input.LegalMonetaryTotal.TaxExclusiveAmount,
+        TaxInclusiveAmount: input.LegalMonetaryTotal.TaxInclusiveAmount,
+        PayableRoundingAmount:
+          input.LegalMonetaryTotal.PayableRoundingAmount,
+        PayableAmount: input.LegalMonetaryTotal.PayableAmount,
       },
-      InvoiceLine: [ //not sure how to handle arrays?
+      InvoiceLine: [
+        //not sure how to handle arrays?
         // {
-        //   ID: invoiceString.InvoiceLine.ID, 
-        //   InvoicedQuantity: invoiceString.InvoiceLine.InvoicedQuantity,
-        //   LineExtensionAmount: invoiceString.InvoiceLine.LineExtensionAmount,
+        //   ID: input.InvoiceLine.ID,
+        //   InvoicedQuantity: input.InvoiceLine.InvoicedQuantity,
+        //   LineExtensionAmount: input.InvoiceLine.LineExtensionAmount,
         //   Item: {
-        //     Name: invoiceString.InvoiceLine.Name,
-        //     ClassifiedTaxCategory: { 
-        //       ID: invoiceString.InvoiceLine.Item.VAT.ID,
-        //       TaxScheme: invoiceString.InvoiceLine.Item.VAT.TaxScheme,
+        //     Name: input.InvoiceLine.Name,
+        //     ClassifiedTaxCategory: {
+        //       ID: input.InvoiceLine.Item.VAT.ID,
+        //       TaxScheme: input.InvoiceLine.Item.VAT.TaxScheme,
         //     }
         //   },
         //   Price: {
-        //     PriceAmount: invoiceString.InvoiceLine.Item,
+        //     PriceAmount: input.InvoiceLine.Item,
         //   }
         // }
       ],
     };
 
-    if (Object.keys(invoiceString).includes('CustomizationID')) {
-      this.invoiceData.CustomizationID = invoiceString.CustomizationID;
+    if (Object.keys(input).includes('CustomizationID')) {
+      this._invoiceData.CustomizationID = input.CustomizationID;
     }
-    if (Object.keys(invoiceString).includes('ProfileID')) {
-      this.invoiceData.ProfileID = invoiceString.ProfileID;
+    if (Object.keys(input).includes('ProfileID')) {
+      this._invoiceData.ProfileID = input.ProfileID;
     }
-    if (Object.keys(invoiceString).includes('ID')) {
-      this.invoiceData.ID = invoiceString.ID;
+    if (Object.keys(input).includes('ID')) {
+      this._invoiceData.ID = input.ID;
     }
-    if (Object.keys(invoiceString).includes('IssueDate')) {
-      this.invoiceData.IssueDate = invoiceString.IssueDate;
+    if (Object.keys(input).includes('IssueDate')) {
+      this._invoiceData.IssueDate = input.IssueDate;
     }
-    if (Object.keys(invoiceString).includes('DueDate')) {
-      this.invoiceData.DueDate = invoiceString.DueDate;
+    if (Object.keys(input).includes('DueDate')) {
+      this._invoiceData.DueDate = input.DueDate;
     }
-    if (Object.keys(invoiceString).includes('Note')) {
-      this.invoiceData.Note = invoiceString.Note;
+    if (Object.keys(input).includes('Note')) {
+      this._invoiceData.Note = input.Note;
     }
-    if (Object.keys(invoiceString).includes('TaxPointDate')) {
-      this.invoiceData.TaxPointDate = invoiceString.TaxPointDate;
+    if (Object.keys(input).includes('TaxPointDate')) {
+      this._invoiceData.TaxPointDate = input.TaxPointDate;
     }
-    if (Object.keys(invoiceString).includes('TaxCurrencyCode')) {
-      this.invoiceData.TaxCurrencyCode = invoiceString.TaxCurrency;
+    if (Object.keys(input).includes('TaxCurrencyCode')) {
+      this._invoiceData.TaxCurrencyCode = input.TaxCurrency;
     }
 
     // AccountingSupplierParty
-    if (Object.keys(invoiceString.Supplier).includes('PartyName')) {
-      this.invoiceData.AccountingSupplierParty.PartyName = invoiceString.Supplier.PartyName;
+    if (Object.keys(input.Supplier).includes('PartyName')) {
+      this._invoiceData.AccountingSupplierParty.PartyName =
+        input.Supplier.PartyName;
     }
 
     // postal address
-    if (Object.keys(invoiceString.Supplier.Address).includes('addressLine1')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PostalAddress = invoiceString.Supplier.Address.addressLine1;
+    if (Object.keys(input.Supplier.Address).includes('addressLine1')) {
+      this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress =
+        input.Supplier.Address.addressLine1;
     }
-    if (Object.keys(invoiceString.AccountingSupplierParty.PostalAddress).includes('addressLine2')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PostalAddress.AdditionalStreetName = invoiceString.Supplier.Address.addressLine2;
+    if (
+      Object.keys(input.AccountingSupplierParty.PostalAddress).includes(
+        'addressLine2',
+      )
+    ) {
+      this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.AdditionalStreetName =
+        input.Supplier.Address.addressLine2;
     }
-    if (Object.keys(invoiceString.Supplier.Address).includes('City')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PostalAddress.CityName = invoiceString.Supplier.Address.City;
+    if (Object.keys(input.Supplier.Address).includes('City')) {
+      this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.CityName =
+        input.Supplier.Address.City;
     }
-    if (Object.keys(invoiceString.Supplier.Address).includes('PostCode')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PostalAddress.PostalZone = invoiceString.Supplier.Address.PostCode;
+    if (Object.keys(input.Supplier.Address).includes('PostCode')) {
+      this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.PostalZone =
+        input.Supplier.Address.PostCode;
     }
-    if (Object.keys(invoiceString.Supplier.Address).includes('countrySubdivision')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PostalAddress.CountrySubentity = invoiceString.Supplier.Address.countrySubdivision;
+    if (
+      Object.keys(input.Supplier.Address).includes('countrySubdivision')
+    ) {
+      this._invoiceData.PartyName.AccountingSupplierParty.PostalAddress.CountrySubentity =
+        input.Supplier.Address.countrySubdivision;
     }
 
     // Seller PartyLegalEntity
-    const StringPartyLegalEntity = invoiceString.Supplier.PartyLegalEntity
+    const StringPartyLegalEntity = input.Supplier.PartyLegalEntity;
     if (Object.keys(StringPartyLegalEntity).includes('CompanyID')) {
-      this.invoiceData.PartyName.AccountingSupplierParty.PartyLegalEntity.CompanyID = StringPartyLegalEntity.CompanyID;
+      this._invoiceData.PartyName.AccountingSupplierParty.PartyLegalEntity.CompanyID =
+        StringPartyLegalEntity.CompanyID;
     }
 
     // Seller Contact
-    if (Object.keys(invoiceString.Supplier).includes('Contact')) {
-      const StringContact = invoiceString.Supplier.Contact;
+    if (Object.keys(input.Supplier).includes('Contact')) {
+      const StringContact = input.Supplier.Contact;
       if (Object.keys(StringContact).includes('Name')) {
-        this.invoiceData.PartyName.AccountingSupplierParty.Contact.Name = StringContact.Name;
+        this._invoiceData.PartyName.AccountingSupplierParty.Contact.Name =
+          StringContact.Name;
       }
       if (Object.keys(StringContact).includes('Telephone')) {
-        this.invoiceData.PartyName.AccountingSupplierParty.Contact.Telephone = StringContact.Telephone;
+        this._invoiceData.PartyName.AccountingSupplierParty.Contact.Telephone =
+          StringContact.Telephone;
       }
       if (Object.keys(StringContact).includes('ElectronicMail')) {
-        this.invoiceData.PartyName.AccountingSupplierParty.Contact.ElectronicMail = StringContact.ElectronicMail;
+        this._invoiceData.PartyName.AccountingSupplierParty.Contact.ElectronicMail =
+          StringContact.ElectronicMail;
       }
     }
 
     // AccountingBuyerParty
-    if (Object.keys(invoiceString.Buyer).includes('PartyName')) {
-      this.invoiceData.AccountingBuyerParty.PartyName = StringAccountingBuyerParty.PartyName;
+    if (Object.keys(input.Buyer).includes('PartyName')) {
+      this._invoiceData.AccountingBuyerParty.PartyName =
+        StringAccountingBuyerParty.PartyName;
     }
     // postal address
-    if (Object.keys(invoiceString.Buyer.Address).includes('addressLine1')) {
-      this.invoiceData.PartyName.AccountingBuyerParty.PostalAddress = invoiceString.Buyer.Address.addressLine1;
+    if (Object.keys(input.Buyer.Address).includes('addressLine1')) {
+      this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress =
+        input.Buyer.Address.addressLine1;
     }
-    if (Object.keys(invoiceString.Buyer.PostalAddress).includes('addressLine2')) {
-      this.invoiceData.PartyName.AccountingBuyerParty.PostalAddress.AdditionalStreetName = invoiceString.Buyer.Address.addressLine2;
+    if (
+      Object.keys(input.Buyer.PostalAddress).includes('addressLine2')
+    ) {
+      this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.AdditionalStreetName =
+        input.Buyer.Address.addressLine2;
     }
-    if (Object.keys(invoiceString.Buyer.Address).includes('City')) {
-      this.invoiceData.PartyName.AccountingBuyerParty.PostalAddress.CityName = invoiceString.Buyer.Address.City;
+    if (Object.keys(input.Buyer.Address).includes('City')) {
+      this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.CityName =
+        input.Buyer.Address.City;
     }
-    if (Object.keys(invoiceString.Buyer.Address).includes('PostCode')) {
-      this.invoiceData.PartyName.AccountingBuyerParty.PostalAddress.PostalZone = invoiceString.Buyer.Address.PostCode;
+    if (Object.keys(input.Buyer.Address).includes('PostCode')) {
+      this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.PostalZone =
+        input.Buyer.Address.PostCode;
     }
-    if (Object.keys(invoiceString.Buyer.Address).includes('countrySubdivision')) {
-      this.invoiceData.PartyName.AccountingBuyerParty.PostalAddress.CountrySubentity = invoiceString.Buyer.Address.countrySubdivision;
+    if (
+      Object.keys(input.Buyer.Address).includes('countrySubdivision')
+    ) {
+      this._invoiceData.PartyName.AccountingBuyerParty.PostalAddress.CountrySubentity =
+        input.Buyer.Address.countrySubdivision;
     }
 
     // Buyer PartyLegalEntity
-    if (Object.keys(invoiceString.Buyer.PartyLegalEntity).includes('CompanyID')) {
-      this.invoiceData.AccountingBuyerParty.PartyLegalEntity.CompanyID = invoiceString.Buyer.PartyLegalEntity.CompanyID;
+    if (
+      Object.keys(input.Buyer.PartyLegalEntity).includes('CompanyID')
+    ) {
+      this._invoiceData.AccountingBuyerParty.PartyLegalEntity.CompanyID =
+        input.Buyer.PartyLegalEntity.CompanyID;
     }
 
     // Buyer contact
-    if (Object.keys(invoiceString.Buyer).includes('Contact')) {
-      const StringBuyerContact = invoiceString.Buyer.Contact;
+    if (Object.keys(input.Buyer).includes('Contact')) {
+      const StringBuyerContact = input.Buyer.Contact;
       if (Object.keys(StringBuyerContact).includes('Name')) {
-        this.invoiceData.PartyName.AccountingBuyerParty.Contact.Name = StringBuyerContact.Name;
+        this._invoiceData.PartyName.AccountingBuyerParty.Contact.Name =
+          StringBuyerContact.Name;
       }
       if (Object.keys(StringBuyerContact).includes('Telephone')) {
-        this.invoiceData.PartyName.AccountingBuyerParty.Contact.Telephone = StringBuyerContact.Telephone;
+        this._invoiceData.PartyName.AccountingBuyerParty.Contact.Telephone =
+          StringBuyerContact.Telephone;
       }
       if (Object.keys(StringBuyerContact).includes('ElectronicMail')) {
-        this.invoiceData.PartyName.AccountingBuyerParty.Contact.ElectronicMail = StringBuyerContact.ElectronicMail;
+        this._invoiceData.PartyName.AccountingBuyerParty.Contact.ElectronicMail =
+          StringBuyerContact.ElectronicMail;
       }
     }
 
     // Tax Total
-    const StringTaxTotal = invoiceString.TaxTotal;
+    const StringTaxTotal = input.TaxTotal;
     const TaxLength = StringTaxTotal.length;
     for (const i = 0; i < length; i++) {
       if (Object.keys(StringTaxTotal[i]).includes('TaxSubtotal')) {
         const StringTaxCategory = StringTaxTotal[i].TaxSubtotal.TaxCategory;
         if (Object.keys(StringTaxCategory).includes('Percent')) {
-          this.invoiceData.TaxTotal[i].TaxSubtotal.TaxCategory.Percent = StringTaxCategory.Percent;
+          this._invoiceData.TaxTotal[i].TaxSubtotal.TaxCategory.Percent =
+            StringTaxCategory.Percent;
         }
         if (Object.keys(StringTaxCategory).includes('TaxExemptionReason')) {
-          this.invoiceData.TaxTotal[i].TaxSubtotal.TaxCategory.TaxExemptionReason = StringTaxCategory.TaxExemptionReason;
+          this._invoiceData.TaxTotal[
+            i
+          ].TaxSubtotal.TaxCategory.TaxExemptionReason =
+            StringTaxCategory.TaxExemptionReason;
         }
       }
-
     }
 
     // LegalMonetaryTotal
-    if (Object.keys(invoiceString.LegalMonetaryTotal).includes('AllowanceTotalAmount')) {
-      this.invoiceData.LegalMonetaryTotal.AllowanceTotalAmount = invoiceString.LegalMonetaryTotal.AllowanceTotalAmount;
+    if (
+      Object.keys(input.LegalMonetaryTotal).includes(
+        'AllowanceTotalAmount',
+      )
+    ) {
+      this._invoiceData.LegalMonetaryTotal.AllowanceTotalAmount =
+        input.LegalMonetaryTotal.AllowanceTotalAmount;
     }
-    if (Object.keys(invoiceString.LegalMonetaryTotal).includes('ChargeTotalAmount')) {
-      this.invoiceData.LegalMonetaryTotal.ChargeTotalAmount = invoiceString.LegalMonetaryTotal.ChargeTotalAmount;
+    if (
+      Object.keys(input.LegalMonetaryTotal).includes(
+        'ChargeTotalAmount',
+      )
+    ) {
+      this._invoiceData.LegalMonetaryTotal.ChargeTotalAmount =
+        input.LegalMonetaryTotal.ChargeTotalAmount;
     }
-    if (Object.keys(invoiceString.LegalMonetaryTotal).includes('PrepaidAmount')) {
-      this.invoiceData.LegalMonetaryTotal.PrepaidAmount = invoiceString.LegalMonetaryTotal.PrepaidAmount;
+    if (
+      Object.keys(input.LegalMonetaryTotal).includes('PrepaidAmount')
+    ) {
+      this._invoiceData.LegalMonetaryTotal.PrepaidAmount =
+        input.LegalMonetaryTotal.PrepaidAmount;
     }
 
     // Invoice Line
-    const StringInvoiceLine = invoiceString.InvoiceLine;
-    const InvoiceLength = invoiceString.InvoiceLine.length;
+    const StringInvoiceLine = input.InvoiceLine;
+    const InvoiceLength = input.InvoiceLine.length;
     for (const i = 0; i < length; i++) {
       if (Object.keys(StringInvoiceLine[i]).includes('Note')) {
-        this.invoiceData.InvoiceLine[i].Note = StringInvoiceLine[i].Note;
+        this._invoiceData.InvoiceLine[i].Note = StringInvoiceLine[i].Note;
       }
       // Item
       if (Object.keys(StringInvoiceLine[i].Item).includes('Description')) {
-        this.invoiceData.InvoiceLine[i].Item.Description = StringInvoiceLine[i].Item.Description;
+        this._invoiceData.InvoiceLine[i].Item.Description =
+          StringInvoiceLine[i].Item.Description;
       }
       // ClassifiedTaxCategory
       if (Object.keys(StringInvoiceLine[i].Item.VAT).includes('Percent')) {
-        this.invoiceData.InvoiceLine[i].Item.ClassifiedTaxCategory.Percent = StringInvoiceLine[i].Item.VAT.Percent;
+        this._invoiceData.InvoiceLine[i].Item.ClassifiedTaxCategory.Percent =
+          StringInvoiceLine[i].Item.VAT.Percent;
       }
       // Price
       if (Object.keys(StringInvoiceLine[i].Price).includes('BaseQuantity')) {
-        this.invoiceData.InvoiceLine[i].Price.BaseQuantity = StringInvoiceLine[i].Price.BaseQuantity;
+        this._invoiceData.InvoiceLine[i].Price.BaseQuantity =
+          StringInvoiceLine[i].Price.BaseQuantity;
       }
     }
   }
 
   /**
-   * Creates a UBL document with the relevant attributes.
+   * Create a UBL document with the relevant attributes.
    *
-   * @returns A relative path to the newly created UBL document.
+   * @returns The generated UBL document as a string.
    */
-  async createUBL(): Promise<string> {
+  public async createUBL(): Promise<string> {
     const cloned = {
-      'CustomizationID': 'default',
-      // + extra keys
-      ...JSON.parse(JSON.stringify(this.invoiceData))
+      ...this.invoiceDefaults,
+      ...JSON.parse(JSON.stringify(this._invoiceData)),
     };
-    replaceAllObjKeys(cloned, keyMethod);
+    InvoiceModel.replaceAllObjKeys(cloned, InvoiceModel.keyMethod);
 
-    const root = create({Invoice: cloned});
+    const root = create({ Invoice: cloned });
     const xml = root.end({ prettyPrint: true });
-    console.log(xml);
+    
+    console.log(xml); // for debugging
 
     return xml;
   }
-
-  async getInvoiceData() {
-    return this.invoiceData;
-  }
-
-  
-}
-
-const replaceAllObjKeys = (obj, getNewKey) => {
-
-  if (Array.isArray(obj)) {
-    for (const element of obj) {
-      replaceAllObjKeys(element, getNewKey);
-    }
-  }
-  else if (typeof obj === "object") {
-    for (const key in obj) {
-      const newKey = getNewKey(key, obj[key]);
-      obj[newKey] = obj[key];
-      if (key !== newKey) {
-        delete obj[key];
-      }
-      replaceAllObjKeys(obj[newKey], getNewKey);
-    }
-  }
-
-  return obj;
-};
-
-const keyMethod = (key, obj) => {
-  return (obj instanceof Object ? 'cac:' : 'cbc:') + key;
 }
