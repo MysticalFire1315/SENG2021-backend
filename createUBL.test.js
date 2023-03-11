@@ -1,11 +1,10 @@
 import { InvoiceModel } from "./invoice.model";
-import { InvoiceSpecification } from "./invoice.json";
 const fs = require("fs");
 const { convert } = require("xmlbuilder2");
 
 describe("test InvoiceModel createUBL", () => {
   test("Mandatory Field Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse(`
     {
       InvoiceTypeCode: 44,
@@ -67,7 +66,7 @@ describe("test InvoiceModel createUBL", () => {
   });
 
   test("Mandatory Fields >2 Decimal Place Condition", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse(`
     {
       InvoiceTypeCode: 44,
@@ -130,7 +129,7 @@ describe("test InvoiceModel createUBL", () => {
     expect(expectedObj).toStrictEqual(actualObj);
   });
   test("Optional Field Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse(`
     {
       InvoiceId: "33",
@@ -242,7 +241,7 @@ describe("test InvoiceModel createUBL", () => {
     expect(expectedObj).toStrictEqual(actualObj);
   });
   test("Multiple Invoice Line Mandatory Fields", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse(`
     {
       InvoiceTypeCode: 44,
@@ -318,7 +317,7 @@ describe("test InvoiceModel createUBL", () => {
     expect(expectedObj).toStrictEqual(actualObj);
   });
   test("Multiple Invoice Line Optional Fields", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse(`
     {
       InvoiceId: "33",

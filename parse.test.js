@@ -3,32 +3,32 @@ import { outputM, outputM2Line, outputO, outputO2Line } from './parseTestOutputs
 
 describe("test InvoiceModel parse", () => {
   test("Mandatory Field Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toStrictEqual(outputM);
   });
   test("Mandatory Fields Missing Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toThrow(Error);
   });
   test("Mandatory Fields >2 Decimal Place Condition", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toStrictEqual(outputM);
   });
   test("Optional Field Input", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toStrictEqual(outputO);
   });
   test("Multiple Invoice Line Mandatory Fields", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toStrictEqual(outputM2Line);
   });
   test("Multiple Invoice Line Optional Fields", () => {
-    const newInvoice: InvoiceModel = new InvoiceModel();
+    const newInvoice = new InvoiceModel();
     newInvoice.parse("");
     expect(newInvoice.getInvoiceData()).toStrictEqual(outputO2Line);
   });
