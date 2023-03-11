@@ -5,6 +5,7 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { Invoice } from './model/invoice.model';
+import { performance } from 'perf_hooks';
 
 @Injectable()
 export class CreationService {
@@ -17,6 +18,7 @@ export class CreationService {
   async invoiceUpload(
     file: Express.Multer.File,
   ): Promise<{ timeEstimate: number; token: string }> {
+    const startTime = performance.now();
     const invoice = {
       object: new Invoice(),
       token: 'abc', // generateToken(), // Needs implementation
@@ -30,8 +32,10 @@ export class CreationService {
     this.invoiceList.push(invoice);
 
     // TODO: Determine time estimate
+    const endTime = performance.now();
+    const timeElapse = this.invoiceList.length * (endTime - startTime);
 
-    return { timeEstimate: 1, token: invoice.token };
+    return { timeEstimate: timeElapse, token: invoice.token };
   }
 
   async invoiceDownload(token: string): Promise<StreamableFile> {
