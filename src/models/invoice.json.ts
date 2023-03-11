@@ -1,4 +1,16 @@
-export { InvoiceSpecification };
+export {
+  InvoiceSpecification,
+  Party,
+  PostalAddress,
+  Contact,
+  TaxTotal,
+  TaxSubtotal,
+  TaxCategory,
+  LegalMonetaryTotal,
+  InvoiceLineDetails,
+  InvoiceLineItem,
+  InvoiceLinePrice,
+};
 
 /**
  * Invoice specification
@@ -135,103 +147,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..2
    */
-  TaxTotal: {
-    /**
-     * The total VAT amount for the Invoice or the VAT total amount expressed in
-     * the accounting currency accepted or required in the country of the Seller.
-     * Must be rounded to maximum 2 decimals.
-     *
-     * @name TaxAmount
-     * @memberof TaxTotal
-     * @cardinality 1..1
-     */
-    TaxAmount: number;
-
-    /**
-     * A group of business terms providing information about VAT breakdown by
-     * different categories, rates and exemption reasons.
-     *
-     * @namespace TaxSubtotal
-     * @memberof TaxTotal
-     * @cardinality 0..n
-     * @optional only if another instance of `TaxTotal` already contains this
-     * field
-     */
-    TaxSubtotal?: {
-      /**
-       * Sum of all taxable amounts subject to a specific VAT category code and
-       * VAT category rate (if the VAT category rate is applicable). Must be
-       * rounded to maximum 2 decimals.
-       *
-       * @name TaxableAmount
-       * @memberof TaxSubtotal
-       * @cardinality 1..1
-       */
-      TaxableAmount: number;
-
-      /**
-       * The total VAT amount for a given VAT category. Must be rounded to
-       * maximum 2 decimals.
-       *
-       * @name TaxAmount
-       * @memberof TaxSubtotal
-       * @cardinality 1..1
-       */
-      TaxAmount: number;
-
-      /**
-       * A group of business terms providing information about the VAT category.
-       *
-       * @namespace TaxCategory
-       * @memberof TaxSubtotal
-       * @cardinality 1..1
-       */
-      TaxCategory: {
-        /**
-         * Coded identification of a VAT category.
-         *
-         * @name ID
-         * @memberof TaxCategory
-         * @cardinality 1..1
-         */
-        ID: string;
-
-        /**
-         * The VAT rate, represented as percentage that applies for the relevant
-         * VAT category.
-         *
-         * @name Percent
-         * @memberof TaxCategory
-         * @cardinality 0..1
-         * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
-         * `O` or `K`)
-         */
-        Percent?: number;
-
-        /**
-         * A textual statement of the reason why the amount is exempted from VAT
-         * or why no VAT is being charged.
-         *
-         * @name TaxExemptionReason
-         * @memberof TaxCategory
-         * @cardinality 0..1
-         * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
-         * `O` or `K`)
-         */
-        TaxExemptionReason?: string;
-
-        /**
-         * The tax scheme under which tax falls.
-         *
-         * @name TaxScheme
-         * @memberof TaxCategory
-         * @cardinality 1..1
-         * @optional defaults to `VAT`
-         */
-        TaxScheme: { ID: string };
-      };
-    };
-  }[];
+  TaxTotal: TaxTotal[];
 
   /**
    * A group of business terms providing the monetary totals for the Invoice.
@@ -240,91 +156,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  LegalMonetaryTotal: {
-    /**
-     * Sum of all Invoice line net amounts in the Invoice. Must be rounded to
-     * maximum 2 decimals.
-     *
-     * @name LineExtensionAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 1..1
-     */
-    LineExtensionAmount: number;
-
-    /**
-     * The total amount of the Invoice without VAT. Must be rounded to maximum
-     * 2 decimals.
-     *
-     * @name TaxExclusiveAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 1..1
-     */
-    TaxExclusiveAmount: number;
-
-    /**
-     * The total amount of the Invoice with VAT. Must be rounded to maximum 2
-     * decimals.
-     *
-     * @name TaxInclusiveAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 1..1
-     */
-    TaxInclusiveAmount: number;
-
-    /**
-     * Sum of all allowances on document level in the Invoice. Must be rounded
-     * to maximum 2 decimals.
-     *
-     * @name AllowanceTotalAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 0..1
-     * @optional
-     */
-    AllowanceTotalAmount?: number;
-
-    /**
-     * Sum of all charges on document level in the Invoice. Must be rounded to
-     * maximum 2 decimals.
-     *
-     * @name ChargeTotalAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 0..1
-     * @optional
-     */
-    ChargeTotalAmount?: number;
-
-    /**
-     * The sum of amounts which have been paid in advance. Must be rounded to
-     * maximum 2 decimals.
-     *
-     * @name PrepaidAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 0..1
-     * @optional
-     */
-    PrepaidAmount?: number;
-
-    /**
-     * The amount to be added to the invoice total to round the amount to be
-     * paid. Must be rounded to maximum 2 decimals.
-     *
-     * @name PayableRoundingAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 0..1
-     * @optional
-     */
-    PayableRoundingAmount?: number;
-
-    /**
-     * The outstanding amount that is requested to be paid. Must be rounded to
-     * maximum 2 decimals.
-     *
-     * @name PayableAmount
-     * @memberof LegalMonetaryTotal
-     * @cardinality 1..1
-     */
-    PayableAmount: number;
-  };
+  LegalMonetaryTotal: LegalMonetaryTotal;
 
   /**
    * A group of business terms providing information on individual Invoice
@@ -375,78 +207,7 @@ type Party = {
    * @memberof Party
    * @cardinality 1..1
    */
-  PostalAddress: {
-    /**
-     * The main address line in an address.
-     *
-     * @name StreetName
-     * @memberof PostalAddress
-     * @cardinality 0..1
-     * @optional
-     */
-    StreetName?: string;
-
-    /**
-     * An additional address line in an address that can be used to give
-     * further details supplementing the main line.
-     *
-     * @name AdditionalStreetName
-     * @memberof PostalAddress
-     * @cardinality 0..1
-     * @optional
-     */
-    AdditionalStreetName?: string;
-
-    /**
-     * The common name of the city, town or village, where the Person's address
-     * is located.
-     *
-     * @name CityName
-     * @memberof PostalAddress
-     * @cardinality 0..1
-     * @optional
-     */
-    CityName?: string;
-
-    /**
-     * The identifier for an addressable group of properties according to the
-     * relevant postal service.
-     *
-     * @name PostalZone
-     * @memberof PostalAddress
-     * @cardinality 0..1
-     * @optional
-     */
-    PostalZone?: string;
-
-    /**
-     * The subdivision of a country.
-     *
-     * @name CountrySubentity
-     * @memberof PostalAddress
-     * @cardinality 0..1
-     * @optional
-     */
-    CountrySubentity?: string;
-
-    /**
-     * The country in which the address is located.
-     *
-     * @namespace Country
-     * @memberof PostalAddress
-     * @cardinality 1..1
-     */
-    Country: {
-      /**
-       * A code that identifies the country.
-       *
-       * @name IdentificationCode
-       * @memberof Country
-       * @cardinality 1..1
-       */
-      IdentificationCode: string;
-    };
-  };
+  PostalAddress: PostalAddress;
 
   /**
    * A group of business terms providing information about the Person.
@@ -486,37 +247,300 @@ type Party = {
    * @cardinality 0..1
    * @optional
    */
-  Contact?: {
-    /**
-     * A contact point for a legal entity or person.
-     *
-     * @name Name
-     * @memberof Contact
-     * @cardinality 0..1
-     * @optional
-     */
-    Name?: string;
+  Contact?: Contact;
+};
 
-    /**
-     * A phone number for the contact point.
-     *
-     * @name Telephone
-     * @memberof Contact
-     * @cardinality 0..1
-     * @optional
-     */
-    Telephone?: number;
+type Contact = {
+  /**
+   * A contact point for a legal entity or person.
+   *
+   * @name Name
+   * @memberof Contact
+   * @cardinality 0..1
+   * @optional
+   */
+  Name?: string;
 
+  /**
+   * A phone number for the contact point.
+   *
+   * @name Telephone
+   * @memberof Contact
+   * @cardinality 0..1
+   * @optional
+   */
+  Telephone?: number;
+
+  /**
+   * An e-mail address for the contact point.
+   *
+   * @name ElectronicMail
+   * @memberof Contact
+   * @cardinality 0..1
+   * @optional
+   */
+  ElectronicMail?: string;
+};
+
+type PostalAddress = {
+  /**
+   * The main address line in an address.
+   *
+   * @name StreetName
+   * @memberof PostalAddress
+   * @cardinality 0..1
+   * @optional
+   */
+  StreetName?: string;
+
+  /**
+   * An additional address line in an address that can be used to give
+   * further details supplementing the main line.
+   *
+   * @name AdditionalStreetName
+   * @memberof PostalAddress
+   * @cardinality 0..1
+   * @optional
+   */
+  AdditionalStreetName?: string;
+
+  /**
+   * The common name of the city, town or village, where the Person's address
+   * is located.
+   *
+   * @name CityName
+   * @memberof PostalAddress
+   * @cardinality 0..1
+   * @optional
+   */
+  CityName?: string;
+
+  /**
+   * The identifier for an addressable group of properties according to the
+   * relevant postal service.
+   *
+   * @name PostalZone
+   * @memberof PostalAddress
+   * @cardinality 0..1
+   * @optional
+   */
+  PostalZone?: string;
+
+  /**
+   * The subdivision of a country.
+   *
+   * @name CountrySubentity
+   * @memberof PostalAddress
+   * @cardinality 0..1
+   * @optional
+   */
+  CountrySubentity?: string;
+
+  /**
+   * The country in which the address is located.
+   *
+   * @namespace Country
+   * @memberof PostalAddress
+   * @cardinality 1..1
+   */
+  Country: {
     /**
-     * An e-mail address for the contact point.
+     * A code that identifies the country.
      *
-     * @name ElectronicMail
-     * @memberof Contact
-     * @cardinality 0..1
-     * @optional
+     * @name IdentificationCode
+     * @memberof Country
+     * @cardinality 1..1
      */
-    ElectronicMail?: string;
+    IdentificationCode: string;
   };
+};
+
+type TaxTotal = {
+  /**
+   * The total VAT amount for the Invoice or the VAT total amount expressed in
+   * the accounting currency accepted or required in the country of the Seller.
+   * Must be rounded to maximum 2 decimals.
+   *
+   * @name TaxAmount
+   * @memberof TaxTotal
+   * @cardinality 1..1
+   */
+  TaxAmount: number;
+
+  /**
+   * A group of business terms providing information about VAT breakdown by
+   * different categories, rates and exemption reasons.
+   *
+   * @namespace TaxSubtotal
+   * @memberof TaxTotal
+   * @cardinality 0..n
+   * @optional only if another instance of `TaxTotal` already contains this
+   * field
+   */
+  TaxSubtotal?: TaxSubtotal[];
+};
+
+type TaxSubtotal = {
+  /**
+   * Sum of all taxable amounts subject to a specific VAT category code and
+   * VAT category rate (if the VAT category rate is applicable). Must be
+   * rounded to maximum 2 decimals.
+   *
+   * @name TaxableAmount
+   * @memberof TaxSubtotal
+   * @cardinality 1..1
+   */
+  TaxableAmount: number;
+
+  /**
+   * The total VAT amount for a given VAT category. Must be rounded to
+   * maximum 2 decimals.
+   *
+   * @name TaxAmount
+   * @memberof TaxSubtotal
+   * @cardinality 1..1
+   */
+  TaxAmount: number;
+
+  /**
+   * A group of business terms providing information about the VAT category.
+   *
+   * @namespace TaxCategory
+   * @memberof TaxSubtotal
+   * @cardinality 1..1
+   */
+  TaxCategory: TaxCategory;
+};
+
+type TaxCategory = {
+  /**
+   * Coded identification of a VAT category.
+   *
+   * @name ID
+   * @memberof TaxCategory
+   * @cardinality 1..1
+   */
+  ID: string;
+
+  /**
+   * The VAT rate, represented as percentage that applies for the relevant
+   * VAT category.
+   *
+   * @name Percent
+   * @memberof TaxCategory
+   * @cardinality 0..1
+   * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
+   * `O` or `K`)
+   */
+  Percent?: number;
+
+  /**
+   * A textual statement of the reason why the amount is exempted from VAT
+   * or why no VAT is being charged.
+   *
+   * @name TaxExemptionReason
+   * @memberof TaxCategory
+   * @cardinality 0..1
+   * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
+   * `O` or `K`)
+   */
+  TaxExemptionReason?: string;
+
+  /**
+   * The tax scheme under which tax falls.
+   *
+   * @name TaxScheme
+   * @memberof TaxCategory
+   * @cardinality 1..1
+   * @optional defaults to `VAT`
+   */
+  TaxScheme: { ID: string };
+};
+
+type LegalMonetaryTotal = {
+  /**
+   * Sum of all Invoice line net amounts in the Invoice. Must be rounded to
+   * maximum 2 decimals.
+   *
+   * @name LineExtensionAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 1..1
+   */
+  LineExtensionAmount: number;
+
+  /**
+   * The total amount of the Invoice without VAT. Must be rounded to maximum
+   * 2 decimals.
+   *
+   * @name TaxExclusiveAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 1..1
+   */
+  TaxExclusiveAmount: number;
+
+  /**
+   * The total amount of the Invoice with VAT. Must be rounded to maximum 2
+   * decimals.
+   *
+   * @name TaxInclusiveAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 1..1
+   */
+  TaxInclusiveAmount: number;
+
+  /**
+   * Sum of all allowances on document level in the Invoice. Must be rounded
+   * to maximum 2 decimals.
+   *
+   * @name AllowanceTotalAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 0..1
+   * @optional
+   */
+  AllowanceTotalAmount?: number;
+
+  /**
+   * Sum of all charges on document level in the Invoice. Must be rounded to
+   * maximum 2 decimals.
+   *
+   * @name ChargeTotalAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 0..1
+   * @optional
+   */
+  ChargeTotalAmount?: number;
+
+  /**
+   * The sum of amounts which have been paid in advance. Must be rounded to
+   * maximum 2 decimals.
+   *
+   * @name PrepaidAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 0..1
+   * @optional
+   */
+  PrepaidAmount?: number;
+
+  /**
+   * The amount to be added to the invoice total to round the amount to be
+   * paid. Must be rounded to maximum 2 decimals.
+   *
+   * @name PayableRoundingAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 0..1
+   * @optional
+   */
+  PayableRoundingAmount?: number;
+
+  /**
+   * The outstanding amount that is requested to be paid. Must be rounded to
+   * maximum 2 decimals.
+   *
+   * @name PayableAmount
+   * @memberof LegalMonetaryTotal
+   * @cardinality 1..1
+   */
+  PayableAmount: number;
 };
 
 /**
@@ -573,67 +597,7 @@ type InvoiceLineDetails = {
    * @memberof InvoiceLineDetails
    * @cardinality 1..1
    */
-  Item: {
-    /**
-     * A description for an item.The item description allows for describing the
-     * item and its features in more detail than the Item name.
-     *
-     * @name Description
-     * @memberof Item
-     * @cardinality 0..1
-     * @optional
-     */
-    Description?: string;
-
-    /**
-     * A name for an item.
-     *
-     * @name Name
-     * @memberof Item
-     * @cardinality 1..1
-     */
-    Name: string;
-
-    /**
-     * A group of business terms providing information about the VAT applicable
-     * for the goods and services invoiced on the Invoice line.
-     *
-     * @namespace ClassifiedTaxCategory
-     * @memberof Item
-     * @cardinality 1..1
-     */
-    ClassifiedTaxCategory: {
-      /**
-       * The VAT category code for the invoiced item.
-       *
-       * @name ID
-       * @memberof ClassifiedTaxCategory
-       * @cardinality 1..1
-       */
-      ID: string;
-
-      /**
-       * The VAT rate, represented as percentage that applies to the invoiced
-       * item.
-       *
-       * @name Percent
-       * @memberof ClassifiedTaxCategory
-       * @cardinality 0..1
-       * @optional
-       */
-      Percent?: number;
-
-      /**
-       * The tax scheme under which tax falls.
-       *
-       * @name TaxScheme
-       * @memberof ClassifiedTaxCategory
-       * @cardinality 1..1
-       * @optional defaults to `VAT`
-       */
-      TaxScheme: { ID: string };
-    };
-  };
+  Item: InvoiceLineItem;
 
   /**
    * A group of business terms providing information about the price applied
@@ -643,27 +607,93 @@ type InvoiceLineDetails = {
    * @memberof InvoiceLineDetails
    * @cardinality 1..1
    */
-  Price: {
-    /**
-     * The price of an item, exclusive of VAT, after subtracting item price
-     * discount. The Item net price has to be equal with the Item gross price
-     * less the Item price discount, if they are both provided. Item price can
-     * not be negative.
-     *
-     * @name PriceAmount
-     * @memberof Price
-     * @cardinality 1..1
-     */
-    PriceAmount: number;
+  Price: InvoiceLinePrice;
+};
 
-    /**
-     * The number of item units to which the price applies.
-     *
-     * @name BaseQuantity
-     * @memberof Price
-     * @cardinality 0..1
-     * @optional
-     */
-    BaseQuantity?: number;
-  };
+type InvoiceLineItem = {
+  /**
+   * A description for an item.The item description allows for describing the
+   * item and its features in more detail than the Item name.
+   *
+   * @name Description
+   * @memberof Item
+   * @cardinality 0..1
+   * @optional
+   */
+  Description?: string;
+
+  /**
+   * A name for an item.
+   *
+   * @name Name
+   * @memberof Item
+   * @cardinality 1..1
+   */
+  Name: string;
+
+  /**
+   * A group of business terms providing information about the VAT applicable
+   * for the goods and services invoiced on the Invoice line.
+   *
+   * @namespace ClassifiedTaxCategory
+   * @memberof Item
+   * @cardinality 1..1
+   */
+  ClassifiedTaxCategory: ItemTaxCategory;
+};
+
+type ItemTaxCategory = {
+  /**
+   * The VAT category code for the invoiced item.
+   *
+   * @name ID
+   * @memberof ClassifiedTaxCategory
+   * @cardinality 1..1
+   */
+  ID: string;
+
+  /**
+   * The VAT rate, represented as percentage that applies to the invoiced
+   * item.
+   *
+   * @name Percent
+   * @memberof ClassifiedTaxCategory
+   * @cardinality 0..1
+   * @optional
+   */
+  Percent?: number;
+
+  /**
+   * The tax scheme under which tax falls.
+   *
+   * @name TaxScheme
+   * @memberof ClassifiedTaxCategory
+   * @cardinality 1..1
+   * @optional defaults to `VAT`
+   */
+  TaxScheme: { ID: string };
+}
+
+type InvoiceLinePrice = {
+  /**
+   * The price of an item, exclusive of VAT, after subtracting item price
+   * discount. The Item net price has to be equal with the Item gross price
+   * less the Item price discount, if they are both provided. Item price can
+   * not be negative.
+   *
+   * @name PriceAmount
+   * @memberof Price
+   * @cardinality 1..1
+   */
+  PriceAmount: number;
+
+  /**
+   * The number of item units to which the price applies.
+   *
+   * @name BaseQuantity
+   * @memberof Price
+   * @cardinality 0..1
+   * @optional
+   */
+  BaseQuantity?: number;
 };
