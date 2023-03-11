@@ -1,0 +1,46 @@
+{
+  "InvoiceTypeCode": 44,
+  "InvoiceCurrency": "AUD",
+  "Supplier": {
+    "ElectronicAddress": "7300010000001",
+    "Address": {
+      "CountryCode": "AU"
+    },
+    "PersonName": "Full Formal Seller Name LTD."
+  },
+  "Buyer": {
+    "ElectronicAddress": "7300010000001",
+    "Address": {
+      "CountryCode": "AU"
+    },
+    "PersonName": "Full Formal Buyer Name LTD."
+  },
+  "TaxTotal": [
+    {
+      "TaxAmount": 100.05
+    }
+  ],
+  "LegalMonetaryTotal": {
+    "NetAmountInLines": 500.68,
+    "NetAmountWithoutTax": 500.68,
+    "NetAmountWithTax": 500.68,
+    "PayableAmount": 500.68
+  },
+  "InvoiceLine": [
+    {
+      "ID": "124124",
+      "Quantity": 5,
+      "LineNetAmount": 1000.05,
+      "Item": {
+        "Name": "Item name",
+        "TaxCategory": {
+          "ID": "5",
+          "TaxScheme": "VAT"
+        }
+      },
+      "Price": {
+        "PriceAmount": 1000.05
+      }
+    }
+  ]
+}

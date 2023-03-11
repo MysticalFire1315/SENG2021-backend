@@ -1,4 +1,4 @@
-import { InvoiceSpecification } from "./invoice.json";
+import { InvoiceSpecification } from './invoice.schema';
 // Expected output
 // const invoiceData: InvoiceSpecification = {
 //   CustomizationID?: "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
@@ -214,17 +214,17 @@ import { InvoiceSpecification } from "./invoice.json";
 
 export const outputM: InvoiceSpecification = {
   InvoiceTypeCode: 44,
-  DocumentCurrencyCode: "AUD",
+  DocumentCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
       EndpointID: 2541512,
       PostalAddress: {
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mr HD Man",
+        RegistrationName: 'Mr HD Man',
       },
     },
   },
@@ -233,11 +233,11 @@ export const outputM: InvoiceSpecification = {
       EndpointID: 14125112,
       PostalAddress: {
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mrs DN Haver",
+        RegistrationName: 'Mrs DN Haver',
       },
     },
   },
@@ -258,10 +258,10 @@ export const outputM: InvoiceSpecification = {
       InvoicedQuantity: 5,
       LineExtensionAmount: 1000.05,
       Item: {
-        Name: "HD Bestower",
+        Name: 'HD Bestower',
         ClassifiedTaxCategory: {
-          ID: "Z",
-          TaxScheme: { ID: "VAT" },
+          ID: 'Z',
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {
@@ -272,17 +272,17 @@ export const outputM: InvoiceSpecification = {
 };
 export const outputM2Line: InvoiceSpecification = {
   InvoiceTypeCode: 44,
-  DocumentCurrencyCode: "AUD",
+  DocumentCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
       EndpointID: 2541512,
       PostalAddress: {
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mr HD Man",
+        RegistrationName: 'Mr HD Man',
       },
     },
   },
@@ -291,11 +291,11 @@ export const outputM2Line: InvoiceSpecification = {
       EndpointID: 14125112,
       PostalAddress: {
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mrs DN Haver",
+        RegistrationName: 'Mrs DN Haver',
       },
     },
   },
@@ -316,10 +316,10 @@ export const outputM2Line: InvoiceSpecification = {
       InvoicedQuantity: 5,
       LineExtensionAmount: 1000.05,
       Item: {
-        Name: "HD Bestower",
+        Name: 'HD Bestower',
         ClassifiedTaxCategory: {
-          ID: "Z",
-          TaxScheme: { ID: "VAT" },
+          ID: 'Z',
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {
@@ -331,10 +331,10 @@ export const outputM2Line: InvoiceSpecification = {
       InvoicedQuantity: 1,
       LineExtensionAmount: 500,
       Item: {
-        Name: "Pocket Money",
+        Name: 'Pocket Money',
         ClassifiedTaxCategory: {
-          ID: "Z",
-          TaxScheme: { ID: "VAT" },
+          ID: 'Z',
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {
@@ -346,79 +346,81 @@ export const outputM2Line: InvoiceSpecification = {
 
 export const outputO: InvoiceSpecification = {
   CustomizationID:
-    "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
-  ProfileID: "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-  ID: "33",
-  IssueDate: "2010-11-09",
-  DueDate: "2011-01-01",
+    'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+  ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+  ID: '33',
+  IssueDate: '2010-11-09',
+  DueDate: '2011-01-01',
   InvoiceTypeCode: 44,
-  Note: "Ni Hao Ma?",
-  TaxPointDate: "2012-04-05",
-  DocumentCurrencyCode: "AUD",
-  TaxCurrencyCode: "AUD",
+  Note: 'Ni Hao Ma?',
+  TaxPointDate: '2012-04-05',
+  DocumentCurrencyCode: 'AUD',
+  TaxCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
       EndpointID: 2541512,
-      PartyName: { Name: "HD Seller" },
+      PartyName: { Name: 'HD Seller' },
       PostalAddress: {
-        StreetName: "Smith St",
-        AdditionalStreetName: "Nothing else",
-        CityName: "Sydney",
-        PostalZone: "The city",
-        CountrySubentity: "Region A",
+        StreetName: 'Smith St',
+        AdditionalStreetName: 'Nothing else',
+        CityName: 'Sydney',
+        PostalZone: 'The city',
+        CountrySubentity: 'Region A',
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mr HD Man",
+        RegistrationName: 'Mr HD Man',
         CompanyID: 1111,
       },
       Contact: {
-        Name: "Your Mother",
+        Name: 'Your Mother',
         Telephone: 61411111111,
-        ElectronicMail: "givesyouHD@gmail.com",
+        ElectronicMail: 'givesyouHD@gmail.com',
       },
     },
   },
   AccountingCustomerParty: {
     Party: {
       EndpointID: 14125112,
-      PartyName: { Name: "HD Buyer" },
+      PartyName: { Name: 'HD Buyer' },
       PostalAddress: {
-        StreetName: "SomewhereElse Ave",
-        AdditionalStreetName: "Nothing else",
-        CityName: "Sydney",
-        PostalZone: "The city",
-        CountrySubentity: "Region A",
+        StreetName: 'SomewhereElse Ave',
+        AdditionalStreetName: 'Nothing else',
+        CityName: 'Sydney',
+        PostalZone: 'The city',
+        CountrySubentity: 'Region A',
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mrs DN Haver",
+        RegistrationName: 'Mrs DN Haver',
         CompanyID: 14124,
       },
       Contact: {
-        Name: "Your Father",
+        Name: 'Your Father',
         Telephone: 61422222222,
-        ElectronicMail: "IwantHD@gmail.com",
+        ElectronicMail: 'IwantHD@gmail.com',
       },
     },
   },
   TaxTotal: [
     {
       TaxAmount: 100.05,
-      TaxSubtotal: {
-        TaxableAmount: 100.05,
-        TaxAmount: 100.05,
-        TaxCategory: {
-          ID: "S",
-          Percent: 100,
-          TaxExemptionReason: "Because i said so",
-          TaxScheme: { ID: "VAT" },
+      TaxSubtotal: [
+        {
+          TaxableAmount: 100.05,
+          TaxAmount: 100.05,
+          TaxCategory: {
+            ID: 'S',
+            Percent: 100,
+            TaxExemptionReason: 'Because i said so',
+            TaxScheme: { ID: 'VAT' },
+          },
         },
-      },
+      ],
     },
     {
       TaxAmount: 100.05,
@@ -437,16 +439,16 @@ export const outputO: InvoiceSpecification = {
   InvoiceLine: [
     {
       ID: 124124,
-      Note: "We take those",
+      Note: 'We take those',
       InvoicedQuantity: 5,
       LineExtensionAmount: 1000.05,
       Item: {
-        Description: "An HD mark",
-        Name: "HD Bestower",
+        Description: 'An HD mark',
+        Name: 'HD Bestower',
         ClassifiedTaxCategory: {
-          ID: "S",
+          ID: 'S',
           Percent: 100,
-          TaxScheme: { ID: "VAT" },
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {
@@ -458,79 +460,81 @@ export const outputO: InvoiceSpecification = {
 };
 export const outputO2Line: InvoiceSpecification = {
   CustomizationID:
-    "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
-  ProfileID: "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-  ID: "33",
-  IssueDate: "2010-11-09",
-  DueDate: "2011-01-01",
+    'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+  ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+  ID: '33',
+  IssueDate: '2010-11-09',
+  DueDate: '2011-01-01',
   InvoiceTypeCode: 44,
-  Note: "Ni Hao Ma?",
-  TaxPointDate: "2012-04-05",
-  DocumentCurrencyCode: "AUD",
-  TaxCurrencyCode: "AUD",
+  Note: 'Ni Hao Ma?',
+  TaxPointDate: '2012-04-05',
+  DocumentCurrencyCode: 'AUD',
+  TaxCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
       EndpointID: 2541512,
-      PartyName: { Name: "HD Seller" },
+      PartyName: { Name: 'HD Seller' },
       PostalAddress: {
-        StreetName: "Smith St",
-        AdditionalStreetName: "Nothing else",
-        CityName: "Sydney",
-        PostalZone: "The city",
-        CountrySubentity: "Region A",
+        StreetName: 'Smith St',
+        AdditionalStreetName: 'Nothing else',
+        CityName: 'Sydney',
+        PostalZone: 'The city',
+        CountrySubentity: 'Region A',
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mr HD Man",
+        RegistrationName: 'Mr HD Man',
         CompanyID: 1111,
       },
       Contact: {
-        Name: "Your Mother",
+        Name: 'Your Mother',
         Telephone: 61411111111,
-        ElectronicMail: "givesyouHD@gmail.com",
+        ElectronicMail: 'givesyouHD@gmail.com',
       },
     },
   },
   AccountingCustomerParty: {
     Party: {
       EndpointID: 14125112,
-      PartyName: { Name: "HD Buyer" },
+      PartyName: { Name: 'HD Buyer' },
       PostalAddress: {
-        StreetName: "SomewhereElse Ave",
-        AdditionalStreetName: "Nothing else",
-        CityName: "Sydney",
-        PostalZone: "The city",
-        CountrySubentity: "Region A",
+        StreetName: 'SomewhereElse Ave',
+        AdditionalStreetName: 'Nothing else',
+        CityName: 'Sydney',
+        PostalZone: 'The city',
+        CountrySubentity: 'Region A',
         Country: {
-          IdentificationCode: "AU",
+          IdentificationCode: 'AU',
         },
       },
       PartyLegalEntity: {
-        RegistrationName: "Mrs DN Haver",
+        RegistrationName: 'Mrs DN Haver',
         CompanyID: 14124,
       },
       Contact: {
-        Name: "Your Father",
+        Name: 'Your Father',
         Telephone: 61422222222,
-        ElectronicMail: "IwantHD@gmail.com",
+        ElectronicMail: 'IwantHD@gmail.com',
       },
     },
   },
   TaxTotal: [
     {
       TaxAmount: 100.05,
-      TaxSubtotal: {
-        TaxableAmount: 100.05,
-        TaxAmount: 100.05,
-        TaxCategory: {
-          ID: "S",
-          Percent: 100,
-          TaxExemptionReason: "Because i said so",
-          TaxScheme: { ID: "VAT" },
+      TaxSubtotal: [
+        {
+          TaxableAmount: 100.05,
+          TaxAmount: 100.05,
+          TaxCategory: {
+            ID: 'S',
+            Percent: 100,
+            TaxExemptionReason: 'Because i said so',
+            TaxScheme: { ID: 'VAT' },
+          },
         },
-      },
+      ],
     },
     {
       TaxAmount: 100.05,
@@ -549,16 +553,16 @@ export const outputO2Line: InvoiceSpecification = {
   InvoiceLine: [
     {
       ID: 124124,
-      Note: "We take those",
+      Note: 'We take those',
       InvoicedQuantity: 5,
       LineExtensionAmount: 1000.05,
       Item: {
-        Description: "An HD mark",
-        Name: "HD Bestower",
+        Description: 'An HD mark',
+        Name: 'HD Bestower',
         ClassifiedTaxCategory: {
-          ID: "S",
+          ID: 'S',
           Percent: 100,
-          TaxScheme: { ID: "VAT" },
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {
@@ -568,16 +572,16 @@ export const outputO2Line: InvoiceSpecification = {
     },
     {
       ID: 124125,
-      Note: "2nd Invoice Line",
+      Note: '2nd Invoice Line',
       InvoicedQuantity: 1,
       LineExtensionAmount: 500,
       Item: {
-        Description: "Some pocket money",
-        Name: "Pocket Money",
+        Description: 'Some pocket money',
+        Name: 'Pocket Money',
         ClassifiedTaxCategory: {
-          ID: "S",
+          ID: 'S',
           Percent: 100,
-          TaxScheme: { ID: "VAT" },
+          TaxScheme: { ID: 'VAT' },
         },
       },
       Price: {

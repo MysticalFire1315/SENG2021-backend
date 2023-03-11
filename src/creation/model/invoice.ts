@@ -579,6 +579,8 @@ export class InvoiceModel {
     const root = create({ Invoice: cloned });
     const xml = root.end({ prettyPrint: true });
 
+    console.log(xml);
+
     return xml;
   }
 }
