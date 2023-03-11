@@ -1,5 +1,5 @@
 import { InvoiceModel } from "./invoice.model";
-import { outputM, outputM2Line, outputO, outputO2Line } from './parseTestOutputs';
+import { outputM, outputM2Line, outputO, outputO2Line } from '../../../parseTestOutputs';
 
 describe("test InvoiceModel parse", () => {
   test("Mandatory Field Input", () => {
