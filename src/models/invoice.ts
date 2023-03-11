@@ -111,7 +111,7 @@ export class InvoiceModel {
         input[InvoiceModel.findKey(input, 'Address')],
       ),
       PartyLegalEntity: {
-        RegistrationName: input[InvoiceModel.findKey(input, 'SellerName')],
+        RegistrationName: input[InvoiceModel.findKey(input, 'PersonName')],
       },
     };
 
@@ -548,7 +548,7 @@ export class InvoiceModel {
       },
       {
         invoiceField: 'TaxCurrencyCode',
-        inputName: InvoiceModel.findKey(input, 'TaxCurrencyCode'),
+        inputName: InvoiceModel.findKey(input, 'TaxCurrency'),
       },
     ];
 
