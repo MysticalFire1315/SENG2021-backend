@@ -4,7 +4,7 @@ import {
   Injectable,
   StreamableFile,
 } from '@nestjs/common';
-import { InvoiceModel } from './model/invoice.model';
+import { InvoiceModel } from './model/invoice';
 
 @Injectable()
 export class CreationService {

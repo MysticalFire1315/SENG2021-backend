@@ -11,7 +11,7 @@ import {
   TaxCategoryDetails,
   TaxSubtotalDetails,
   TaxTotalDetails,
-} from 'src/creation/model/invoice.json';
+} from 'src/creation/model/invoice.schema';
 import { create } from 'xmlbuilder2';
 import dateFormat from 'dateformat';
 
