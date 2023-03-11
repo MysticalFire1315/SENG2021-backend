@@ -1,4 +1,9 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  StreamableFile,
+} from '@nestjs/common';
 import { Invoice } from './model/invoice.model';
 
 @Injectable()
@@ -31,6 +36,9 @@ export class CreationService {
 
   async invoiceDownload(token: string): Promise<StreamableFile> {
     const invoice = this.invoiceList.find((invoice) => invoice.token === token);
+    if (!invoice) {
+      throw new HttpException('Could not find invoice', HttpStatus.NOT_FOUND);
+    }
     const document = await invoice.object.createUBL();
     return new StreamableFile(Buffer.from(document));
   }
