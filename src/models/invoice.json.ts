@@ -1,15 +1,16 @@
 export {
   InvoiceSpecification,
   Party,
-  PostalAddress,
-  Contact,
-  TaxTotal,
-  TaxSubtotal,
-  TaxCategory,
-  LegalMonetaryTotal,
+  PostalAddressDetails,
+  ContactDetails,
+  TaxTotalDetails,
+  TaxSubtotalDetails,
+  TaxCategoryDetails,
+  LegalMonetaryTotalDetails,
   InvoiceLineDetails,
   InvoiceLineItem,
   InvoiceLinePrice,
+  ItemTaxCategory,
 };
 
 /**
@@ -147,7 +148,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..2
    */
-  TaxTotal: TaxTotal[];
+  TaxTotal: TaxTotalDetails[];
 
   /**
    * A group of business terms providing the monetary totals for the Invoice.
@@ -156,7 +157,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  LegalMonetaryTotal: LegalMonetaryTotal;
+  LegalMonetaryTotal: LegalMonetaryTotalDetails;
 
   /**
    * A group of business terms providing information on individual Invoice
@@ -207,7 +208,7 @@ type Party = {
    * @memberof Party
    * @cardinality 1..1
    */
-  PostalAddress: PostalAddress;
+  PostalAddress: PostalAddressDetails;
 
   /**
    * A group of business terms providing information about the Person.
@@ -247,15 +248,19 @@ type Party = {
    * @cardinality 0..1
    * @optional
    */
-  Contact?: Contact;
+  Contact?: ContactDetails;
 };
 
-type Contact = {
+/**
+ * @namespace ContactDetails
+ * @memberof Contact
+ */
+type ContactDetails = {
   /**
    * A contact point for a legal entity or person.
    *
    * @name Name
-   * @memberof Contact
+   * @memberof ContactDetails
    * @cardinality 0..1
    * @optional
    */
@@ -265,7 +270,7 @@ type Contact = {
    * A phone number for the contact point.
    *
    * @name Telephone
-   * @memberof Contact
+   * @memberof ContactDetails
    * @cardinality 0..1
    * @optional
    */
@@ -275,19 +280,23 @@ type Contact = {
    * An e-mail address for the contact point.
    *
    * @name ElectronicMail
-   * @memberof Contact
+   * @memberof ContactDetails
    * @cardinality 0..1
    * @optional
    */
   ElectronicMail?: string;
 };
 
-type PostalAddress = {
+/**
+ * @namespace PostalAddressDetails
+ * @memberof PostalAddress
+ */
+type PostalAddressDetails = {
   /**
    * The main address line in an address.
    *
    * @name StreetName
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 0..1
    * @optional
    */
@@ -298,7 +307,7 @@ type PostalAddress = {
    * further details supplementing the main line.
    *
    * @name AdditionalStreetName
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 0..1
    * @optional
    */
@@ -309,7 +318,7 @@ type PostalAddress = {
    * is located.
    *
    * @name CityName
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 0..1
    * @optional
    */
@@ -320,7 +329,7 @@ type PostalAddress = {
    * relevant postal service.
    *
    * @name PostalZone
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 0..1
    * @optional
    */
@@ -330,7 +339,7 @@ type PostalAddress = {
    * The subdivision of a country.
    *
    * @name CountrySubentity
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 0..1
    * @optional
    */
@@ -340,7 +349,7 @@ type PostalAddress = {
    * The country in which the address is located.
    *
    * @namespace Country
-   * @memberof PostalAddress
+   * @memberof PostalAddressDetails
    * @cardinality 1..1
    */
   Country: {
@@ -355,14 +364,18 @@ type PostalAddress = {
   };
 };
 
-type TaxTotal = {
+/**
+ * @namespace TaxTotalDetails
+ * @memberof TaxTotal
+ */
+type TaxTotalDetails = {
   /**
    * The total VAT amount for the Invoice or the VAT total amount expressed in
    * the accounting currency accepted or required in the country of the Seller.
    * Must be rounded to maximum 2 decimals.
    *
    * @name TaxAmount
-   * @memberof TaxTotal
+   * @memberof TaxTotalDetails
    * @cardinality 1..1
    */
   TaxAmount: number;
@@ -372,22 +385,26 @@ type TaxTotal = {
    * different categories, rates and exemption reasons.
    *
    * @namespace TaxSubtotal
-   * @memberof TaxTotal
+   * @memberof TaxTotalDetails
    * @cardinality 0..n
    * @optional only if another instance of `TaxTotal` already contains this
    * field
    */
-  TaxSubtotal?: TaxSubtotal[];
+  TaxSubtotal?: TaxSubtotalDetails[];
 };
 
-type TaxSubtotal = {
+/**
+ * @namespace TaxSubtotalDetails
+ * @memberof TaxSubtotal
+ */
+type TaxSubtotalDetails = {
   /**
    * Sum of all taxable amounts subject to a specific VAT category code and
    * VAT category rate (if the VAT category rate is applicable). Must be
    * rounded to maximum 2 decimals.
    *
    * @name TaxableAmount
-   * @memberof TaxSubtotal
+   * @memberof TaxSubtotalDetails
    * @cardinality 1..1
    */
   TaxableAmount: number;
@@ -397,7 +414,7 @@ type TaxSubtotal = {
    * maximum 2 decimals.
    *
    * @name TaxAmount
-   * @memberof TaxSubtotal
+   * @memberof TaxSubtotalDetails
    * @cardinality 1..1
    */
   TaxAmount: number;
@@ -406,18 +423,22 @@ type TaxSubtotal = {
    * A group of business terms providing information about the VAT category.
    *
    * @namespace TaxCategory
-   * @memberof TaxSubtotal
+   * @memberof TaxSubtotalDetails
    * @cardinality 1..1
    */
-  TaxCategory: TaxCategory;
+  TaxCategory: TaxCategoryDetails;
 };
 
-type TaxCategory = {
+/**
+ * @namespace TaxCategoryDetails
+ * @memberof TaxCategory
+ */
+type TaxCategoryDetails = {
   /**
    * Coded identification of a VAT category.
    *
    * @name ID
-   * @memberof TaxCategory
+   * @memberof TaxCategoryDetails
    * @cardinality 1..1
    */
   ID: string;
@@ -427,7 +448,7 @@ type TaxCategory = {
    * VAT category.
    *
    * @name Percent
-   * @memberof TaxCategory
+   * @memberof TaxCategoryDetails
    * @cardinality 0..1
    * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
    * `O` or `K`)
@@ -439,7 +460,7 @@ type TaxCategory = {
    * or why no VAT is being charged.
    *
    * @name TaxExemptionReason
-   * @memberof TaxCategory
+   * @memberof TaxCategoryDetails
    * @cardinality 0..1
    * @optional only if `ID` refers to tax exemption (is one of `E`, `G`,
    * `O` or `K`)
@@ -450,20 +471,24 @@ type TaxCategory = {
    * The tax scheme under which tax falls.
    *
    * @name TaxScheme
-   * @memberof TaxCategory
+   * @memberof TaxCategoryDetails
    * @cardinality 1..1
    * @optional defaults to `VAT`
    */
   TaxScheme: { ID: string };
 };
 
-type LegalMonetaryTotal = {
+/**
+ * @namespace LegalMonetaryTotalDetails
+ * @memberof LegalMonetaryTotal
+ */
+type LegalMonetaryTotalDetails = {
   /**
    * Sum of all Invoice line net amounts in the Invoice. Must be rounded to
    * maximum 2 decimals.
    *
    * @name LineExtensionAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
   LineExtensionAmount: number;
@@ -473,7 +498,7 @@ type LegalMonetaryTotal = {
    * 2 decimals.
    *
    * @name TaxExclusiveAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
   TaxExclusiveAmount: number;
@@ -483,7 +508,7 @@ type LegalMonetaryTotal = {
    * decimals.
    *
    * @name TaxInclusiveAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
   TaxInclusiveAmount: number;
@@ -493,7 +518,7 @@ type LegalMonetaryTotal = {
    * to maximum 2 decimals.
    *
    * @name AllowanceTotalAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 0..1
    * @optional
    */
@@ -504,7 +529,7 @@ type LegalMonetaryTotal = {
    * maximum 2 decimals.
    *
    * @name ChargeTotalAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 0..1
    * @optional
    */
@@ -515,7 +540,7 @@ type LegalMonetaryTotal = {
    * maximum 2 decimals.
    *
    * @name PrepaidAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 0..1
    * @optional
    */
@@ -526,7 +551,7 @@ type LegalMonetaryTotal = {
    * paid. Must be rounded to maximum 2 decimals.
    *
    * @name PayableRoundingAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 0..1
    * @optional
    */
@@ -537,7 +562,7 @@ type LegalMonetaryTotal = {
    * maximum 2 decimals.
    *
    * @name PayableAmount
-   * @memberof LegalMonetaryTotal
+   * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
   PayableAmount: number;
@@ -610,13 +635,17 @@ type InvoiceLineDetails = {
   Price: InvoiceLinePrice;
 };
 
+/**
+ * @namespace InvoiceLineItem
+ * @memberof Item
+ */
 type InvoiceLineItem = {
   /**
    * A description for an item.The item description allows for describing the
    * item and its features in more detail than the Item name.
    *
    * @name Description
-   * @memberof Item
+   * @memberof InvoiceLineItem
    * @cardinality 0..1
    * @optional
    */
@@ -626,7 +655,7 @@ type InvoiceLineItem = {
    * A name for an item.
    *
    * @name Name
-   * @memberof Item
+   * @memberof InvoiceLineItem
    * @cardinality 1..1
    */
   Name: string;
@@ -636,18 +665,22 @@ type InvoiceLineItem = {
    * for the goods and services invoiced on the Invoice line.
    *
    * @namespace ClassifiedTaxCategory
-   * @memberof Item
+   * @memberof InvoiceLineItem
    * @cardinality 1..1
    */
   ClassifiedTaxCategory: ItemTaxCategory;
 };
 
+/**
+ * @namespace ItemTaxCategory
+ * @memberof ClassifiedTaxCategory
+ */
 type ItemTaxCategory = {
   /**
    * The VAT category code for the invoiced item.
    *
    * @name ID
-   * @memberof ClassifiedTaxCategory
+   * @memberof ItemTaxCategory
    * @cardinality 1..1
    */
   ID: string;
@@ -657,7 +690,7 @@ type ItemTaxCategory = {
    * item.
    *
    * @name Percent
-   * @memberof ClassifiedTaxCategory
+   * @memberof ItemTaxCategory
    * @cardinality 0..1
    * @optional
    */
@@ -667,13 +700,17 @@ type ItemTaxCategory = {
    * The tax scheme under which tax falls.
    *
    * @name TaxScheme
-   * @memberof ClassifiedTaxCategory
+   * @memberof ItemTaxCategory
    * @cardinality 1..1
    * @optional defaults to `VAT`
    */
   TaxScheme: { ID: string };
 };
 
+/**
+ * @namespace InvoiceLinePrice
+ * @memberof Price
+ */
 type InvoiceLinePrice = {
   /**
    * The price of an item, exclusive of VAT, after subtracting item price
@@ -682,7 +719,7 @@ type InvoiceLinePrice = {
    * not be negative.
    *
    * @name PriceAmount
-   * @memberof Price
+   * @memberof InvoiceLinePrice
    * @cardinality 1..1
    */
   PriceAmount: number;
@@ -691,7 +728,7 @@ type InvoiceLinePrice = {
    * The number of item units to which the price applies.
    *
    * @name BaseQuantity
-   * @memberof Price
+   * @memberof InvoiceLinePrice
    * @cardinality 0..1
    * @optional
    */

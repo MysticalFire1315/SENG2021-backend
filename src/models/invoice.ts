@@ -1,15 +1,16 @@
 import {
-  Contact,
+  ContactDetails,
   InvoiceLineDetails,
   InvoiceLineItem,
   InvoiceLinePrice,
   InvoiceSpecification,
-  LegalMonetaryTotal,
+  ItemTaxCategory,
+  LegalMonetaryTotalDetails,
   Party,
-  PostalAddress,
-  TaxCategory,
-  TaxSubtotal,
-  TaxTotal,
+  PostalAddressDetails,
+  TaxCategoryDetails,
+  TaxSubtotalDetails,
+  TaxTotalDetails,
 } from 'src/models/invoice.json';
 import { create } from 'xmlbuilder2';
 import dateFormat from 'dateformat';
@@ -75,12 +76,33 @@ export class InvoiceModel {
     return (value instanceof Object ? 'cac:' : 'cbc:') + key;
   }
 
+  /**
+   * Finds the key in the given object matching a given key by stripping all
+   * non-alphabets from the object's key and checking if it matches in
+   * lowercase.
+   *
+   * @private
+   * @static
+   * @param {object} obj The object whose key to find.
+   * @param {string} key The key to match against.
+   * @memberof InvoiceModel
+   */
   private static findKey = (obj: object, key: string): string => {
     return Object.keys(obj).find(
-      (objKey) => objKey.replace(/[0-9]\s/g, '').toLowerCase() === key,
+      (objKey) =>
+        objKey.replace(/[^a-z]/gi, '').toLowerCase() === key.toLowerCase(),
     );
   };
 
+  /**
+   * Parse raw input data as a `Party`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `Party` object corresponding to the UBL invoice specifications.
+   * @memberof InvoiceModel
+   */
   private static parseParty(input: object): Party {
     // Parse compulsory fields
     const parsed: Party = {
@@ -112,9 +134,19 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parsePostalAddress(input: object): PostalAddress {
+  /**
+   * Parse raw input data as a `PostalAddress`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `PostalAddress` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parsePostalAddress(input: object): PostalAddressDetails {
     // Parse compulsory fields
-    const parsed: PostalAddress = {
+    const parsed: PostalAddressDetails = {
       Country: {
         IdentificationCode: input[InvoiceModel.findKey(input, 'CountryCode')],
       },
@@ -153,8 +185,18 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parseContact(input: object): Contact {
-    const parsed: Contact = {};
+  /**
+   * Parse raw input data as a `Contact`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `Contact` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseContact(input: object): ContactDetails {
+    const parsed: ContactDetails = {};
 
     const optionalKeys = [
       {
@@ -180,11 +222,21 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parseTaxTotal(input: object[]): TaxTotal[] {
-    const parsed: TaxTotal[] = [];
+  /**
+   * Parse raw input data as a `TaxTotal`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `TaxTotal` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseTaxTotal(input: object[]): TaxTotalDetails[] {
+    const parsed: TaxTotalDetails[] = [];
     // Can have 1-2 instances
     for (let i = 0; i < (input.length == 1 ? 1 : 2); i++) {
-      const parsedTax: TaxTotal = {
+      const parsedTax: TaxTotalDetails = {
         TaxAmount: input[i][InvoiceModel.findKey(input[i], 'TaxAmount')],
       };
 
@@ -201,10 +253,20 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parseTaxSubtotal(input: object[]): TaxSubtotal[] {
-    const parsed: TaxSubtotal[] = [];
+  /**
+   * Parse raw input data as a `TaxSubtotal`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `TaxSubtotal` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseTaxSubtotal(input: object[]): TaxSubtotalDetails[] {
+    const parsed: TaxSubtotalDetails[] = [];
     input.forEach((item) => {
-      const parsedTax: TaxSubtotal = {
+      const parsedTax: TaxSubtotalDetails = {
         TaxableAmount: item[InvoiceModel.findKey(item, 'TaxableAmount')],
         TaxAmount: item[InvoiceModel.findKey(item, 'TaxAmount')],
         TaxCategory: InvoiceModel.parseTaxCategory(
@@ -218,8 +280,18 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parseTaxCategory(input: object): TaxCategory {
-    const parsed: TaxCategory = {
+  /**
+   * Parse raw input data as a `TaxCategory`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `TaxCategory` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseTaxCategory(input: object): TaxCategoryDetails {
+    const parsed: TaxCategoryDetails = {
       ID: input[InvoiceModel.findKey(input, 'ID')],
       TaxScheme: {
         ID: input[InvoiceModel.findKey(input, 'TaxScheme')],
@@ -246,8 +318,20 @@ export class InvoiceModel {
     return parsed;
   }
 
-  private static parseLegalMonetaryTotal(input: object): LegalMonetaryTotal {
-    const parsed: LegalMonetaryTotal = {
+  /**
+   * Parse raw input data as a `LegalMonetaryTotal`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `LegalMonetaryTotal` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseLegalMonetaryTotal(
+    input: object,
+  ): LegalMonetaryTotalDetails {
+    const parsed: LegalMonetaryTotalDetails = {
       LineExtensionAmount:
         input[InvoiceModel.findKey(input, 'NetAmountInLines')],
       TaxExclusiveAmount:
@@ -285,6 +369,16 @@ export class InvoiceModel {
     return parsed;
   }
 
+  /**
+   * Parse raw input data as a `InvoiceLine`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `InvoiceLine` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
   private static parseInvoiceLine(input: object[]): InvoiceLineDetails[] {
     if (input.length < 1) {
       throw new Error('Must have at least one invoice line');
@@ -315,10 +409,19 @@ export class InvoiceModel {
     return parsed;
   }
 
+  /**
+   * Parse raw input data as an `Item` inside an `InvoiceLine`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `Item` object corresponding to the UBL invoice specifications.
+   * @memberof InvoiceModel
+   */
   private static parseInvoiceLineItem(input: object): InvoiceLineItem {
     const parsed: InvoiceLineItem = {
       Name: input[InvoiceModel.findKey(input, 'Name')],
-      ClassifiedTaxCategory: InvoiceModel.parseTaxCategory(
+      ClassifiedTaxCategory: InvoiceModel.parseItemTaxCategory(
         input[InvoiceModel.findKey(input, 'TaxCategory')],
       ),
     };
@@ -331,6 +434,15 @@ export class InvoiceModel {
     return parsed;
   }
 
+  /**
+   * Parse raw input data as a `Price` inside an `InvoiceLine`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `Price` object corresponding to the UBL invoice specifications.
+   * @memberof InvoiceModel
+   */
   private static parseInvoiceLinePrice(input: object): InvoiceLinePrice {
     const parsed: InvoiceLinePrice = {
       PriceAmount: input[InvoiceModel.findKey(input, 'Amount')],
@@ -339,6 +451,32 @@ export class InvoiceModel {
     const optionalKey = InvoiceModel.findKey(input, 'Quantity');
     if (optionalKey) {
       parsed.BaseQuantity = input[optionalKey];
+    }
+
+    return parsed;
+  }
+
+  /**
+   * Parse raw input data as a `TaxCategory` inside an `Item`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `TaxCategory` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private static parseItemTaxCategory(input: object): ItemTaxCategory {
+    const parsed: ItemTaxCategory = {
+      ID: input[InvoiceModel.findKey(input, 'ID')],
+      TaxScheme: {
+        ID: input[InvoiceModel.findKey(input, 'TaxScheme')],
+      },
+    };
+
+    const optionalKey = InvoiceModel.findKey(input, 'Percent');
+    if (optionalKey) {
+      parsed.Percent = input[optionalKey];
     }
 
     return parsed;
