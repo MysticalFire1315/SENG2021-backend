@@ -48,7 +48,7 @@ type InvoiceSpecification = {
    * @cardinality 1..1
    * @optional defaults to a randomly generated sequence of digits
    */
-  ID?: number;
+  ID?: string;
 
   /**
    * The date when the Invoice was issued. Format "YYYY-MM-DD".
@@ -134,11 +134,11 @@ type InvoiceSpecification = {
   /**
    * A group of business terms providing information about the Buyer.
    *
-   * @namespace AccountingBuyerParty
+   * @namespace AccountingCustomerParty
    * @memberof Invoice
    * @cardinality 1..1
    */
-  AccountingBuyerParty: { Party: Party };
+  AccountingCustomerParty: { Party: Party };
 
   /**
    * When tax currency code is provided, two instances of the tax total must be
