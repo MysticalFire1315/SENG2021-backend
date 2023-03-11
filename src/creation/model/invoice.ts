@@ -13,7 +13,7 @@ import {
   TaxTotalDetails,
 } from 'src/creation/model/invoice.schema';
 import { create } from 'xmlbuilder2';
-import dateFormat from 'dateformat';
+import { format } from 'date-fns';
 
 export class InvoiceModel {
   // Attributes
@@ -501,7 +501,7 @@ export class InvoiceModel {
           input[InvoiceModel.findKey(input, 'Supplier')],
         ),
       },
-      AccountingBuyerParty: {
+      AccountingCustomerParty: {
         Party: InvoiceModel.parseParty(
           input[InvoiceModel.findKey(input, 'Buyer')],
         ),
@@ -569,7 +569,7 @@ export class InvoiceModel {
     const cloned = {
       ...InvoiceModel.invoiceDefaults,
       ID: 1, // generate unique id here
-      IssueDate: dateFormat('isoDate'),
+      IssueDate: format(new Date(), 'yyyy-MM-dd'),
       ...JSON.parse(JSON.stringify(this.invoiceData)),
     };
     // Replace keys in clone with the UBL formatted xml field names
@@ -578,8 +578,6 @@ export class InvoiceModel {
     // Create the xml document
     const root = create({ Invoice: cloned });
     const xml = root.end({ prettyPrint: true });
-
-    console.log(xml); // for debugging
 
     return xml;
   }
