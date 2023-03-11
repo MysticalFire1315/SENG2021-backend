@@ -350,14 +350,7 @@ export class InvoiceModel {
    * @param {string} invoiceString - A JSON string of the invoice.
    */
   public async parse(invoiceString: string): Promise<void> {
-    const {
-      Supplier,
-      Buyer,
-      TaxTotal,
-      LegalMonetaryTotal,
-      InvoiceLine,
-      ...input
-    } = JSON.parse(invoiceString);
+    const input = JSON.parse(invoiceString);
 
     // fix party stuff (Supplier, Buyer)
 
@@ -365,12 +358,16 @@ export class InvoiceModel {
       InvoiceTypeCode: input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
       DocumentCurrencyCode:
         input[InvoiceModel.findKey(input, 'InvoiceCurrency')],
-      AccountingSupplierParty: InvoiceModel.parseParty(
-        input[InvoiceModel.findKey(input, 'Supplier')],
-      ),
-      AccountingBuyerParty: InvoiceModel.parseParty(
-        input[InvoiceModel.findKey(input, 'Buyer')],
-      ),
+      AccountingSupplierParty: {
+        Party: InvoiceModel.parseParty(
+          input[InvoiceModel.findKey(input, 'Supplier')],
+        ),
+      },
+      AccountingBuyerParty: {
+        Party: InvoiceModel.parseParty(
+          input[InvoiceModel.findKey(input, 'Buyer')],
+        ),
+      },
       TaxTotal: InvoiceModel.parseTaxTotal(
         input[InvoiceModel.findKey(input, 'TaxTotal')],
       ),
