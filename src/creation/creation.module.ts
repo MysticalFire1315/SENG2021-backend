@@ -4,6 +4,6 @@ import { CreationService } from './creation.service';
 
 @Module({
   controllers: [CreationController],
-  providers: [CreationService]
+  providers: [CreationService],
 })
 export class CreationModule {}
