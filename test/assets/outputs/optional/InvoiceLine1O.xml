@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+  xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>33445566</cbc:ID>
+  <cbc:IssueDate>2017-11-01</cbc:IssueDate>
+  <cbc:DueDate>2017-11-02</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>Please note our new phone number 33 44 55 66</cbc:Note>
+  <cbc:TaxPointDate>2017-11-01</cbc:TaxPointDate>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:TaxCurrencyCode>AUD</cbc:TaxCurrencyCode>
+
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">7300010000001</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Seller Business Name AS</cbc:Name>
+      </cac:PartyName>
+
+      <cac:PostalAddress>
+        <cbc:StreetName>Main Street 1</cbc:StreetName>
+        <cbc:AdditionalStreetName>Po Box 351</cbc:AdditionalStreetName>
+        <cbc:CityName>London</cbc:CityName>
+        <cbc:PostalZone>2154</cbc:PostalZone>
+        <cbc:CountrySubentity>Region A</cbc:CountrySubentity>
+        <cac:Country>
+          <cbc:IdentificationCode>GB</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Full Formal Seller Name LTD.</cbc:RegistrationName>
+        <cbc:CompanyID>987654321</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+
+      <cac:Contact>
+        <cbc:Name>xyz123</cbc:Name>
+        <cbc:Telephone>887 654 321</cbc:Telephone>
+        <cbc:ElectronicMail>test.name@foo.bar</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">7300010000001</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Buyer Business Name AS</cbc:Name>
+      </cac:PartyName>
+
+      <cac:PostalAddress>
+        <cbc:StreetName>Main Street 1</cbc:StreetName>
+        <cbc:AdditionalStreetName>Po Box 351</cbc:AdditionalStreetName>
+        <cbc:CityName>London</cbc:CityName>
+        <cbc:PostalZone>2154</cbc:PostalZone>
+        <cbc:CountrySubentity>Region A</cbc:CountrySubentity>
+        <cac:Country>
+          <cbc:IdentificationCode>GB</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Full Formal Buyer Name LTD.</cbc:RegistrationName>
+        <cbc:CompanyID>987654321</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+
+      <cac:Contact>
+        <cbc:Name>xyz123</cbc:Name>
+        <cbc:Telephone>887 654 321</cbc:Telephone>
+        <cbc:ElectronicMail>test.name@foo.bar</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="AUD">486.25</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="AUD">1945.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="AUD">486.25</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>25.00</cbc:Percent>
+        <cbc:TaxExemptionReason>Exempt</cbc:TaxExemptionReason>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="AUD">3800.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="AUD">3600.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="AUD">4500.00</cbc:TaxInclusiveAmount>
+    <cbc:AllowanceTotalAmount currencyID="AUD">200.00</cbc:AllowanceTotalAmount>
+    <cbc:ChargeTotalAmount currencyID="AUD">0.00</cbc:ChargeTotalAmount>
+    <cbc:PrepaidAmount currencyID="AUD">1000.00</cbc:PrepaidAmount>
+    <cbc:PayableRoundingAmount currencyID="AUD">0.00</cbc:PayableRoundingAmount>
+    <cbc:PayableAmount currencyID="AUD">3500.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+
+  <cac:InvoiceLine>
+    <cbc:ID>12</cbc:ID>
+    <cbc:Note>New article number 12345</cbc:Note>
+    <cbc:InvoicedQuantity unitCode="C62">100.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="AUD">2145.00</cbc:LineExtensionAmount>
+
+    <cac:Item>
+      <cbc:Description>Long description of the item on the invoice line</cbc:Description>
+      <cbc:Name>Item name</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>25.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+
+    <cac:Price>
+      <cbc:PriceAmount currencyID="AUD">23.45</cbc:PriceAmount>
+      <cbc:BaseQuantity unitCode="C62">1.00</cbc:BaseQuantity>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
