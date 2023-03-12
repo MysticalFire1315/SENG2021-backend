@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Header,
+  HttpException,
+  HttpStatus,
   Post,
   Query,
   UploadedFile,
@@ -20,7 +22,6 @@ export class CreationController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     const output = await this.creationService.invoiceUpload(file);
-
     return output;
   }
 
@@ -28,7 +29,11 @@ export class CreationController {
   @Header('Content-Type', 'application/json')
   @Header('Content-Disposition', 'attachment; filename="package.json"')
   async downloadFile(@Query('token') token: string) {
-    const output = await this.creationService.invoiceDownload(token);
-    return output;
+    try {
+      const output = await this.creationService.invoiceDownload(token);
+      return output;
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

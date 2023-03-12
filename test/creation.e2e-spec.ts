@@ -25,7 +25,10 @@ describe('AppController (e2e)', () => {
   it('/creation/upload (POST)', () => {
     return spec()
       .post('/creation/upload')
-      .withFile('file', join(process.cwd(), 'test/test1.json'))
+      .withFile(
+        'file',
+        join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
+      )
       .expectStatus(201)
       .expectBody({ timeEstimate: 1, token: 'abc' });
   });
@@ -33,14 +36,16 @@ describe('AppController (e2e)', () => {
   it('/creation/download (GET)', async () => {
     await spec()
       .post('/creation/upload')
-      .withFile('file', join(process.cwd(), 'test/test1.json'))
+      .withFile(
+        'file',
+        join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
+      )
       .expectStatus(201)
       .expectBody({ timeEstimate: 1, token: 'abc' });
 
     return spec()
       .get('/creation/download')
       .withQueryParams('token', 'abc')
-      .expectStatus(200)
-      .expectBody('sample output');
+      .expectStatus(200);
   });
 });

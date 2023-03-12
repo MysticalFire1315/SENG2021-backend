@@ -4,12 +4,12 @@ import {
   Injectable,
   StreamableFile,
 } from '@nestjs/common';
-import { Invoice } from './model/invoice.model';
+import { InvoiceModel } from './model/invoice';
 
 @Injectable()
 export class CreationService {
   private invoiceList: {
-    object: Invoice;
+    object: InvoiceModel;
     token: string;
     inUse: boolean;
   }[] = [];
@@ -18,7 +18,7 @@ export class CreationService {
     file: Express.Multer.File,
   ): Promise<{ timeEstimate: number; token: string }> {
     const invoice = {
-      object: new Invoice(),
+      object: new InvoiceModel(),
       token: 'abc', // generateToken(), // Needs implementation
       inUse: true,
     };
