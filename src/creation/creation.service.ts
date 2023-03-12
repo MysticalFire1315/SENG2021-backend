@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { InvoiceModel } from './model/invoice';
 
+const INVOICE_PROCESS_TIME = 1500;
+
 @Injectable()
 export class CreationService {
   private invoiceList: {
@@ -14,12 +16,17 @@ export class CreationService {
     inUse: boolean;
   }[] = [];
 
+  /**
+   * Uploads an invoice
+   * @param file A file to be processed
+   * @returns A timeEstimate of time taken to process in milliseconds and generated token string
+   */
   async invoiceUpload(
     file: Express.Multer.File,
   ): Promise<{ timeEstimate: number; token: string }> {
     const invoice = {
       object: new InvoiceModel(),
-      token: 'abc', // generateToken(), // Needs implementation
+      token: 'abc',
       inUse: true,
     };
 
@@ -28,12 +35,20 @@ export class CreationService {
     });
 
     this.invoiceList.push(invoice);
-
-    // TODO: Determine time estimate
-
-    return { timeEstimate: 1, token: invoice.token };
+    const processingInvoices = this.invoiceList.filter(
+      (invoice) => invoice.inUse === true,
+    );
+    return {
+      timeEstimate: INVOICE_PROCESS_TIME * processingInvoices.length,
+      token: invoice.token,
+    };
   }
 
+  /**
+   * Produces a UBL XML formatted E-invoice
+   * @param token A unique token corresponding to an E-invoice
+   * @returns A streamable file
+   */
   async invoiceDownload(token: string): Promise<StreamableFile> {
     const invoice = this.invoiceList.find((invoice) => invoice.token === token);
     if (!invoice) {
