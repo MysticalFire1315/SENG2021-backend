@@ -18,11 +18,13 @@ import { format } from 'date-fns';
 export class InvoiceModel {
   // Attributes
   private _invoiceData: InvoiceSpecification;
+  private currencyId = 'AUD';
   public static invoiceDefaults = {
     CustomizationID:
       'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
     ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
   };
+  public static literals = ['@', '#'];
 
   public get invoiceData(): InvoiceSpecification {
     return this._invoiceData;
@@ -73,7 +75,37 @@ export class InvoiceModel {
    * @memberof InvoiceModel
    */
   private static keyMethod(value: object, key: string): string {
-    return (value instanceof Object ? 'cac:' : 'cbc:') + key;
+    let prefix = '';
+    if (value instanceof Object) {
+      prefix = 'cac:';
+    } else if (!InvoiceModel.literals.includes(key.charAt(0))) {
+      prefix = 'cbc:';
+    }
+
+    if (InvoiceModel.literals.includes(key.charAt(0))) {
+      prefix = '';
+    } else if (!(value instanceof Object)) {
+      prefix = 'cbc:';
+    } else if (
+      Object.keys(value).find((objKey) =>
+        InvoiceModel.literals.includes(objKey.charAt(0)),
+      )
+    ) {
+      prefix = 'cbc:';
+    } else {
+      prefix = 'cac:';
+    }
+    return prefix + key;
+  }
+
+  private static fixAllDecimals(obj: object) {
+    Object.keys(obj).forEach((key) => {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        this.fixAllDecimals(obj[key]);
+      } else if (typeof obj[key] === 'number' && obj[key] !== null) {
+        obj[key] = obj[key].toFixed(2);
+      }
+    });
   }
 
   /**
@@ -103,7 +135,7 @@ export class InvoiceModel {
    * @return The `Party` object corresponding to the UBL invoice specifications.
    * @memberof InvoiceModel
    */
-  private static parseParty(input: object): Party {
+  private parseParty(input: object): Party {
     // Parse compulsory fields
     const parsed: Party = {
       EndpointID: {
@@ -111,7 +143,7 @@ export class InvoiceModel {
           input[InvoiceModel.findKey(input, 'ElectronicAddressScheme')],
         '#': input[InvoiceModel.findKey(input, 'ElectronicAddress')],
       },
-      PostalAddress: InvoiceModel.parsePostalAddress(
+      PostalAddress: this.parsePostalAddress(
         input[InvoiceModel.findKey(input, 'Address')],
       ),
       PartyLegalEntity: {
@@ -132,7 +164,7 @@ export class InvoiceModel {
     }
     const contactKey = InvoiceModel.findKey(input, 'ContactInfo');
     if (contactKey) {
-      parsed.Contact = InvoiceModel.parseContact(input[contactKey]);
+      parsed.Contact = this.parseContact(input[contactKey]);
     }
 
     return parsed;
@@ -148,7 +180,7 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parsePostalAddress(input: object): PostalAddressDetails {
+  private parsePostalAddress(input: object): PostalAddressDetails {
     // Parse compulsory fields
     const parsed: PostalAddressDetails = {
       Country: {
@@ -199,7 +231,7 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseContact(input: object): ContactDetails {
+  private parseContact(input: object): ContactDetails {
     const parsed: ContactDetails = {};
 
     const optionalKeys = [
@@ -236,23 +268,20 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseTaxTotal(input: object[]): TaxTotalDetails[] {
+  private parseTaxTotal(input: object[]): TaxTotalDetails[] {
     const parsed: TaxTotalDetails[] = [];
     // Can have 1-2 instances
     for (let i = 0; i < (input.length == 1 ? 1 : 2); i++) {
       const parsedTax: TaxTotalDetails = {
         TaxAmount: {
-          '@currencyID':
-            input[i][InvoiceModel.findKey(input, 'TaxAmountCurrency')],
+          '@currencyID': this.currencyId,
           '#': input[i][InvoiceModel.findKey(input[i], 'TaxAmount')],
         },
       };
 
       const taxSubtotalKey = InvoiceModel.findKey(input[i], 'TaxSubtotal');
       if (taxSubtotalKey) {
-        parsedTax.TaxSubtotal = InvoiceModel.parseTaxSubtotal(
-          input[i][taxSubtotalKey],
-        );
+        parsedTax.TaxSubtotal = this.parseTaxSubtotal(input[i][taxSubtotalKey]);
       }
 
       parsed.push(parsedTax);
@@ -271,13 +300,19 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseTaxSubtotal(input: object[]): TaxSubtotalDetails[] {
+  private parseTaxSubtotal(input: object[]): TaxSubtotalDetails[] {
     const parsed: TaxSubtotalDetails[] = [];
     input.forEach((item) => {
       const parsedTax: TaxSubtotalDetails = {
-        TaxableAmount: item[InvoiceModel.findKey(item, 'TaxableAmount')],
-        TaxAmount: item[InvoiceModel.findKey(item, 'TaxAmount')],
-        TaxCategory: InvoiceModel.parseTaxCategory(
+        TaxableAmount: {
+          '@currencyID': this.currencyId,
+          '#': item[InvoiceModel.findKey(item, 'TaxableAmount')],
+        },
+        TaxAmount: {
+          '@currencyID': this.currencyId,
+          '#': item[InvoiceModel.findKey(item, 'TaxAmount')],
+        },
+        TaxCategory: this.parseTaxCategory(
           item[InvoiceModel.findKey(item, 'TaxCategory')],
         ),
       };
@@ -298,7 +333,7 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseTaxCategory(input: object): TaxCategoryDetails {
+  private parseTaxCategory(input: object): TaxCategoryDetails {
     const parsed: TaxCategoryDetails = {
       ID: input[InvoiceModel.findKey(input, 'ID')],
       TaxScheme: {
@@ -336,17 +371,24 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseLegalMonetaryTotal(
-    input: object,
-  ): LegalMonetaryTotalDetails {
+  private parseLegalMonetaryTotal(input: object): LegalMonetaryTotalDetails {
     const parsed: LegalMonetaryTotalDetails = {
-      LineExtensionAmount:
-        input[InvoiceModel.findKey(input, 'NetAmountInLines')],
-      TaxExclusiveAmount:
-        input[InvoiceModel.findKey(input, 'NetAmountWithoutTax')],
-      TaxInclusiveAmount:
-        input[InvoiceModel.findKey(input, 'NetAmountWithTax')],
-      PayableAmount: input[InvoiceModel.findKey(input, 'PayableAmount')],
+      LineExtensionAmount: {
+        '@currencyID': this.currencyId,
+        '#': input[InvoiceModel.findKey(input, 'NetAmountInLines')],
+      },
+      TaxExclusiveAmount: {
+        '@currencyID': this.currencyId,
+        '#': input[InvoiceModel.findKey(input, 'NetAmountWithoutTax')],
+      },
+      TaxInclusiveAmount: {
+        '@currencyID': this.currencyId,
+        '#': input[InvoiceModel.findKey(input, 'NetAmountWithTax')],
+      },
+      PayableAmount: {
+        '@currencyID': this.currencyId,
+        '#': input[InvoiceModel.findKey(input, 'PayableAmount')],
+      },
     };
 
     const optionalKeys = [
@@ -370,7 +412,10 @@ export class InvoiceModel {
 
     optionalKeys.forEach(({ invoiceField, inputName }) => {
       if (inputName) {
-        parsed[invoiceField] = input[inputName];
+        parsed[invoiceField] = {
+          '@currencyID': this.currencyId,
+          '#': input[inputName],
+        };
       }
     });
 
@@ -387,7 +432,7 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseInvoiceLine(input: object[]): InvoiceLineDetails[] {
+  private parseInvoiceLine(input: object[]): InvoiceLineDetails[] {
     if (input.length < 1) {
       throw new Error('Must have at least one invoice line');
     }
@@ -396,12 +441,18 @@ export class InvoiceModel {
     input.forEach((item) => {
       const parsedItem: InvoiceLineDetails = {
         ID: item[InvoiceModel.findKey(item, 'ID')],
-        InvoicedQuantity: item[InvoiceModel.findKey(item, 'Quantity')],
-        LineExtensionAmount: item[InvoiceModel.findKey(item, 'LineNetAmount')],
-        Item: InvoiceModel.parseInvoiceLineItem(
+        InvoicedQuantity: {
+          '@unitCode': item[InvoiceModel.findKey(item, 'QuantityUnitCode')],
+          '#': item[InvoiceModel.findKey(item, 'Quantity')],
+        },
+        LineExtensionAmount: {
+          '@currencyID': this.currencyId,
+          '#': item[InvoiceModel.findKey(item, 'LineNetAmount')],
+        },
+        Item: this.parseInvoiceLineItem(
           item[InvoiceModel.findKey(item, 'Item')],
         ),
-        Price: InvoiceModel.parseInvoiceLinePrice(
+        Price: this.parseInvoiceLinePrice(
           item[InvoiceModel.findKey(item, 'Price')],
         ),
       };
@@ -426,10 +477,10 @@ export class InvoiceModel {
    * @return The `Item` object corresponding to the UBL invoice specifications.
    * @memberof InvoiceModel
    */
-  private static parseInvoiceLineItem(input: object): InvoiceLineItem {
+  private parseInvoiceLineItem(input: object): InvoiceLineItem {
     const parsed: InvoiceLineItem = {
       Name: input[InvoiceModel.findKey(input, 'Name')],
-      ClassifiedTaxCategory: InvoiceModel.parseItemTaxCategory(
+      ClassifiedTaxCategory: this.parseItemTaxCategory(
         input[InvoiceModel.findKey(input, 'TaxCategory')],
       ),
     };
@@ -451,14 +502,20 @@ export class InvoiceModel {
    * @return The `Price` object corresponding to the UBL invoice specifications.
    * @memberof InvoiceModel
    */
-  private static parseInvoiceLinePrice(input: object): InvoiceLinePrice {
+  private parseInvoiceLinePrice(input: object): InvoiceLinePrice {
     const parsed: InvoiceLinePrice = {
-      PriceAmount: input[InvoiceModel.findKey(input, 'Amount')],
+      PriceAmount: {
+        '@currencyID': this.currencyId,
+        '#': input[InvoiceModel.findKey(input, 'Amount')],
+      },
     };
 
     const optionalKey = InvoiceModel.findKey(input, 'Quantity');
     if (optionalKey) {
-      parsed.BaseQuantity = input[optionalKey];
+      parsed.BaseQuantity = {
+        '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],
+        '#': input[optionalKey],
+      };
     }
 
     return parsed;
@@ -474,7 +531,7 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private static parseItemTaxCategory(input: object): ItemTaxCategory {
+  private parseItemTaxCategory(input: object): ItemTaxCategory {
     const parsed: ItemTaxCategory = {
       ID: input[InvoiceModel.findKey(input, 'ID')],
       TaxScheme: {
@@ -498,29 +555,26 @@ export class InvoiceModel {
   public async parse(invoiceString: string): Promise<void> {
     const input = JSON.parse(invoiceString);
 
-    // fix party stuff (Supplier, Buyer)
+    this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 
     this._invoiceData = {
-      InvoiceTypeCode: input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
-      DocumentCurrencyCode:
-        input[InvoiceModel.findKey(input, 'InvoiceCurrency')],
+      InvoiceTypeCode: String(
+        input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
+      ),
+      DocumentCurrencyCode: this.currencyId,
       AccountingSupplierParty: {
-        Party: InvoiceModel.parseParty(
-          input[InvoiceModel.findKey(input, 'Supplier')],
-        ),
+        Party: this.parseParty(input[InvoiceModel.findKey(input, 'Supplier')]),
       },
       AccountingCustomerParty: {
-        Party: InvoiceModel.parseParty(
-          input[InvoiceModel.findKey(input, 'Buyer')],
-        ),
+        Party: this.parseParty(input[InvoiceModel.findKey(input, 'Buyer')]),
       },
-      TaxTotal: InvoiceModel.parseTaxTotal(
+      TaxTotal: this.parseTaxTotal(
         input[InvoiceModel.findKey(input, 'TaxTotal')],
       ),
-      LegalMonetaryTotal: InvoiceModel.parseLegalMonetaryTotal(
+      LegalMonetaryTotal: this.parseLegalMonetaryTotal(
         input[InvoiceModel.findKey(input, 'LegalMonetaryTotal')],
       ),
-      InvoiceLine: InvoiceModel.parseInvoiceLine(
+      InvoiceLine: this.parseInvoiceLine(
         input[InvoiceModel.findKey(input, 'InvoiceLine')],
       ),
     };
@@ -582,6 +636,8 @@ export class InvoiceModel {
     };
     // Replace keys in clone with the UBL formatted xml field names
     InvoiceModel.replaceAllObjKeys(cloned, InvoiceModel.keyMethod);
+    // Fix all numerical values to 2 decimal places
+    InvoiceModel.fixAllDecimals(cloned);
 
     // Create the xml document
     const root = create(
@@ -598,8 +654,6 @@ export class InvoiceModel {
       },
     );
     const xml = root.end({ prettyPrint: true });
-
-    console.log(xml);
 
     return xml;
   }
