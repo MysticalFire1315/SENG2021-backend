@@ -49,6 +49,7 @@ describe('CreationService', () => {
         service
           .invoiceUpload(
             toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+            'json',
           )
           .then((value) => {
             expect(value).toStrictEqual({
@@ -62,6 +63,7 @@ describe('CreationService', () => {
     it('Tokens should be different', async () => {
       const output1 = await service.invoiceUpload(
         toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+        'json',
       );
       expect(output1).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -71,6 +73,7 @@ describe('CreationService', () => {
 
       const output2 = await service.invoiceUpload(
         toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+        'json',
       );
       expect(output2).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -86,6 +89,7 @@ describe('CreationService', () => {
     it('Download success', async () => {
       const output = await service.invoiceUpload(
         toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+        'json',
       );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -110,6 +114,7 @@ describe('CreationService', () => {
     it('Download failed', async () => {
       const output = await service.invoiceUpload(
         toFile(readFile(path + 'inputs/others/SupplierCountryError.json')),
+        'json',
       );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -123,10 +128,13 @@ describe('CreationService', () => {
     });
 
     it('Download success from batch', async () => {
-      const output = await service.invoiceUploadBatch([
-        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-        toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
-      ]);
+      const output = await service.invoiceUploadBatch(
+        [
+          toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+          toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+        ],
+        'json',
+      );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
         tokens: expect.any(Array<string>),
@@ -165,10 +173,13 @@ describe('CreationService', () => {
     it('Upload success', () => {
       expect(() => {
         service
-          .invoiceUploadBatch([
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
-          ])
+          .invoiceUploadBatch(
+            [
+              toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+              toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+            ],
+            'json',
+          )
           .then((value) => {
             expect(value).toStrictEqual({
               timeEstimate: expect.any(Number),

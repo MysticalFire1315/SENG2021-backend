@@ -12,7 +12,7 @@ import {
   TaxSubtotalDetails,
   TaxTotalDetails,
 } from 'src/creation/model/invoice.schema';
-import { create } from 'xmlbuilder2';
+import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
 
 export class InvoiceModel {
@@ -110,6 +110,21 @@ export class InvoiceModel {
   }
 
   /**
+   * Strips a string of all non-alphabet characters and returns the lowercase
+   * form of the string.
+   *
+   * @private
+   * @static
+   * @param {string} str The string to modify.
+   * @return {string} The string without any non-alphabet characters and in
+   * lowercase.
+   * @memberof InvoiceModel
+   */
+  private static stripAndLower(str: string): string {
+    return str.replace(/[^a-z]/gi, '').toLowerCase();
+  }
+
+  /**
    * Finds the key in the given object matching a given key by stripping all
    * non-alphabets from the object's key and checking if it matches in
    * lowercase.
@@ -120,12 +135,11 @@ export class InvoiceModel {
    * @param {string} key The key to match against.
    * @memberof InvoiceModel
    */
-  private static findKey = (obj: object, key: string): string => {
+  private static findKey(obj: object, key: string): string {
     return Object.keys(obj).find(
-      (objKey) =>
-        objKey.replace(/[^a-z]/gi, '').toLowerCase() === key.toLowerCase(),
+      (objKey) => InvoiceModel.stripAndLower(objKey) === key.toLowerCase(),
     );
-  };
+  }
 
   /**
    * Parse raw input data as a `Party`.
@@ -552,10 +566,16 @@ export class InvoiceModel {
    * Parse a string containing raw input data.
    *
    * @param {string} invoiceString - A JSON string of the invoice.
+   * @param {string} type - A string describing the type of input.
    */
-  public async parse(invoiceString: string): Promise<void> {
+  public async parse(invoiceString: string, type: string): Promise<void> {
     try {
-      const input = JSON.parse(invoiceString);
+      let input: object;
+      if (InvoiceModel.stripAndLower(type) === 'json') {
+        input = JSON.parse(invoiceString);
+      } else {
+        throw new Error('Invalid type!');
+      }
 
       this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 

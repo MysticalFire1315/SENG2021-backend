@@ -22,6 +22,7 @@ describe('Test compulsory fields', () => {
         readFileSync(
           path + `inputs/compulsory/InvoiceLine${lineNum}M.json`,
         ).toString(),
+        'json',
       );
 
       expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
@@ -41,6 +42,7 @@ describe('Test optional fields', () => {
         readFileSync(
           path + `inputs/optional/InvoiceLine${lineNum}O.json`,
         ).toString(),
+        'json',
       );
 
       expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
@@ -55,6 +57,7 @@ describe('Test other cases', () => {
       readFileSync(
         path + 'inputs/others/DecimalsInvoiceLine1M.json',
       ).toString(),
+      'json',
     );
 
     expect(newInvoice.invoiceData).toStrictEqual(DecimalsInvoiceLine1MOutput);
@@ -68,6 +71,7 @@ describe('Test other cases', () => {
           readFileSync(
             path + 'inputs/others/SupplierCountryError.json',
           ).toString(),
+          'json',
         ),
     ).not.toThrowError();
   });

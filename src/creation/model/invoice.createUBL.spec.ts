@@ -15,6 +15,7 @@ describe('Test compulsory fields', () => {
         readFileSync(
           path + `inputs/compulsory/InvoiceLine${num}M.json`,
         ).toString(),
+        'json',
       );
 
       const actual = await newInvoice.createUBL();
@@ -37,6 +38,7 @@ describe('Test optional fields', () => {
         readFileSync(
           path + `inputs/optional/InvoiceLine${num}O.json`,
         ).toString(),
+        'json',
       );
 
       const actual = await newInvoice.createUBL();
@@ -57,6 +59,7 @@ describe('Test other cases', () => {
       readFileSync(
         path + 'inputs/others/DecimalsInvoiceLine1M.json',
       ).toString(),
+      'json',
     );
 
     const actual = await newInvoice.createUBL();
@@ -72,6 +75,7 @@ describe('Test other cases', () => {
     const newInvoice = new InvoiceModel();
     await newInvoice.parse(
       readFileSync(path + 'inputs/others/SupplierCountryError.json').toString(),
+      'json',
     );
 
     expect(async () => await newInvoice.createUBL()).rejects.toThrowError();

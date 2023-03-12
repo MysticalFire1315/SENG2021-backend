@@ -34,6 +34,7 @@ describe('AppController (e2e)', () => {
             'test/assets/inputs/compulsory/InvoiceLine1M.json',
           ),
         )
+        .withJson({ type: 'json' })
         .expectStatus(201)
         .expectJsonMatchStrict({ timeEstimate: int(), token: string() });
     });
@@ -50,6 +51,7 @@ describe('AppController (e2e)', () => {
             'test/assets/inputs/compulsory/InvoiceLine1M.json',
           ),
         )
+        .withJson({ type: 'json' })
         .expectStatus(201)
         .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
         .returns('token');
@@ -70,6 +72,7 @@ describe('AppController (e2e)', () => {
             'test/assets/inputs/others/SupplierCountryError.json',
           ),
         )
+        .withJson({ type: 'json' })
         .expectStatus(201)
         .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
         .returns('token');
@@ -99,6 +102,7 @@ describe('AppController (e2e)', () => {
             'test/assets/inputs/compulsory/InvoiceLine2M.json',
           ),
         )
+        .withJson({ type: 'json' })
         .expectStatus(201)
         .expectJsonMatchStrict({
           timeEstimate: int(),

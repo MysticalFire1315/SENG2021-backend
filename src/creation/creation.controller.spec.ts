@@ -52,6 +52,7 @@ describe('CreationController', () => {
         controller
           .uploadFile(
             toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+            'json',
           )
           .then((value) => {
             expect(value).toStrictEqual({
@@ -67,6 +68,7 @@ describe('CreationController', () => {
     it('Download success', async () => {
       const output = await controller.uploadFile(
         toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+        'json',
       );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -91,6 +93,7 @@ describe('CreationController', () => {
     it('Download failed', async () => {
       const output = await controller.uploadFile(
         toFile(readFile(path + 'inputs/others/SupplierCountryError.json')),
+        'json',
       );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
@@ -104,10 +107,13 @@ describe('CreationController', () => {
     });
 
     it('Download success from batch', async () => {
-      const output = await controller.uploadFileBatch([
-        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-        toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
-      ]);
+      const output = await controller.uploadFileBatch(
+        [
+          toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+          toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+        ],
+        'json',
+      );
       expect(output).toStrictEqual({
         timeEstimate: expect.any(Number),
         tokens: expect.any(Array<string>),
@@ -146,10 +152,13 @@ describe('CreationController', () => {
     it('Upload success', () => {
       expect(() => {
         controller
-          .uploadFileBatch([
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
-          ])
+          .uploadFileBatch(
+            [
+              toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+              toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+            ],
+            'json',
+          )
           .then((value) => {
             expect(value).toStrictEqual({
               timeEstimate: expect.any(Number),
