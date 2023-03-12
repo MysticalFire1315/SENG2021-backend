@@ -2,17 +2,20 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { InvoiceModel } from './invoice';
 import { convert } from 'xmlbuilder2';
+import { testAssetsPath } from './spec.config';
 
-const path = join(process.cwd(), 'src/creation/model/');
+const path = join(process.cwd(), testAssetsPath);
 
 describe('test InvoiceModel createUBL', () => {
   test('Mandatory Field Input', async () => {
     const newInvoice = new InvoiceModel();
-    newInvoice.parse(readFileSync(path + 'test.json').toString());
+    newInvoice.parse(
+      readFileSync(path + 'inputs/compulsory/InvoiceLine1M.json').toString(),
+    );
 
     const actual = await newInvoice.createUBL();
     const expected = readFileSync(
-      './testMandatoryInput/InvoiceLine1M.xml',
+      path + 'outputs/compulsory/InvoiceLine1M.xml',
     ).toString();
     const actualObj = convert(actual, { format: 'object' });
     const expectedObj = convert(expected, { format: 'object' });
