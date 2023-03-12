@@ -6,8 +6,8 @@ import { testAssetsPath } from './spec.config';
 
 const path = join(process.cwd(), testAssetsPath);
 
-describe('test InvoiceModel createUBL', () => {
-  test('Mandatory Field Input', async () => {
+describe('Test compulsory fields', () => {
+  test('Correct compulsory fields with 1 invoice line', async () => {
     const newInvoice = new InvoiceModel();
     newInvoice.parse(
       readFileSync(path + 'inputs/compulsory/InvoiceLine1M.json').toString(),
@@ -16,6 +16,21 @@ describe('test InvoiceModel createUBL', () => {
     const actual = await newInvoice.createUBL();
     const expected = readFileSync(
       path + 'outputs/compulsory/InvoiceLine1M.xml',
+    ).toString();
+    const actualObj = convert(actual, { format: 'object' });
+    const expectedObj = convert(expected, { format: 'object' });
+    expect(actualObj).toStrictEqual(expectedObj);
+  });
+
+  test('Correct compulsory fields with 2 invoice lines', async () => {
+    const newInvoice = new InvoiceModel();
+    newInvoice.parse(
+      readFileSync(path + 'inputs/compulsory/InvoiceLine2M.json').toString(),
+    );
+
+    const actual = await newInvoice.createUBL();
+    const expected = readFileSync(
+      path + 'outputs/compulsory/InvoiceLine2M.xml',
     ).toString();
     const actualObj = convert(actual, { format: 'object' });
     const expectedObj = convert(expected, { format: 'object' });
