@@ -22,30 +22,30 @@
   },
   "TaxTotal": [
     {
-      "TaxAmount": 100.05,
-      "TaxAmountCurrency": "AUD"
+      "TaxAmount": 148.74
     }
   ],
   "LegalMonetaryTotal": {
-    "NetAmountInLines": 500.68,
-    "NetAmountWithoutTax": 500.68,
-    "NetAmountWithTax": 500.68,
-    "PayableAmount": 500.68
+    "NetAmountInLines": 1487.4,
+    "NetAmountWithoutTax": 1487.4,
+    "NetAmountWithTax": 1636.14,
+    "PayableAmount": 1636.14
   },
   "InvoiceLine": [
     {
       "ID": "124124",
-      "Quantity": 5,
-      "LineNetAmount": 1000.05,
+      "Quantity": 10,
+      "QuantityUnitCode": "E99",
+      "LineNetAmount": 299.9,
       "Item": {
-        "Name": "Item name",
+        "Name": "True-Widgets",
         "TaxCategory": {
-          "ID": "5",
-          "TaxScheme": "VAT"
+          "ID": "S",
+          "TaxScheme": "GST"
         }
       },
       "Price": {
-        "PriceAmount": 1000.05
+        "Amount": 29.99
       }
     }
   ]

@@ -14,11 +14,8 @@ describe('test InvoiceModel createUBL', () => {
     const expected = readFileSync(
       './testMandatoryInput/InvoiceLine1M.xml',
     ).toString();
-    console.log(expected);
     const actualObj = convert(actual, { format: 'object' });
     const expectedObj = convert(expected, { format: 'object' });
-    console.log(actualObj);
-    console.log(expectedObj);
     expect(actualObj).toStrictEqual(expectedObj);
   });
 
