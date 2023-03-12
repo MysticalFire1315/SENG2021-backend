@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { CreationModule } from './../src/creation/creation.module';
 import { join } from 'path';
 import { request, spec } from 'pactum';
+import { int } from 'pactum-matchers';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -30,7 +31,7 @@ describe('AppController (e2e)', () => {
         join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
       )
       .expectStatus(201)
-      .expectBody({ timeEstimate: expect.any(Number), token: 'abc' });
+      .expectJsonMatchStrict({ timeEstimate: int(), token: 'abc' });
   });
 
   it('/creation/download (GET)', async () => {
@@ -41,7 +42,7 @@ describe('AppController (e2e)', () => {
         join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
       )
       .expectStatus(201)
-      .expectBody({ timeEstimate: expect.any(Number), token: 'abc' });
+      .expectJsonMatchStrict({ timeEstimate: int(), token: 'abc' });
 
     return spec()
       .get('/creation/download')
