@@ -77,7 +77,7 @@ type InvoiceSpecification = {
    * @memberof Invoice
    * @cardinality 1..1
    */
-  InvoiceTypeCode: number;
+  InvoiceTypeCode: string;
 
   /**
    * A textual note that gives unstructured information that is relevant to the
@@ -236,7 +236,7 @@ type Party = {
      * @cardinality 0..1
      * @optional
      */
-    CompanyID?: number;
+    CompanyID?: string;
   };
 
   /**
@@ -274,7 +274,7 @@ type ContactDetails = {
    * @cardinality 0..1
    * @optional
    */
-  Telephone?: number;
+  Telephone?: string;
 
   /**
    * An e-mail address for the contact point.
@@ -407,7 +407,7 @@ type TaxSubtotalDetails = {
    * @memberof TaxSubtotalDetails
    * @cardinality 1..1
    */
-  TaxableAmount: number;
+  TaxableAmount: { '@currencyID': string; '#': number };
 
   /**
    * The total VAT amount for a given VAT category. Must be rounded to
@@ -417,7 +417,7 @@ type TaxSubtotalDetails = {
    * @memberof TaxSubtotalDetails
    * @cardinality 1..1
    */
-  TaxAmount: number;
+  TaxAmount: { '@currencyID': string; '#': number };
 
   /**
    * A group of business terms providing information about the VAT category.
@@ -491,7 +491,7 @@ type LegalMonetaryTotalDetails = {
    * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
-  LineExtensionAmount: number;
+  LineExtensionAmount: { '@currencyID': string; '#': number };
 
   /**
    * The total amount of the Invoice without VAT. Must be rounded to maximum
@@ -501,7 +501,7 @@ type LegalMonetaryTotalDetails = {
    * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
-  TaxExclusiveAmount: number;
+  TaxExclusiveAmount: { '@currencyID': string; '#': number };
 
   /**
    * The total amount of the Invoice with VAT. Must be rounded to maximum 2
@@ -511,7 +511,7 @@ type LegalMonetaryTotalDetails = {
    * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
-  TaxInclusiveAmount: number;
+  TaxInclusiveAmount: { '@currencyID': string; '#': number };
 
   /**
    * Sum of all allowances on document level in the Invoice. Must be rounded
@@ -522,7 +522,7 @@ type LegalMonetaryTotalDetails = {
    * @cardinality 0..1
    * @optional
    */
-  AllowanceTotalAmount?: number;
+  AllowanceTotalAmount?: { '@currencyID': string; '#': number };
 
   /**
    * Sum of all charges on document level in the Invoice. Must be rounded to
@@ -533,7 +533,7 @@ type LegalMonetaryTotalDetails = {
    * @cardinality 0..1
    * @optional
    */
-  ChargeTotalAmount?: number;
+  ChargeTotalAmount?: { '@currencyID': string; '#': number };
 
   /**
    * The sum of amounts which have been paid in advance. Must be rounded to
@@ -544,7 +544,7 @@ type LegalMonetaryTotalDetails = {
    * @cardinality 0..1
    * @optional
    */
-  PrepaidAmount?: number;
+  PrepaidAmount?: { '@currencyID': string; '#': number };
 
   /**
    * The amount to be added to the invoice total to round the amount to be
@@ -555,7 +555,7 @@ type LegalMonetaryTotalDetails = {
    * @cardinality 0..1
    * @optional
    */
-  PayableRoundingAmount?: number;
+  PayableRoundingAmount?: { '@currencyID': string; '#': number };
 
   /**
    * The outstanding amount that is requested to be paid. Must be rounded to
@@ -565,7 +565,7 @@ type LegalMonetaryTotalDetails = {
    * @memberof LegalMonetaryTotalDetails
    * @cardinality 1..1
    */
-  PayableAmount: number;
+  PayableAmount: { '@currencyID': string; '#': number };
 };
 
 /**
@@ -580,7 +580,7 @@ type InvoiceLineDetails = {
    * @memberof InvoiceLineDetails
    * @cardinality 1..1
    */
-  ID: number;
+  ID: string;
 
   /**
    * A textual note that gives unstructured information that is relevant to the
@@ -601,7 +601,7 @@ type InvoiceLineDetails = {
    * @memberof InvoiceLineDetails
    * @cardinality 1..1
    */
-  InvoicedQuantity: number;
+  InvoicedQuantity: { '@unitCode': string; '#': number };
 
   /**
    * The total amount of the Invoice line. The amount is “net” without VAT,
@@ -612,7 +612,7 @@ type InvoiceLineDetails = {
    * @memberof InvoiceLineDetails
    * @cardinality 1..1
    */
-  LineExtensionAmount: number;
+  LineExtensionAmount: { '@currencyID': string; '#': number };
 
   /**
    * A group of business terms providing information about the goods and
@@ -722,7 +722,7 @@ type InvoiceLinePrice = {
    * @memberof InvoiceLinePrice
    * @cardinality 1..1
    */
-  PriceAmount: number;
+  PriceAmount: { '@currencyID': string; '#': number };
 
   /**
    * The number of item units to which the price applies.
@@ -732,5 +732,5 @@ type InvoiceLinePrice = {
    * @cardinality 0..1
    * @optional
    */
-  BaseQuantity?: number;
+  BaseQuantity?: { '@unitCode': string; '#': number };
 };
