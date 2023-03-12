@@ -102,5 +102,61 @@ describe('CreationController', () => {
         async () => await controller.downloadFile(token),
       ).rejects.toThrowError(HttpException);
     });
+
+    it('Download success from batch', async () => {
+      const output = await controller.uploadFileBatch([
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+      ]);
+      expect(output).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        tokens: expect.any(Array<string>),
+      });
+      const tokens = output.tokens;
+
+      expect(() => {
+        controller.downloadFile(tokens[0]).then((value) => {
+          const expectedOutput = readFile(
+            path + 'outputs/compulsory/InvoiceLine1M.xml',
+          );
+          const actualOutput = value.getStream().read().toString();
+
+          const actualObj = convert(actualOutput, { format: 'object' });
+          const expectedObj = convert(expectedOutput, { format: 'object' });
+          expect(actualObj).toStrictEqual(expectedObj);
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        controller.downloadFile(tokens[1]).then((value) => {
+          const expectedOutput = readFile(
+            path + 'outputs/compulsory/InvoiceLine2M.xml',
+          );
+          const actualOutput = value.getStream().read().toString();
+
+          const actualObj = convert(actualOutput, { format: 'object' });
+          const expectedObj = convert(expectedOutput, { format: 'object' });
+          expect(actualObj).toStrictEqual(expectedObj);
+        });
+      }).not.toThrowError();
+    });
+  });
+
+  describe('uploadBatch', () => {
+    it('Upload success', () => {
+      expect(() => {
+        controller
+          .uploadFileBatch([
+            toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+            toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+          ])
+          .then((value) => {
+            expect(value).toStrictEqual({
+              timeEstimate: expect.any(Number),
+              tokens: expect.any(Array<string>),
+            });
+          });
+      }).not.toThrowError();
+    });
   });
 });
