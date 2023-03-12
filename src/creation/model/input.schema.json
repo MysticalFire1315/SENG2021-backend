@@ -376,7 +376,7 @@
                     "ID": {
                       "type": "string",
                       "title": "The ID Schema",
-                      "examples": ["5"]
+                      "examples": ["S"]
                     },
                     "Percent": {
                       "type": "number",
@@ -396,7 +396,7 @@
                   },
                   "examples": [
                     {
-                      "ID": "5",
+                      "ID": "S",
                       "Percent": 25.0,
                       "ExemptionReason": "Exempt",
                       "TaxScheme": "VAT"
@@ -409,7 +409,7 @@
                   "TaxableAmount": 1945.0,
                   "TaxAmount": 486.25,
                   "TaxCategory": {
-                    "ID": "5",
+                    "ID": "S",
                     "Percent": 25.0,
                     "ExemptionReason": "Exempt",
                     "TaxScheme": "VAT"
@@ -423,7 +423,7 @@
                   "TaxableAmount": 1945.0,
                   "TaxAmount": 486.25,
                   "TaxCategory": {
-                    "ID": "5",
+                    "ID": "S",
                     "Percent": 25.0,
                     "ExemptionReason": "Exempt",
                     "TaxScheme": "VAT"
@@ -441,7 +441,7 @@
                 "TaxableAmount": 1945.0,
                 "TaxAmount": 486.25,
                 "TaxCategory": {
-                  "ID": "5",
+                  "ID": "S",
                   "Percent": 25.0,
                   "ExemptionReason": "Exempt",
                   "TaxScheme": "VAT"
@@ -460,7 +460,7 @@
                 "TaxableAmount": 1945.0,
                 "TaxAmount": 486.25,
                 "TaxCategory": {
-                  "ID": "5",
+                  "ID": "S",
                   "Percent": 25.0,
                   "ExemptionReason": "Exempt",
                   "TaxScheme": "VAT"
@@ -767,7 +767,7 @@
               "TaxableAmount": 1945.0,
               "TaxAmount": 486.25,
               "TaxCategory": {
-                "ID": "5",
+                "ID": "S",
                 "Percent": 25.0,
                 "ExemptionReason": "Exempt",
                 "TaxScheme": "VAT"
