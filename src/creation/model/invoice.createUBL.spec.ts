@@ -29,7 +29,7 @@ describe('Test compulsory fields', () => {
 });
 
 describe('Test optional fields', () => {
-  test.each([1])(
+  test.each([1, 2])(
     'Correct optional fields with %s invoice line',
     async (num) => {
       const newInvoice = new InvoiceModel();
