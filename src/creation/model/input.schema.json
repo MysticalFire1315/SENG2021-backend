@@ -721,6 +721,7 @@
       "TaxCurrency": "SEK",
       "Supplier": {
         "ElectronicAddress": "7300010000001",
+        "ElectronicAddressScheme": "0151",
         "BusinessName": "Seller Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
@@ -740,6 +741,7 @@
       },
       "Buyer": {
         "ElectronicAddress": "7300010000001",
+        "ElectronicAddressScheme": "0151",
         "BusinessName": "Buyer Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
