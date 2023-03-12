@@ -2,8 +2,9 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  StreamableFile,
+  StreamableFile
 } from '@nestjs/common';
+import { nanoid } from 'nanoid';
 import { InvoiceModel } from './model/invoice';
 
 const INVOICE_PROCESS_TIME = 1500;
@@ -26,7 +27,7 @@ export class CreationService {
   ): Promise<{ timeEstimate: number; token: string }> {
     const invoice = {
       object: new InvoiceModel(),
-      token: 'abc',
+      token: nanoid(),
       inUse: true,
     };
 
