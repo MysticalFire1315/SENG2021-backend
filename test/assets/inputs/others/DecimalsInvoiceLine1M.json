@@ -1,0 +1,52 @@
+{
+  "ID": "Invoice01",
+  "IssueDate": "2019-07-29",
+  "DueDate": "2019-08-30",
+  "InvoiceTypeCode": 380,
+  "InvoiceCurrency": "AUD",
+  "Supplier": {
+    "ElectronicAddress": "47555222000",
+    "ElectronicAddressScheme": "0151",
+    "Address": {
+      "CountryCode": "AU"
+    },
+    "PersonName": "Supplier Official Name Ltd"
+  },
+  "Buyer": {
+    "ElectronicAddress": "91888222000",
+    "ElectronicAddressScheme": "0151",
+    "Address": {
+      "CountryCode": "AU"
+    },
+    "PersonName": "Buyer Official Name"
+  },
+  "TaxTotal": [
+    {
+      "TaxAmount": 148.741
+    }
+  ],
+  "LegalMonetaryTotal": {
+    "NetAmountInLines": 1487.403,
+    "NetAmountWithoutTax": 1487.402,
+    "NetAmountWithTax": 1636.1401,
+    "PayableAmount": 1636.1416
+  },
+  "InvoiceLine": [
+    {
+      "ID": "124124",
+      "Quantity": 10,
+      "QuantityUnitCode": "E99",
+      "LineNetAmount": 299.9022,
+      "Item": {
+        "Name": "True-Widgets",
+        "TaxCategory": {
+          "ID": "S",
+          "TaxScheme": "GST"
+        }
+      },
+      "Price": {
+        "Amount": 29.986
+      }
+    }
+  ]
+}

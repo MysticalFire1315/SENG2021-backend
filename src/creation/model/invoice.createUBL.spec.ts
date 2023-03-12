@@ -50,6 +50,25 @@ describe('Test optional fields', () => {
   );
 });
 
+describe('Test other cases', () => {
+  test('Decimals should be rounded to 2 places', async () => {
+    const newInvoice = new InvoiceModel();
+    newInvoice.parse(
+      readFileSync(
+        path + 'inputs/others/DecimalsInvoiceLine1M.json',
+      ).toString(),
+    );
+
+    const actual = await newInvoice.createUBL();
+    const expected = readFileSync(
+      path + 'outputs/compulsory/InvoiceLine1M.xml',
+    ).toString();
+    const actualObj = convert(actual, { format: 'object' });
+    const expectedObj = convert(expected, { format: 'object' });
+    expect(actualObj).toStrictEqual(expectedObj);
+  });
+});
+
 // test('Mandatory Fields >2 Decimal Place Condition', () => {
 //   const newInvoice = new InvoiceModel();
 //   newInvoice.parse(`
