@@ -343,17 +343,12 @@
       "items": {
         "type": "object",
         "title": "A Schema",
-        "required": ["TaxAmount", "TaxAmountCurrency"],
+        "required": ["TaxAmount"],
         "properties": {
           "TaxAmount": {
             "type": "number",
             "title": "The TaxAmount Schema",
             "examples": [486.25]
-          },
-          "TaxAmountCurrency": {
-            "type": "string",
-            "title": "The TaxAmountCurrency Schema",
-            "examples": ["AUD"]
           },
           "TaxSubtotal": {
             "type": "array",
@@ -441,7 +436,6 @@
         "examples": [
           {
             "TaxAmount": 486.25,
-            "TaxAmountCurrency": "AUD",
             "TaxSubtotal": [
               {
                 "TaxableAmount": 1945.0,
@@ -461,7 +455,6 @@
         [
           {
             "TaxAmount": 486.25,
-            "TaxAmountCurrency": "AUD",
             "TaxSubtotal": [
               {
                 "TaxableAmount": 1945.0,
@@ -566,6 +559,11 @@
             "title": "The Quantity Schema",
             "examples": [100]
           },
+          "QuantityUnitCode": {
+            "type": "string",
+            "title": "The QuantityUnitCode Schema",
+            "examples": ["C62"]
+          },
           "LineNetAmount": {
             "type": "number",
             "title": "The LineNetAmount Schema",
@@ -642,12 +640,18 @@
                 "type": "integer",
                 "title": "The Quantity Schema",
                 "examples": [1]
+              },
+              "QuantityUnitCode": {
+                "type": "string",
+                "title": "The QuantityUnitCode Schema",
+                "examples": ["C62"]
               }
             },
             "examples": [
               {
                 "Amount": 23.45,
-                "Quantity": 1
+                "Quantity": 1,
+                "QuantityUnitCode": "C62"
               }
             ]
           }
@@ -657,6 +661,7 @@
             "ID": "12",
             "Note": "New article number 12345",
             "Quantity": 100,
+            "QuantityUnitCode": "C62",
             "LineNetAmount": 2145.0,
             "Item": {
               "Name": "Item name",
@@ -669,7 +674,8 @@
             },
             "Price": {
               "Amount": 23.45,
-              "Quantity": 1
+              "Quantity": 1,
+              "QuantityUnitCode": "C62"
             }
           }
         ]
@@ -680,6 +686,7 @@
             "ID": "12",
             "Note": "New article number 12345",
             "Quantity": 100,
+            "QuantityUnitCode": "C62",
             "LineNetAmount": 2145.0,
             "Item": {
               "Name": "Item name",
@@ -692,7 +699,8 @@
             },
             "Price": {
               "Amount": 23.45,
-              "Quantity": 1
+              "Quantity": 1,
+              "QuantityUnitCode": "C62"
             }
           }
         ]
@@ -713,7 +721,6 @@
       "TaxCurrency": "SEK",
       "Supplier": {
         "ElectronicAddress": "7300010000001",
-        "ElectronicAddressScheme": "0151",
         "BusinessName": "Seller Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
@@ -733,7 +740,6 @@
       },
       "Buyer": {
         "ElectronicAddress": "7300010000001",
-        "ElectronicAddressScheme": "0151",
         "BusinessName": "Buyer Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
@@ -754,7 +760,6 @@
       "TaxTotal": [
         {
           "TaxAmount": 486.25,
-          "TaxAmountCurrency": "AUD",
           "TaxSubtotal": [
             {
               "TaxableAmount": 1945.0,
@@ -784,6 +789,7 @@
           "ID": "12",
           "Note": "New article number 12345",
           "Quantity": 100,
+          "QuantityUnitCode": "C62",
           "LineNetAmount": 2145.0,
           "Item": {
             "Name": "Item name",
@@ -796,7 +802,8 @@
           },
           "Price": {
             "Amount": 23.45,
-            "Quantity": 1
+            "Quantity": 1,
+            "QuantityUnitCode": "C62"
           }
         }
       ]
