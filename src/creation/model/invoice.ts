@@ -637,7 +637,7 @@ export class InvoiceModel {
     // First check if parse ran into an error. If so, return the error as a
     // HTTP error
     if (this.error) {
-      throw this.error;
+      this.error;
     }
 
     // Make a deep clone of the invoice data and add necessary properties

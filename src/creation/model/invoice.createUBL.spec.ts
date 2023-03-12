@@ -11,7 +11,7 @@ describe('Test compulsory fields', () => {
     'Correct compulsory fields with %s invoice line',
     async (num) => {
       const newInvoice = new InvoiceModel();
-      newInvoice.parse(
+      await newInvoice.parse(
         readFileSync(
           path + `inputs/compulsory/InvoiceLine${num}M.json`,
         ).toString(),
@@ -33,7 +33,7 @@ describe('Test optional fields', () => {
     'Correct optional fields with %s invoice line',
     async (num) => {
       const newInvoice = new InvoiceModel();
-      newInvoice.parse(
+      await newInvoice.parse(
         readFileSync(
           path + `inputs/optional/InvoiceLine${num}O.json`,
         ).toString(),
@@ -53,7 +53,7 @@ describe('Test optional fields', () => {
 describe('Test other cases', () => {
   test('Decimals should be rounded to 2 places', async () => {
     const newInvoice = new InvoiceModel();
-    newInvoice.parse(
+    await newInvoice.parse(
       readFileSync(
         path + 'inputs/others/DecimalsInvoiceLine1M.json',
       ).toString(),
@@ -70,10 +70,10 @@ describe('Test other cases', () => {
 
   test('Missing mandatory fields should result in error', async () => {
     const newInvoice = new InvoiceModel();
-    newInvoice.parse(
+    await newInvoice.parse(
       readFileSync(path + 'inputs/others/SupplierCountryError.json').toString(),
     );
 
-    expect(await newInvoice.createUBL()).toThrowError();
+    expect(async () => await newInvoice.createUBL()).rejects.toThrowError();
   });
 });
