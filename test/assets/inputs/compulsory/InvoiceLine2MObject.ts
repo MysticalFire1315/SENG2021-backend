@@ -1,4 +1,4 @@
-export const InvoiceLine1MOutput = {
+export const InvoiceLine2MOutput = {
   ID: 'Invoice01',
   IssueDate: '2019-07-29',
   DueDate: '2019-08-30',
@@ -86,6 +86,32 @@ export const InvoiceLine1MOutput = {
         PriceAmount: {
           '@currencyID': 'AUD',
           '#': 29.99,
+        },
+      },
+    },
+    {
+      ID: '124125',
+      InvoicedQuantity: {
+        '@unitCode': 'E99',
+        '#': 5.0,
+      },
+      LineExtensionAmount: {
+        '@currencyID': 'AUD',
+        '#': 50.0,
+      },
+      Item: {
+        Name: 'Fake-Widgets',
+        ClassifiedTaxCategory: {
+          ID: 'S',
+          TaxScheme: {
+            ID: 'GST',
+          },
+        },
+      },
+      Price: {
+        PriceAmount: {
+          '@currencyID': 'AUD',
+          '#': 10.0,
         },
       },
     },
