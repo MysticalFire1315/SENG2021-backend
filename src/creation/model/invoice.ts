@@ -19,6 +19,7 @@ export class InvoiceModel {
   // Attributes
   private _invoiceData: InvoiceSpecification;
   private currencyId = 'AUD';
+  private error: Error = undefined;
   public static invoiceDefaults = {
     CustomizationID:
       'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
@@ -553,72 +554,78 @@ export class InvoiceModel {
    * @param {string} invoiceString - A JSON string of the invoice.
    */
   public async parse(invoiceString: string): Promise<void> {
-    const input = JSON.parse(invoiceString);
+    try {
+      const input = JSON.parse(invoiceString);
 
-    this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
+      this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 
-    this._invoiceData = {
-      InvoiceTypeCode: String(
-        input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
-      ),
-      DocumentCurrencyCode: this.currencyId,
-      AccountingSupplierParty: {
-        Party: this.parseParty(input[InvoiceModel.findKey(input, 'Supplier')]),
-      },
-      AccountingCustomerParty: {
-        Party: this.parseParty(input[InvoiceModel.findKey(input, 'Buyer')]),
-      },
-      TaxTotal: this.parseTaxTotal(
-        input[InvoiceModel.findKey(input, 'TaxTotal')],
-      ),
-      LegalMonetaryTotal: this.parseLegalMonetaryTotal(
-        input[InvoiceModel.findKey(input, 'LegalMonetaryTotal')],
-      ),
-      InvoiceLine: this.parseInvoiceLine(
-        input[InvoiceModel.findKey(input, 'InvoiceLine')],
-      ),
-    };
+      this._invoiceData = {
+        InvoiceTypeCode: String(
+          input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
+        ),
+        DocumentCurrencyCode: this.currencyId,
+        AccountingSupplierParty: {
+          Party: this.parseParty(
+            input[InvoiceModel.findKey(input, 'Supplier')],
+          ),
+        },
+        AccountingCustomerParty: {
+          Party: this.parseParty(input[InvoiceModel.findKey(input, 'Buyer')]),
+        },
+        TaxTotal: this.parseTaxTotal(
+          input[InvoiceModel.findKey(input, 'TaxTotal')],
+        ),
+        LegalMonetaryTotal: this.parseLegalMonetaryTotal(
+          input[InvoiceModel.findKey(input, 'LegalMonetaryTotal')],
+        ),
+        InvoiceLine: this.parseInvoiceLine(
+          input[InvoiceModel.findKey(input, 'InvoiceLine')],
+        ),
+      };
 
-    const optionalKeys = [
-      {
-        invoiceField: 'CustomizationID',
-        inputName: InvoiceModel.findKey(input, 'CustomizationID'),
-      },
-      {
-        invoiceField: 'ProfileID',
-        inputName: InvoiceModel.findKey(input, 'ProfileID'),
-      },
-      {
-        invoiceField: 'ID',
-        inputName: InvoiceModel.findKey(input, 'ID'),
-      },
-      {
-        invoiceField: 'IssueDate',
-        inputName: InvoiceModel.findKey(input, 'IssueDate'),
-      },
-      {
-        invoiceField: 'DueDate',
-        inputName: InvoiceModel.findKey(input, 'DueDate'),
-      },
-      {
-        invoiceField: 'Note',
-        inputName: InvoiceModel.findKey(input, 'Note'),
-      },
-      {
-        invoiceField: 'TaxPointDate',
-        inputName: InvoiceModel.findKey(input, 'TaxPointDate'),
-      },
-      {
-        invoiceField: 'TaxCurrencyCode',
-        inputName: InvoiceModel.findKey(input, 'TaxCurrency'),
-      },
-    ];
+      const optionalKeys = [
+        {
+          invoiceField: 'CustomizationID',
+          inputName: InvoiceModel.findKey(input, 'CustomizationID'),
+        },
+        {
+          invoiceField: 'ProfileID',
+          inputName: InvoiceModel.findKey(input, 'ProfileID'),
+        },
+        {
+          invoiceField: 'ID',
+          inputName: InvoiceModel.findKey(input, 'ID'),
+        },
+        {
+          invoiceField: 'IssueDate',
+          inputName: InvoiceModel.findKey(input, 'IssueDate'),
+        },
+        {
+          invoiceField: 'DueDate',
+          inputName: InvoiceModel.findKey(input, 'DueDate'),
+        },
+        {
+          invoiceField: 'Note',
+          inputName: InvoiceModel.findKey(input, 'Note'),
+        },
+        {
+          invoiceField: 'TaxPointDate',
+          inputName: InvoiceModel.findKey(input, 'TaxPointDate'),
+        },
+        {
+          invoiceField: 'TaxCurrencyCode',
+          inputName: InvoiceModel.findKey(input, 'TaxCurrency'),
+        },
+      ];
 
-    optionalKeys.forEach(({ invoiceField, inputName }) => {
-      if (inputName) {
-        this._invoiceData[invoiceField] = input[inputName];
-      }
-    });
+      optionalKeys.forEach(({ invoiceField, inputName }) => {
+        if (inputName) {
+          this._invoiceData[invoiceField] = input[inputName];
+        }
+      });
+    } catch (e) {
+      this.error = e;
+    }
   }
 
   /**
@@ -627,6 +634,12 @@ export class InvoiceModel {
    * @returns The generated UBL document as a string.
    */
   public async createUBL(): Promise<string> {
+    // First check if parse ran into an error. If so, return the error as a
+    // HTTP error
+    if (this.error) {
+      throw this.error;
+    }
+
     // Make a deep clone of the invoice data and add necessary properties
     const cloned = {
       ...InvoiceModel.invoiceDefaults,
