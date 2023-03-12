@@ -26,7 +26,7 @@ export class CreationService {
   ): Promise<{ timeEstimate: number; token: string }> {
     const invoice = {
       object: new InvoiceModel(),
-      token: 'abc', // generateToken(), // Needs implementation
+      token: 'abc',
       inUse: true,
     };
 
@@ -35,13 +35,13 @@ export class CreationService {
     });
 
     this.invoiceList.push(invoice);
-
-    // TODO: Determine time estimate
     const processingInvoices = this.invoiceList.filter(
       (invoice) => invoice.inUse === true,
     );
-    const timeElapse = INVOICE_PROCESS_TIME * processingInvoices.length;
-    return { timeEstimate: timeElapse, token: invoice.token };
+    return {
+      timeEstimate: INVOICE_PROCESS_TIME * processingInvoices.length,
+      token: invoice.token,
+    };
   }
 
   /**
