@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,8 +16,6 @@ import { CreationService } from './creation.service';
 @Controller('creation')
 export class CreationController {
   constructor(private creationService: CreationService) {}
-
-  // Routes here
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
@@ -35,5 +34,12 @@ export class CreationController {
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('upload/batch')
+  @UseInterceptors(FileInterceptor('files'))
+  async uploadFileBatch(@UploadedFiles() files: Array<Express.Multer.File>) {
+    const output = await this.creationService.invoiceUploadBatch(files);
+    return output;
   }
 }

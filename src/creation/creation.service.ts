@@ -2,7 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  StreamableFile
+  StreamableFile,
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { InvoiceModel } from './model/invoice';
@@ -20,7 +20,8 @@ export class CreationService {
   /**
    * Uploads an invoice
    * @param file A file to be processed
-   * @returns A timeEstimate of time taken to process in milliseconds and generated token string
+   * @returns A timeEstimate of time taken to process in milliseconds and
+   * generated token string
    */
   async invoiceUpload(
     file: Express.Multer.File,
@@ -57,5 +58,39 @@ export class CreationService {
     }
     const document = await invoice.object.createUBL();
     return new StreamableFile(Buffer.from(document));
+  }
+
+  /**
+   * Uploads a batch of invoices
+   * @param file A file to be processed
+   * @returns A timeEstimate of time taken to process in milliseconds and
+   * an array of tokens associated with each invoice.
+   */
+  async invoiceUploadBatch(
+    files: Array<Express.Multer.File>,
+  ): Promise<{ timeEstimate: number; tokens: string[] }> {
+    const tokens: string[] = [];
+    for (const file of files) {
+      const invoice = {
+        object: new InvoiceModel(),
+        token: nanoid(),
+        inUse: true,
+      };
+
+      invoice.object.parse(file.buffer.toString()).then(() => {
+        invoice.inUse = false;
+      });
+
+      this.invoiceList.push(invoice);
+      tokens.push(invoice.token);
+    }
+
+    const processingInvoices = this.invoiceList.filter(
+      (invoice) => invoice.inUse === true,
+    );
+    return {
+      timeEstimate: INVOICE_PROCESS_TIME * processingInvoices.length,
+      tokens,
+    };
   }
 }
