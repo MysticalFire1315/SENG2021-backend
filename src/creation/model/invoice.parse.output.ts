@@ -213,11 +213,19 @@ import { InvoiceSpecification } from './invoice.schema';
 // };
 
 export const outputM: InvoiceSpecification = {
+  CustomizationID:
+    'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+  ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+  ID: '33',
+  IssueDate: '2010-11-09',
   InvoiceTypeCode: 44,
   DocumentCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
-      EndpointID: 2541512,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 2541512,
+      },
       PostalAddress: {
         Country: {
           IdentificationCode: 'AU',
@@ -228,9 +236,13 @@ export const outputM: InvoiceSpecification = {
       },
     },
   },
+
   AccountingCustomerParty: {
     Party: {
-      EndpointID: 14125112,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 14125112,
+      },
       PostalAddress: {
         Country: {
           IdentificationCode: 'AU',
@@ -243,7 +255,7 @@ export const outputM: InvoiceSpecification = {
   },
   TaxTotal: [
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
     },
   ],
   LegalMonetaryTotal: {
@@ -271,11 +283,19 @@ export const outputM: InvoiceSpecification = {
   ],
 };
 export const outputM2Line: InvoiceSpecification = {
+  CustomizationID:
+    'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+  ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+  ID: '33',
+  IssueDate: '2010-11-09',
   InvoiceTypeCode: 44,
   DocumentCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
-      EndpointID: 2541512,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 2541512,
+      },
       PostalAddress: {
         Country: {
           IdentificationCode: 'AU',
@@ -288,7 +308,10 @@ export const outputM2Line: InvoiceSpecification = {
   },
   AccountingCustomerParty: {
     Party: {
-      EndpointID: 14125112,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 14125112,
+      },
       PostalAddress: {
         Country: {
           IdentificationCode: 'AU',
@@ -299,9 +322,10 @@ export const outputM2Line: InvoiceSpecification = {
       },
     },
   },
+
   TaxTotal: [
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
     },
   ],
   LegalMonetaryTotal: {
@@ -358,7 +382,10 @@ export const outputO: InvoiceSpecification = {
   TaxCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
-      EndpointID: 2541512,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 2541512,
+      },
       PartyName: { Name: 'HD Seller' },
       PostalAddress: {
         StreetName: 'Smith St',
@@ -383,7 +410,10 @@ export const outputO: InvoiceSpecification = {
   },
   AccountingCustomerParty: {
     Party: {
-      EndpointID: 14125112,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 14125112,
+      },
       PartyName: { Name: 'HD Buyer' },
       PostalAddress: {
         StreetName: 'SomewhereElse Ave',
@@ -408,7 +438,7 @@ export const outputO: InvoiceSpecification = {
   },
   TaxTotal: [
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
       TaxSubtotal: [
         {
           TaxableAmount: 100.05,
@@ -423,7 +453,7 @@ export const outputO: InvoiceSpecification = {
       ],
     },
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
     },
   ],
   LegalMonetaryTotal: {
@@ -472,7 +502,10 @@ export const outputO2Line: InvoiceSpecification = {
   TaxCurrencyCode: 'AUD',
   AccountingSupplierParty: {
     Party: {
-      EndpointID: 2541512,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 2541512,
+      },
       PartyName: { Name: 'HD Seller' },
       PostalAddress: {
         StreetName: 'Smith St',
@@ -497,7 +530,10 @@ export const outputO2Line: InvoiceSpecification = {
   },
   AccountingCustomerParty: {
     Party: {
-      EndpointID: 14125112,
+      EndpointID: {
+        '@schemeID': '0151',
+        '#': 14125112,
+      },
       PartyName: { Name: 'HD Buyer' },
       PostalAddress: {
         StreetName: 'SomewhereElse Ave',
@@ -522,7 +558,7 @@ export const outputO2Line: InvoiceSpecification = {
   },
   TaxTotal: [
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
       TaxSubtotal: [
         {
           TaxableAmount: 100.05,
@@ -537,7 +573,7 @@ export const outputO2Line: InvoiceSpecification = {
       ],
     },
     {
-      TaxAmount: 100.05,
+      TaxAmount: { '@currencyID': 'AUD', '#': 100.05 },
     },
   ],
   LegalMonetaryTotal: {
