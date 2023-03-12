@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { CreationModule } from './../src/creation/creation.module';
 import { join } from 'path';
 import { request, spec } from 'pactum';
-import { int } from 'pactum-matchers';
+import { int, string } from 'pactum-matchers';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -23,30 +23,61 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/creation/upload (POST)', () => {
-    return spec()
-      .post('/creation/upload')
-      .withFile(
-        'file',
-        join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
-      )
-      .expectStatus(201)
-      .expectJsonMatchStrict({ timeEstimate: int(), token: 'abc' });
+  describe('/creation/upload (POST)', () => {
+    it('Success', () => {
+      return spec()
+        .post('/creation/upload')
+        .withFile(
+          'file',
+          join(
+            process.cwd(),
+            'test/assets/inputs/compulsory/InvoiceLine1M.json',
+          ),
+        )
+        .expectStatus(201)
+        .expectJsonMatchStrict({ timeEstimate: int(), token: string() });
+    });
   });
 
-  it('/creation/download (GET)', async () => {
-    await spec()
-      .post('/creation/upload')
-      .withFile(
-        'file',
-        join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
-      )
-      .expectStatus(201)
-      .expectJsonMatchStrict({ timeEstimate: int(), token: 'abc' });
+  describe('/creation/download (GET)', () => {
+    it('Success', async () => {
+      const token = await spec()
+        .post('/creation/upload')
+        .withFile(
+          'file',
+          join(
+            process.cwd(),
+            'test/assets/inputs/compulsory/InvoiceLine1M.json',
+          ),
+        )
+        .expectStatus(201)
+        .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
+        .returns('token');
 
-    return spec()
-      .get('/creation/download')
-      .withQueryParams('token', 'abc')
-      .expectStatus(200);
+      return spec()
+        .get('/creation/download')
+        .withQueryParams('token', token)
+        .expectStatus(200);
+    });
+
+    it('Failure', async () => {
+      const token = await spec()
+        .post('/creation/upload')
+        .withFile(
+          'file',
+          join(
+            process.cwd(),
+            'test/assets/inputs/others/SupplierCountryError.json',
+          ),
+        )
+        .expectStatus(201)
+        .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
+        .returns('token');
+
+      return spec()
+        .get('/creation/download')
+        .withQueryParams('token', token)
+        .expectStatus(400);
+    });
   });
 });

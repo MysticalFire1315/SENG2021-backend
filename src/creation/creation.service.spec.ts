@@ -44,7 +44,7 @@ describe('CreationService', () => {
   });
 
   describe('upload', () => {
-    it('Upload success', async () => {
+    it('Upload success', () => {
       expect(() => {
         service
           .invoiceUpload(
@@ -53,30 +53,48 @@ describe('CreationService', () => {
           .then((value) => {
             expect(value).toStrictEqual({
               timeEstimate: expect.any(Number),
-              token: 'abc',
+              token: expect.any(String),
             });
           });
       }).not.toThrowError();
     });
+
+    it('Tokens should be different', async () => {
+      const output1 = await service.invoiceUpload(
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+      );
+      expect(output1).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token1 = output1.token;
+
+      const output2 = await service.invoiceUpload(
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine2M.json')),
+      );
+      expect(output2).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token2 = output2.token;
+
+      expect(token1).not.toStrictEqual(token2);
+    });
   });
 
   describe('download', () => {
-    it('Download success', () => {
-      expect(() => {
-        service
-          .invoiceUpload(
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-          )
-          .then((value) => {
-            expect(value).toStrictEqual({
-              timeEstimate: expect.any(Number),
-              token: 'abc',
-            });
-          });
-      }).not.toThrowError();
+    it('Download success', async () => {
+      const output = await service.invoiceUpload(
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+      );
+      expect(output).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token = output.token;
 
       expect(() => {
-        service.invoiceDownload('abc').then((value) => {
+        service.invoiceDownload(token).then((value) => {
           const expectedOutput = readFile(
             path + 'outputs/compulsory/InvoiceLine1M.xml',
           );
@@ -87,6 +105,21 @@ describe('CreationService', () => {
           expect(actualObj).toStrictEqual(expectedObj);
         });
       }).not.toThrowError();
+    });
+
+    it('Download failed', async () => {
+      const output = await service.invoiceUpload(
+        toFile(readFile(path + 'inputs/others/SupplierCountryError.json')),
+      );
+      expect(output).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token = output.token;
+
+      expect(
+        async () => await service.invoiceDownload(token),
+      ).rejects.toThrowError();
     });
   });
 });

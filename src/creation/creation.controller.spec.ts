@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -55,7 +56,7 @@ describe('CreationController', () => {
           .then((value) => {
             expect(value).toStrictEqual({
               timeEstimate: expect.any(Number),
-              token: 'abc',
+              token: expect.any(String),
             });
           });
       }).not.toThrowError();
@@ -63,22 +64,18 @@ describe('CreationController', () => {
   });
 
   describe('download', () => {
-    it('Download success', () => {
-      expect(() => {
-        controller
-          .uploadFile(
-            toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
-          )
-          .then((value) => {
-            expect(value).toStrictEqual({
-              timeEstimate: expect.any(Number),
-              token: 'abc',
-            });
-          });
-      }).not.toThrowError();
+    it('Download success', async () => {
+      const output = await controller.uploadFile(
+        toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
+      );
+      expect(output).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token = output.token;
 
       expect(() => {
-        controller.downloadFile('abc').then((value) => {
+        controller.downloadFile(token).then((value) => {
           const expectedOutput = readFile(
             path + 'outputs/compulsory/InvoiceLine1M.xml',
           );
@@ -89,6 +86,21 @@ describe('CreationController', () => {
           expect(actualObj).toStrictEqual(expectedObj);
         });
       }).not.toThrowError();
+    });
+
+    it('Download failed', async () => {
+      const output = await controller.uploadFile(
+        toFile(readFile(path + 'inputs/others/SupplierCountryError.json')),
+      );
+      expect(output).toStrictEqual({
+        timeEstimate: expect.any(Number),
+        token: expect.any(String),
+      });
+      const token = output.token;
+
+      expect(
+        async () => await controller.downloadFile(token),
+      ).rejects.toThrowError(HttpException);
     });
   });
 });
