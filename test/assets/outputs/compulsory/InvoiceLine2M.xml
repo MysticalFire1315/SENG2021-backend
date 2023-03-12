@@ -68,6 +68,25 @@
     <cac:Price>
       <cbc:PriceAmount currencyID="AUD">29.99</cbc:PriceAmount>
     </cac:Price>
+  </cac:InvoiceLine>
 
+  <cac:InvoiceLine>
+    <cbc:ID>124125</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="E99">5.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="AUD">50.00</cbc:LineExtensionAmount>
+
+    <cac:Item>
+      <cbc:Name>Fake-Widgets</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cac:TaxScheme>
+          <cbc:ID>GST</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+
+    <cac:Price>
+      <cbc:PriceAmount currencyID="AUD">10.00</cbc:PriceAmount>
+    </cac:Price>
   </cac:InvoiceLine>
 </Invoice>
