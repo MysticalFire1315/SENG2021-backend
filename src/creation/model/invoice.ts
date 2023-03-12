@@ -573,6 +573,8 @@ export class InvoiceModel {
       let input: object;
       if (InvoiceModel.stripAndLower(type) === 'json') {
         input = JSON.parse(invoiceString);
+      } else if (InvoiceModel.stripAndLower(type) === 'xml') {
+        input = convert(invoiceString, { format: 'object' });
       } else {
         throw new Error('Invalid type!');
       }
@@ -685,7 +687,7 @@ export class InvoiceModel {
           ...cloned,
         },
       },
-    );
+    ).dtd();
     const xml = root.end({ prettyPrint: true });
 
     return xml;
