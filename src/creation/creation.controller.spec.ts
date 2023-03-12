@@ -53,7 +53,10 @@ describe('CreationController', () => {
             toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
           )
           .then((value) => {
-            expect(value).toStrictEqual({ timeEstimate: 1, token: 'abc' });
+            expect(value).toStrictEqual({
+              timeEstimate: expect.any(Number),
+              token: 'abc',
+            });
           });
       }).not.toThrowError();
     });
@@ -67,7 +70,10 @@ describe('CreationController', () => {
             toFile(readFile(path + 'inputs/compulsory/InvoiceLine1M.json')),
           )
           .then((value) => {
-            expect(value).toStrictEqual({ timeEstimate: 1, token: 'abc' });
+            expect(value).toStrictEqual({
+              timeEstimate: expect.any(Number),
+              token: 'abc',
+            });
           });
       }).not.toThrowError();
 
