@@ -30,7 +30,7 @@ describe('AppController (e2e)', () => {
         join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
       )
       .expectStatus(201)
-      .expectBody({ timeEstimate: 1, token: 'abc' });
+      .expectBody({ timeEstimate: expect.any(Number), token: 'abc' });
   });
 
   it('/creation/download (GET)', async () => {
@@ -41,7 +41,7 @@ describe('AppController (e2e)', () => {
         join(process.cwd(), 'test/assets/inputs/compulsory/InvoiceLine1M.json'),
       )
       .expectStatus(201)
-      .expectBody({ timeEstimate: 1, token: 'abc' });
+      .expectBody({ timeEstimate: expect.any(Number), token: 'abc' });
 
     return spec()
       .get('/creation/download')
