@@ -1,23 +1,29 @@
 {
-  "InvoiceTypeCode": 44,
+  "ID": "Invoice01",
+  "IssueDate": "2019-07-29",
+  "DueDate": "2019-08-30",
+  "InvoiceTypeCode": 380,
   "InvoiceCurrency": "AUD",
   "Supplier": {
-    "ElectronicAddress": "7300010000001",
+    "ElectronicAddress": "47555222000",
+    "ElectronicAddressScheme": "0151",
     "Address": {
       "CountryCode": "AU"
     },
-    "PersonName": "Full Formal Seller Name LTD."
+    "PersonName": "Supplier Official Name Ltd"
   },
   "Buyer": {
-    "ElectronicAddress": "7300010000001",
+    "ElectronicAddress": "91888222000",
+    "ElectronicAddressScheme": "0151",
     "Address": {
       "CountryCode": "AU"
     },
-    "PersonName": "Full Formal Buyer Name LTD."
+    "PersonName": "Buyer Official Name"
   },
   "TaxTotal": [
     {
-      "TaxAmount": 100.05
+      "TaxAmount": 100.05,
+      "TaxAmountCurrency": "AUD"
     }
   ],
   "LegalMonetaryTotal": {

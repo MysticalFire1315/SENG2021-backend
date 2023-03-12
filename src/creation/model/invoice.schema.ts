@@ -187,7 +187,7 @@ type Party = {
    * @memberof Party
    * @cardinality 1..1
    */
-  EndpointID: number;
+  EndpointID: { '@schemeID': string; '#': number };
 
   /**
    * A name by which the Person is known, other than Person name (also known as
@@ -378,7 +378,7 @@ type TaxTotalDetails = {
    * @memberof TaxTotalDetails
    * @cardinality 1..1
    */
-  TaxAmount: number;
+  TaxAmount: { '@currencyID': string; '#': number };
 
   /**
    * A group of business terms providing information about VAT breakdown by
