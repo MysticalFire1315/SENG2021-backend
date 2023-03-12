@@ -6,18 +6,20 @@ import { convert } from 'xmlbuilder2';
 const path = join(process.cwd(), 'src/creation/model/');
 
 describe('test InvoiceModel createUBL', () => {
-  test('Mandatory Field Input', () => {
+  test('Mandatory Field Input', async () => {
     const newInvoice = new InvoiceModel();
     newInvoice.parse(readFileSync(path + 'test.json').toString());
 
-    const actual = newInvoice.createUBL();
+    const actual = await newInvoice.createUBL();
     const expected = readFileSync(
       './testMandatoryInput/InvoiceLine1M.xml',
     ).toString();
     console.log(expected);
     const actualObj = convert(actual, { format: 'object' });
     const expectedObj = convert(expected, { format: 'object' });
-    expect(expectedObj).toStrictEqual(actualObj);
+    console.log(actualObj);
+    console.log(expectedObj);
+    expect(actualObj).toStrictEqual(expectedObj);
   });
 
   // test('Mandatory Fields >2 Decimal Place Condition', () => {

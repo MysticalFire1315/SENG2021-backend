@@ -106,7 +106,11 @@ export class InvoiceModel {
   private static parseParty(input: object): Party {
     // Parse compulsory fields
     const parsed: Party = {
-      EndpointID: input[InvoiceModel.findKey(input, 'ElectronicAddress')],
+      EndpointID: {
+        '@schemeID':
+          input[InvoiceModel.findKey(input, 'ElectronicAddressScheme')],
+        '#': input[InvoiceModel.findKey(input, 'ElectronicAddress')],
+      },
       PostalAddress: InvoiceModel.parsePostalAddress(
         input[InvoiceModel.findKey(input, 'Address')],
       ),
@@ -237,7 +241,11 @@ export class InvoiceModel {
     // Can have 1-2 instances
     for (let i = 0; i < (input.length == 1 ? 1 : 2); i++) {
       const parsedTax: TaxTotalDetails = {
-        TaxAmount: input[i][InvoiceModel.findKey(input[i], 'TaxAmount')],
+        TaxAmount: {
+          '@currencyID':
+            input[i][InvoiceModel.findKey(input, 'TaxAmountCurrency')],
+          '#': input[i][InvoiceModel.findKey(input[i], 'TaxAmount')],
+        },
       };
 
       const taxSubtotalKey = InvoiceModel.findKey(input[i], 'TaxSubtotal');
@@ -576,7 +584,19 @@ export class InvoiceModel {
     InvoiceModel.replaceAllObjKeys(cloned, InvoiceModel.keyMethod);
 
     // Create the xml document
-    const root = create({ Invoice: cloned });
+    const root = create(
+      { version: '1.0', encoding: 'UTF-8' },
+      {
+        Invoice: {
+          '@xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          '@xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+          '@xmlns': 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          ...cloned,
+        },
+      },
+    );
     const xml = root.end({ prettyPrint: true });
 
     console.log(xml);

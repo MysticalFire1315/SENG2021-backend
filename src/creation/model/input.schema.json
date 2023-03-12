@@ -68,12 +68,22 @@
     "Supplier": {
       "type": "object",
       "title": "The Supplier Schema",
-      "required": ["ElectronicAddress", "Address", "PersonName"],
+      "required": [
+        "ElectronicAddress",
+        "ElectronicAddressScheme",
+        "Address",
+        "PersonName"
+      ],
       "properties": {
         "ElectronicAddress": {
           "type": "string",
           "title": "The ElectronicAddress Schema",
           "examples": ["7300010000001"]
+        },
+        "ElectronicAddressScheme": {
+          "type": "string",
+          "title": "ElectronicAddressScheme Schema",
+          "examples": ["0151"]
         },
         "BusinessName": {
           "type": "string",
@@ -170,6 +180,7 @@
       "examples": [
         {
           "ElectronicAddress": "7300010000001",
+          "ElectronicAddressScheme": "0151",
           "BusinessName": "Seller Business Name AS",
           "Address": {
             "AddressLineOne": "Main Street 1",
@@ -192,12 +203,22 @@
     "Buyer": {
       "type": "object",
       "title": "The Buyer Schema",
-      "required": ["ElectronicAddress", "Address", "PersonName"],
+      "required": [
+        "ElectronicAddress",
+        "ElectronicAddressScheme",
+        "Address",
+        "PersonName"
+      ],
       "properties": {
         "ElectronicAddress": {
           "type": "string",
           "title": "The ElectronicAddress Schema",
           "examples": ["7300010000001"]
+        },
+        "ElectronicAddressScheme": {
+          "type": "string",
+          "title": "ElectronicAddressScheme Schema",
+          "examples": ["0151"]
         },
         "BusinessName": {
           "type": "string",
@@ -294,6 +315,7 @@
       "examples": [
         {
           "ElectronicAddress": "7300010000001",
+          "ElectronicAddressScheme": "0151",
           "BusinessName": "Buyer Business Name AS",
           "Address": {
             "AddressLineOne": "Main Street 1",
@@ -321,12 +343,17 @@
       "items": {
         "type": "object",
         "title": "A Schema",
-        "required": ["TaxAmount"],
+        "required": ["TaxAmount", "TaxAmountCurrency"],
         "properties": {
           "TaxAmount": {
             "type": "number",
             "title": "The TaxAmount Schema",
             "examples": [486.25]
+          },
+          "TaxAmountCurrency": {
+            "type": "string",
+            "title": "The TaxAmountCurrency Schema",
+            "examples": ["AUD"]
           },
           "TaxSubtotal": {
             "type": "array",
@@ -414,6 +441,7 @@
         "examples": [
           {
             "TaxAmount": 486.25,
+            "TaxAmountCurrency": "AUD",
             "TaxSubtotal": [
               {
                 "TaxableAmount": 1945.0,
@@ -433,6 +461,7 @@
         [
           {
             "TaxAmount": 486.25,
+            "TaxAmountCurrency": "AUD",
             "TaxSubtotal": [
               {
                 "TaxableAmount": 1945.0,
@@ -684,6 +713,7 @@
       "TaxCurrency": "SEK",
       "Supplier": {
         "ElectronicAddress": "7300010000001",
+        "ElectronicAddressScheme": "0151",
         "BusinessName": "Seller Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
@@ -703,6 +733,7 @@
       },
       "Buyer": {
         "ElectronicAddress": "7300010000001",
+        "ElectronicAddressScheme": "0151",
         "BusinessName": "Buyer Business Name AS",
         "Address": {
           "AddressLineOne": "Main Street 1",
@@ -717,12 +748,13 @@
         "ContactInfo": {
           "Name": "xyz123",
           "Phone": "887 654 321",
-          "EMail": "test.name@foo.bar"
+          "Email": "test.name@foo.bar"
         }
       },
       "TaxTotal": [
         {
           "TaxAmount": 486.25,
+          "TaxAmountCurrency": "AUD",
           "TaxSubtotal": [
             {
               "TaxableAmount": 1945.0,
