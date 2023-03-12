@@ -10,7 +10,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreationService } from './creation.service';
 
 @Controller('creation')
@@ -37,7 +37,7 @@ export class CreationController {
   }
 
   @Post('upload/batch')
-  @UseInterceptors(FileInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files'))
   async uploadFileBatch(@UploadedFiles() files: Array<Express.Multer.File>) {
     const output = await this.creationService.invoiceUploadBatch(files);
     return output;
