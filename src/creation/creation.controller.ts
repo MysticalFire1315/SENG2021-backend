@@ -26,8 +26,8 @@ export class CreationController {
   }
 
   @Get('download')
-  @Header('Content-Type', 'application/json')
-  @Header('Content-Disposition', 'attachment; filename="package.json"')
+  @Header('Content-Type', 'application/xml')
+  @Header('Content-Disposition', 'attachment; filename="invoice.xml"')
   async downloadFile(@Query('token') token: string) {
     try {
       const output = await this.creationService.invoiceDownload(token);
