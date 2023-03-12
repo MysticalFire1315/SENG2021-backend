@@ -6,6 +6,7 @@ import { InvoiceLine1MOutput } from '../../../test/assets/inputs/compulsory/Invo
 import { InvoiceLine2MOutput } from '../../../test/assets/inputs/compulsory/InvoiceLine2MObject';
 import { InvoiceLine1OOutput } from '../../../test/assets/inputs/optional/InvoiceLine1OObject';
 import { InvoiceLine2OOutput } from '../../../test/assets/inputs/optional/InvoiceLine2OObject';
+import { DecimalsInvoiceLine1MOutput } from '../../../test/assets/inputs/others/DecimalsInvoiceLine1MObject';
 
 const path = join(process.cwd(), testAssetsPath);
 
@@ -47,42 +48,27 @@ describe('Test optional fields', () => {
   );
 });
 
-// describe('test InvoiceModel parse', () => {
-//   test('test', async () => {
-//     const newInvoice = new InvoiceModel();
-//     await newInvoice.parse(
-//       readFileSync(path + 'inputs/compulsory/InvoiceLine1M.json').toString(),
-//     );
-//     expect(newInvoice.invoiceData).toStrictEqual(output);
-//   });
-//   // test('Mandatory Field Input', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'inputM.json').toString());
-//   //   expect(newInvoice.invoiceData).toStrictEqual(outputM);
-//   // });
-//   // test('Mandatory Fields Missing Input', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'inputError.json').toString());
-//   //   expect(newInvoice.invoiceData).toThrow(Error);
-//   // });
-//   // test('Mandatory Fields >2 Decimal Place Condition', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'input2D.json').toString());
-//   //   expect(newInvoice.invoiceData).toStrictEqual(outputM);
-//   // });
-//   // test('Optional Field Input', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'inputO.json').toString());
-//   //   expect(newInvoice.invoiceData).toStrictEqual(outputO);
-//   // });
-//   // test('Multiple Invoice Line Mandatory Fields', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'inputM2Line.json').toString());
-//   //   expect(newInvoice.invoiceData).toStrictEqual(outputM2Line);
-//   // });
-//   // test('Multiple Invoice Line Optional Fields', () => {
-//   //   const newInvoice = new InvoiceModel();
-//   //   newInvoice.parse(readFileSync(path + 'inputO2Line.json').toString());
-//   //   expect(newInvoice.invoiceData).toStrictEqual(outputO2Line);
-//   // });
-// });
+describe('Test other cases', () => {
+  test('Decimals should be received as is', async () => {
+    const newInvoice = new InvoiceModel();
+    await newInvoice.parse(
+      readFileSync(
+        path + 'inputs/others/DecimalsInvoiceLine1M.json',
+      ).toString(),
+    );
+
+    expect(newInvoice.invoiceData).toStrictEqual(DecimalsInvoiceLine1MOutput);
+  });
+
+  test('Missing mandatory fields should not result in error', async () => {
+    const newInvoice = new InvoiceModel();
+    expect(
+      async () =>
+        await newInvoice.parse(
+          readFileSync(
+            path + 'inputs/others/SupplierCountryError.json',
+          ).toString(),
+        ),
+    ).not.toThrowError();
+  });
+});
