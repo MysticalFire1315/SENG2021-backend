@@ -698,7 +698,7 @@
         "ContactInfo": {
           "Name": "xyz123",
           "Phone": "887 654 321",
-          "EMail": "test.name@foo.bar"
+          "Email": "test.name@foo.bar"
         }
       },
       "Buyer": {

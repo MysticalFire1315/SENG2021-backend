@@ -1,0 +1,101 @@
+{
+  "CustomizationID": "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
+  "ProfileID": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+  "ID": "33",
+  "IssueDate": "2010-11-09",
+  "DueDate": "2011-01-01",
+  "InvoiceTypeCode": 44,
+  "Note": "Ni Hao Ma?",
+  "TaxPointDate": "2012-04-05",
+  "InvoiceCurrency": "AUD",
+  "TaxCurrency": "AUD",
+  "Supplier": {
+    "ElectronicAddress": "2541512",
+    "BusinessName": "HD Seller",
+    "Address": {
+      "AddressLineOne": "Smith St",
+      "AddressLineTwo": "Nothing else",
+      "City": "Sydney",
+      "Postcode": "The city",
+      "CountrySubdivision": "Region A",
+      "CountryCode": "AU"
+    },
+    "PersonName": "Mr HD Man",
+    "CompanyID": "1111",
+    "ContactInfo": {
+      "Name": "Your Mother",
+      "Phone": "61411111111",
+      "Email": "givesyouHD@gmail.com"
+    }
+  },
+  "Buyer": {
+    "ElectronicAddress": "14125112",
+    "BusinessName": "HD Buyer",
+    "Address": {
+      "AddressLineOne": "SomewhereElse Ave",
+      "AddressLineTwo": "Nothing else",
+      "City": "Sydney",
+      "Postcode": "The city",
+      "CountrySubdivision": "Region A",
+      "CountryCode": "AU"
+    },
+    "PersonName": "Mrs DN Haver",
+    "CompanyID": "14124",
+    "ContactInfo": {
+      "Name": "Your Father",
+      "Phone": "61422222222",
+      "Email": "IwantHD@gmail.com"
+    }
+  },
+  "TaxTotal": [
+    {
+      "TaxAmount": 100.05,
+      "TaxSubtotal": [
+        {
+          "TaxableAmount": 100.05,
+          "TaxAmount": 100.05,
+          "TaxCategory": {
+            "ID": "S",
+            "Percent": 100,
+            "ExemptionReason": "Because i said so",
+            "TaxScheme": "VAT"
+          }
+        }
+      ]
+    },
+    {
+      "TaxAmount": 100.05
+    }
+  ],
+  "LegalMonetaryTotal": {
+    "NetAmountInLines": 500.68,
+    "NetAmountWithoutTax": 500.68,
+    "NetAmountWithTax": 500.68,
+    "AllowanceTotalAmount": 500.68,
+    "ChargeTotalAmount": 500.68,
+    "PrepaidAmount": 500.68,
+    "PayableRoundingAmount": 500.68,
+    "PayableAmount": 500.68
+  },
+  "InvoiceLine": [
+    {
+      "ID": "124124",
+      "Note": "We take those",
+      "Quantity": 5,
+      "LineNetAmount": 1000.05,
+      "Item": {
+        "Name": "HD Bestower",
+        "Description": "An HD mark",
+        "TaxCategory": {
+          "ID": "S",
+          "Percent": 100,
+          "TaxScheme": "VAT"
+        }
+      },
+      "Price": {
+        "Amount": 1000.05,
+        "Quantity": 5
+      }
+    }
+  ]
+}
