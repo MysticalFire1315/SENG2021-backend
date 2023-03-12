@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { CreationModule } from './../src/creation/creation.module';
 import { join } from 'path';
 import { request, spec } from 'pactum';
-import { int, string } from 'pactum-matchers';
+import { eachLike, int, string } from 'pactum-matchers';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -78,6 +78,32 @@ describe('AppController (e2e)', () => {
         .get('/creation/download')
         .withQueryParams('token', token)
         .expectStatus(400);
+    });
+  });
+
+  describe('/creation/upload/batch (POST)', () => {
+    it('Success', () => {
+      return spec()
+        .post('/creation/upload/batch')
+        .withFile(
+          'files',
+          join(
+            process.cwd(),
+            'test/assets/inputs/compulsory/InvoiceLine1M.json',
+          ),
+        )
+        .withFile(
+          'files',
+          join(
+            process.cwd(),
+            'test/assets/inputs/compulsory/InvoiceLine2M.json',
+          ),
+        )
+        .expectStatus(201)
+        .expectJsonMatchStrict({
+          timeEstimate: int(),
+          tokens: eachLike(string()),
+        });
     });
   });
 });
