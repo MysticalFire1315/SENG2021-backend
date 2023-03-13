@@ -10,65 +10,71 @@ import { DecimalsInvoiceLine1MOutput } from '../../../test/assets/inputs/others/
 
 const path = join(process.cwd(), testAssetsPath);
 
-describe('Test compulsory fields', () => {
-  test.each([
-    { lineNum: 1, expectedObj: InvoiceLine1MOutput },
-    { lineNum: 2, expectedObj: InvoiceLine2MOutput },
-  ])(
-    'Correct compulsory fields with $lineNum invoice line',
-    async ({ lineNum, expectedObj }) => {
-      const newInvoice = new InvoiceModel();
-      await newInvoice.parse(
-        readFileSync(
-          path + `inputs/compulsory/InvoiceLine${lineNum}M.json`,
-        ).toString(),
-      );
-
-      expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
-    },
-  );
-});
-
-describe('Test optional fields', () => {
-  test.each([
-    { lineNum: 1, expectedObj: InvoiceLine1OOutput },
-    { lineNum: 2, expectedObj: InvoiceLine2OOutput },
-  ])(
-    'Correct optional fields with $lineNum invoice line',
-    async ({ lineNum, expectedObj }) => {
-      const newInvoice = new InvoiceModel();
-      await newInvoice.parse(
-        readFileSync(
-          path + `inputs/optional/InvoiceLine${lineNum}O.json`,
-        ).toString(),
-      );
-
-      expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
-    },
-  );
-});
-
-describe('Test other cases', () => {
-  test('Decimals should be received as is', async () => {
-    const newInvoice = new InvoiceModel();
-    await newInvoice.parse(
-      readFileSync(
-        path + 'inputs/others/DecimalsInvoiceLine1M.json',
-      ).toString(),
-    );
-
-    expect(newInvoice.invoiceData).toStrictEqual(DecimalsInvoiceLine1MOutput);
-  });
-
-  test('Missing mandatory fields should not result in error', async () => {
-    const newInvoice = new InvoiceModel();
-    expect(
-      async () =>
+describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+  describe('Test compulsory fields', () => {
+    test.each([
+      { lineNum: 1, expectedObj: InvoiceLine1MOutput },
+      { lineNum: 2, expectedObj: InvoiceLine2MOutput },
+    ])(
+      'Correct compulsory fields with $lineNum invoice line',
+      async ({ lineNum, expectedObj }) => {
+        const newInvoice = new InvoiceModel();
         await newInvoice.parse(
           readFileSync(
-            path + 'inputs/others/SupplierCountryError.json',
+            path + `inputs/compulsory/InvoiceLine${lineNum}M.${parseType}`,
           ).toString(),
-        ),
-    ).not.toThrowError();
+          parseType,
+        );
+
+        expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
+      },
+    );
+  });
+
+  describe('Test optional fields', () => {
+    test.each([
+      { lineNum: 1, expectedObj: InvoiceLine1OOutput },
+      { lineNum: 2, expectedObj: InvoiceLine2OOutput },
+    ])(
+      'Correct optional fields with $lineNum invoice line',
+      async ({ lineNum, expectedObj }) => {
+        const newInvoice = new InvoiceModel();
+        await newInvoice.parse(
+          readFileSync(
+            path + `inputs/optional/InvoiceLine${lineNum}O.${parseType}`,
+          ).toString(),
+          parseType,
+        );
+
+        expect(newInvoice.invoiceData).toStrictEqual(expectedObj);
+      },
+    );
+  });
+
+  describe('Test other cases', () => {
+    test('Decimals should be received as is', async () => {
+      const newInvoice = new InvoiceModel();
+      await newInvoice.parse(
+        readFileSync(
+          path + `inputs/others/DecimalsInvoiceLine1M.${parseType}`,
+        ).toString(),
+        parseType,
+      );
+
+      expect(newInvoice.invoiceData).toStrictEqual(DecimalsInvoiceLine1MOutput);
+    });
+
+    test('Missing mandatory fields should not result in error', async () => {
+      const newInvoice = new InvoiceModel();
+      expect(
+        async () =>
+          await newInvoice.parse(
+            readFileSync(
+              path + `inputs/others/SupplierCountryError.${parseType}`,
+            ).toString(),
+            parseType,
+          ),
+      ).not.toThrowError();
+    });
   });
 });

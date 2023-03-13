@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Input>
+<Input>
+    <ID>Invoice01</ID>
+    <IssueDate>2019-07-29</IssueDate>
+    <DueDate>2019-08-30</DueDate>
+    <InvoiceTypeCode>380</InvoiceTypeCode>
+    <InvoiceCurrency>AUD</InvoiceCurrency>
+    <Supplier>
+        <ElectronicAddress>47555222000</ElectronicAddress>
+        <ElectronicAddressScheme>0151</ElectronicAddressScheme>
+        <Address>
+            <CountryCode>AU</CountryCode>
+        </Address>
+        <PersonName>Supplier Official Name Ltd</PersonName>
+    </Supplier>
+    <Buyer>
+        <ElectronicAddress>91888222000</ElectronicAddress>
+        <ElectronicAddressScheme>0151</ElectronicAddressScheme>
+        <Address>
+            <CountryCode>AU</CountryCode>
+        </Address>
+        <PersonName>Buyer Official Name</PersonName>
+    </Buyer>
+    <TaxTotal>
+        <TaxAmount>148.74</TaxAmount>
+    </TaxTotal>
+    <LegalMonetaryTotal>
+        <NetAmountInLines>1487.4</NetAmountInLines>
+        <NetAmountWithoutTax>1487.4</NetAmountWithoutTax>
+        <NetAmountWithTax>1636.14</NetAmountWithTax>
+        <PayableAmount>1636.14</PayableAmount>
+    </LegalMonetaryTotal>
+    <InvoiceLine>
+        <ID>124124</ID>
+        <Quantity>10</Quantity>
+        <QuantityUnitCode>E99</QuantityUnitCode>
+        <LineNetAmount>299.9</LineNetAmount>
+        <Item>
+            <Name>True-Widgets</Name>
+            <TaxCategory>
+                <ID>S</ID>
+                <TaxScheme>GST</TaxScheme>
+            </TaxCategory>
+        </Item>
+        <Price>
+            <Amount>29.99</Amount>
+        </Price>
+    </InvoiceLine>
+</Input>

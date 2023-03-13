@@ -12,7 +12,7 @@ import {
   TaxSubtotalDetails,
   TaxTotalDetails,
 } from 'src/creation/model/invoice.schema';
-import { create } from 'xmlbuilder2';
+import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
 
 export class InvoiceModel {
@@ -110,6 +110,21 @@ export class InvoiceModel {
   }
 
   /**
+   * Strips a string of all non-alphabet characters and returns the lowercase
+   * form of the string.
+   *
+   * @private
+   * @static
+   * @param {string} str The string to modify.
+   * @return {string} The string without any non-alphabet characters and in
+   * lowercase.
+   * @memberof InvoiceModel
+   */
+  private static stripAndLower(str: string): string {
+    return str.replace(/[^a-z]/gi, '').toLowerCase();
+  }
+
+  /**
    * Finds the key in the given object matching a given key by stripping all
    * non-alphabets from the object's key and checking if it matches in
    * lowercase.
@@ -120,12 +135,11 @@ export class InvoiceModel {
    * @param {string} key The key to match against.
    * @memberof InvoiceModel
    */
-  private static findKey = (obj: object, key: string): string => {
+  private static findKey(obj: object, key: string): string {
     return Object.keys(obj).find(
-      (objKey) =>
-        objKey.replace(/[^a-z]/gi, '').toLowerCase() === key.toLowerCase(),
+      (objKey) => InvoiceModel.stripAndLower(objKey) === key.toLowerCase(),
     );
-  };
+  }
 
   /**
    * Parse raw input data as a `Party`.
@@ -272,20 +286,60 @@ export class InvoiceModel {
   private parseTaxTotal(input: object[]): TaxTotalDetails[] {
     const parsed: TaxTotalDetails[] = [];
     // Can have 1-2 instances
-    for (let i = 0; i < (input.length == 1 ? 1 : 2); i++) {
-      const parsedTax: TaxTotalDetails = {
-        TaxAmount: {
-          '@currencyID': this.currencyId,
-          '#': input[i][InvoiceModel.findKey(input[i], 'TaxAmount')],
-        },
-      };
-
-      const taxSubtotalKey = InvoiceModel.findKey(input[i], 'TaxSubtotal');
-      if (taxSubtotalKey) {
-        parsedTax.TaxSubtotal = this.parseTaxSubtotal(input[i][taxSubtotalKey]);
+    if (Array.isArray(input)) {
+      for (let i = 0; i < (input.length == 1 ? 1 : 2); i++) {
+        parsed.push(this.parseOneTaxTotal(input[i]));
       }
+    } else {
+      parsed.push(this.parseOneTaxTotal(input));
+    }
 
-      parsed.push(parsedTax);
+    return parsed;
+  }
+
+  /**
+   * Parse raw input data as a `TaxTotal`.
+   *
+   * @private
+   * @param {object} input The input to parse.
+   * @return A `TaxTotal` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private parseOneTaxTotal(input: object): TaxTotalDetails {
+    const parsedTax: TaxTotalDetails = {
+      TaxAmount: {
+        '@currencyID': this.currencyId,
+        '#': Number(input[InvoiceModel.findKey(input, 'TaxAmount')]),
+      },
+    };
+
+    const taxSubtotalKey = InvoiceModel.findKey(input, 'TaxSubtotal');
+    if (taxSubtotalKey) {
+      parsedTax.TaxSubtotal = this.parseTaxSubtotal(input[taxSubtotalKey]);
+    }
+
+    return parsedTax;
+  }
+
+  /**
+   * Parse raw input data as a `TaxSubtotal`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `TaxSubtotal` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private parseTaxSubtotal(input: object[]): TaxSubtotalDetails[] {
+    const parsed: TaxSubtotalDetails[] = [];
+    if (Array.isArray(input)) {
+      input.forEach((item) => {
+        parsed.push(this.parseOneTaxSubtotal(item));
+      });
+    } else {
+      parsed.push(this.parseOneTaxSubtotal(input));
     }
 
     return parsed;
@@ -301,27 +355,22 @@ export class InvoiceModel {
    * specifications.
    * @memberof InvoiceModel
    */
-  private parseTaxSubtotal(input: object[]): TaxSubtotalDetails[] {
-    const parsed: TaxSubtotalDetails[] = [];
-    input.forEach((item) => {
-      const parsedTax: TaxSubtotalDetails = {
-        TaxableAmount: {
-          '@currencyID': this.currencyId,
-          '#': item[InvoiceModel.findKey(item, 'TaxableAmount')],
-        },
-        TaxAmount: {
-          '@currencyID': this.currencyId,
-          '#': item[InvoiceModel.findKey(item, 'TaxAmount')],
-        },
-        TaxCategory: this.parseTaxCategory(
-          item[InvoiceModel.findKey(item, 'TaxCategory')],
-        ),
-      };
+  private parseOneTaxSubtotal(input: object): TaxSubtotalDetails {
+    const parsedTax: TaxSubtotalDetails = {
+      TaxableAmount: {
+        '@currencyID': this.currencyId,
+        '#': Number(input[InvoiceModel.findKey(input, 'TaxableAmount')]),
+      },
+      TaxAmount: {
+        '@currencyID': this.currencyId,
+        '#': Number(input[InvoiceModel.findKey(input, 'TaxAmount')]),
+      },
+      TaxCategory: this.parseTaxCategory(
+        input[InvoiceModel.findKey(input, 'TaxCategory')],
+      ),
+    };
 
-      parsed.push(parsedTax);
-    });
-
-    return parsed;
+    return parsedTax;
   }
 
   /**
@@ -355,7 +404,11 @@ export class InvoiceModel {
 
     optionalKeys.forEach(({ invoiceField, inputName }) => {
       if (inputName) {
-        parsed[invoiceField] = input[inputName];
+        if (invoiceField === 'Percent') {
+          parsed[invoiceField] = Number(input[inputName]);
+        } else {
+          parsed[invoiceField] = input[inputName];
+        }
       }
     });
 
@@ -376,19 +429,19 @@ export class InvoiceModel {
     const parsed: LegalMonetaryTotalDetails = {
       LineExtensionAmount: {
         '@currencyID': this.currencyId,
-        '#': input[InvoiceModel.findKey(input, 'NetAmountInLines')],
+        '#': Number(input[InvoiceModel.findKey(input, 'NetAmountInLines')]),
       },
       TaxExclusiveAmount: {
         '@currencyID': this.currencyId,
-        '#': input[InvoiceModel.findKey(input, 'NetAmountWithoutTax')],
+        '#': Number(input[InvoiceModel.findKey(input, 'NetAmountWithoutTax')]),
       },
       TaxInclusiveAmount: {
         '@currencyID': this.currencyId,
-        '#': input[InvoiceModel.findKey(input, 'NetAmountWithTax')],
+        '#': Number(input[InvoiceModel.findKey(input, 'NetAmountWithTax')]),
       },
       PayableAmount: {
         '@currencyID': this.currencyId,
-        '#': input[InvoiceModel.findKey(input, 'PayableAmount')],
+        '#': Number(input[InvoiceModel.findKey(input, 'PayableAmount')]),
       },
     };
 
@@ -415,7 +468,7 @@ export class InvoiceModel {
       if (inputName) {
         parsed[invoiceField] = {
           '@currencyID': this.currencyId,
-          '#': input[inputName],
+          '#': Number(input[inputName]),
         };
       }
     });
@@ -439,34 +492,52 @@ export class InvoiceModel {
     }
 
     const parsed: InvoiceLineDetails[] = [];
-    input.forEach((item) => {
-      const parsedItem: InvoiceLineDetails = {
-        ID: item[InvoiceModel.findKey(item, 'ID')],
-        InvoicedQuantity: {
-          '@unitCode': item[InvoiceModel.findKey(item, 'QuantityUnitCode')],
-          '#': item[InvoiceModel.findKey(item, 'Quantity')],
-        },
-        LineExtensionAmount: {
-          '@currencyID': this.currencyId,
-          '#': item[InvoiceModel.findKey(item, 'LineNetAmount')],
-        },
-        Item: this.parseInvoiceLineItem(
-          item[InvoiceModel.findKey(item, 'Item')],
-        ),
-        Price: this.parseInvoiceLinePrice(
-          item[InvoiceModel.findKey(item, 'Price')],
-        ),
-      };
-
-      const optionalKey = InvoiceModel.findKey(item, 'Note');
-      if (optionalKey) {
-        parsedItem.Note = item[optionalKey];
-      }
-
-      parsed.push(parsedItem);
-    });
+    if (Array.isArray(input)) {
+      input.forEach((item) => {
+        parsed.push(this.parseOneInvoiceLine(item));
+      });
+    } else {
+      parsed.push(this.parseOneInvoiceLine(input));
+    }
 
     return parsed;
+  }
+
+  /**
+   * Parse raw input data as a `InvoiceLine`.
+   *
+   * @private
+   * @static
+   * @param {object} input The input to parse.
+   * @return The `InvoiceLine` object corresponding to the UBL invoice
+   * specifications.
+   * @memberof InvoiceModel
+   */
+  private parseOneInvoiceLine(input: object): InvoiceLineDetails {
+    const parsedItem: InvoiceLineDetails = {
+      ID: input[InvoiceModel.findKey(input, 'ID')],
+      InvoicedQuantity: {
+        '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],
+        '#': Number(input[InvoiceModel.findKey(input, 'Quantity')]),
+      },
+      LineExtensionAmount: {
+        '@currencyID': this.currencyId,
+        '#': Number(input[InvoiceModel.findKey(input, 'LineNetAmount')]),
+      },
+      Item: this.parseInvoiceLineItem(
+        input[InvoiceModel.findKey(input, 'Item')],
+      ),
+      Price: this.parseInvoiceLinePrice(
+        input[InvoiceModel.findKey(input, 'Price')],
+      ),
+    };
+
+    const optionalKey = InvoiceModel.findKey(input, 'Note');
+    if (optionalKey) {
+      parsedItem.Note = input[optionalKey];
+    }
+
+    return parsedItem;
   }
 
   /**
@@ -507,7 +578,7 @@ export class InvoiceModel {
     const parsed: InvoiceLinePrice = {
       PriceAmount: {
         '@currencyID': this.currencyId,
-        '#': input[InvoiceModel.findKey(input, 'Amount')],
+        '#': Number(input[InvoiceModel.findKey(input, 'Amount')]),
       },
     };
 
@@ -515,7 +586,7 @@ export class InvoiceModel {
     if (optionalKey) {
       parsed.BaseQuantity = {
         '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],
-        '#': input[optionalKey],
+        '#': Number(input[optionalKey]),
       };
     }
 
@@ -542,7 +613,7 @@ export class InvoiceModel {
 
     const optionalKey = InvoiceModel.findKey(input, 'Percent');
     if (optionalKey) {
-      parsed.Percent = input[optionalKey];
+      parsed.Percent = Number(input[optionalKey]);
     }
 
     return parsed;
@@ -552,10 +623,20 @@ export class InvoiceModel {
    * Parse a string containing raw input data.
    *
    * @param {string} invoiceString - A JSON string of the invoice.
+   * @param {string} type - A string describing the type of input.
    */
-  public async parse(invoiceString: string): Promise<void> {
+  public async parse(invoiceString: string, type: string): Promise<void> {
     try {
-      const input = JSON.parse(invoiceString);
+      let input: object;
+      if (InvoiceModel.stripAndLower(type) === 'json') {
+        input = JSON.parse(invoiceString);
+      } else if (InvoiceModel.stripAndLower(type) === 'xml') {
+        input = convert(invoiceString, { format: 'object' });
+        // Since 'input' must be root node, extract from there
+        input = input[InvoiceModel.findKey(input, 'input')];
+      } else {
+        throw new Error('Invalid type!');
+      }
 
       this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 
@@ -637,7 +718,7 @@ export class InvoiceModel {
     // First check if parse ran into an error. If so, return the error as a
     // HTTP error
     if (this.error) {
-      this.error;
+      throw this.error;
     }
 
     // Make a deep clone of the invoice data and add necessary properties
@@ -665,7 +746,7 @@ export class InvoiceModel {
           ...cloned,
         },
       },
-    );
+    ).dtd();
     const xml = root.end({ prettyPrint: true });
 
     return xml;

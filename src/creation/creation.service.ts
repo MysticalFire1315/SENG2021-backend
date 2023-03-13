@@ -25,6 +25,7 @@ export class CreationService {
    */
   async invoiceUpload(
     file: Express.Multer.File,
+    type: string,
   ): Promise<{ timeEstimate: number; token: string }> {
     const invoice = {
       object: new InvoiceModel(),
@@ -32,7 +33,7 @@ export class CreationService {
       inUse: true,
     };
 
-    invoice.object.parse(file.buffer.toString()).then(() => {
+    invoice.object.parse(file.buffer.toString(), type).then(() => {
       invoice.inUse = false;
     });
 
@@ -68,6 +69,7 @@ export class CreationService {
    */
   async invoiceUploadBatch(
     files: Array<Express.Multer.File>,
+    type: string,
   ): Promise<{ timeEstimate: number; tokens: string[] }> {
     const tokens: string[] = [];
     for (const file of files) {
@@ -77,7 +79,7 @@ export class CreationService {
         inUse: true,
       };
 
-      invoice.object.parse(file.buffer.toString()).then(() => {
+      invoice.object.parse(file.buffer.toString(), type).then(() => {
         invoice.inUse = false;
       });
 

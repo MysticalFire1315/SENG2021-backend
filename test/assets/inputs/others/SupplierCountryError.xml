@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Input>
+<Input>
+    <InvoiceTypeCode>44</InvoiceTypeCode>
+    <InvoiceCurrency>AUD</InvoiceCurrency>
+    <Supplier>
+        <ElectronicAddress>2541512</ElectronicAddress>
+        <PersonName>Mr HD Man</PersonName>
+    </Supplier>
+    <Buyer>
+        <ElectronicAddress>14125112</ElectronicAddress>
+        <Address>
+            <CountryCode>AU</CountryCode>
+        </Address>
+        <PersonName>Mrs DN Haver</PersonName>
+    </Buyer>
+    <TaxTotal>
+        <TaxAmount>100.05</TaxAmount>
+    </TaxTotal>
+    <LegalMonetaryTotal>
+        <NetAmountInLines>500.68</NetAmountInLines>
+        <NetAmountWithoutTax>500.68</NetAmountWithoutTax>
+        <NetAmountWithTax>500.68</NetAmountWithTax>
+        <PayableAmount>500.68</PayableAmount>
+    </LegalMonetaryTotal>
+    <InvoiceLine>
+        <ID>124124</ID>
+        <Quantity>5</Quantity>
+        <LineNetAmount>1000.05</LineNetAmount>
+        <Item>
+            <Name>HD Bestower</Name>
+            <TaxCategory>
+                <ID>Z</ID>
+                <TaxScheme>VAT</TaxScheme>
+            </TaxCategory>
+        </Item>
+        <Price>
+            <Amount>1000.05</Amount>
+        </Price>
+    </InvoiceLine>
+</Input>
