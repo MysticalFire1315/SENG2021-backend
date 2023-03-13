@@ -10,7 +10,7 @@ import { DecimalsInvoiceLine1MOutput } from '../../../test/assets/inputs/others/
 
 const path = join(process.cwd(), testAssetsPath);
 
-describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
   describe('Test compulsory fields', () => {
     test.each([
       { lineNum: 1, expectedObj: InvoiceLine1MOutput },

@@ -23,7 +23,7 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+  describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
     describe('/creation/upload (POST)', () => {
       it('Success', () => {
         return spec()

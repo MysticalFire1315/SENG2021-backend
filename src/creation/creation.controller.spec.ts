@@ -46,7 +46,7 @@ describe('CreationController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+  describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
     describe('upload', () => {
       it('Upload success', async () => {
         expect(() => {

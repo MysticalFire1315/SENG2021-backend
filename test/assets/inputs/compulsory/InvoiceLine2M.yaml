@@ -1,0 +1,48 @@
+---
+ID: Invoice01
+IssueDate: '2019-07-29'
+DueDate: '2019-08-30'
+InvoiceTypeCode: 380
+InvoiceCurrency: AUD
+Supplier:
+  ElectronicAddress: '47555222000'
+  ElectronicAddressScheme: '0151'
+  Address:
+    CountryCode: AU
+  PersonName: Supplier Official Name Ltd
+Buyer:
+  ElectronicAddress: '91888222000'
+  ElectronicAddressScheme: '0151'
+  Address:
+    CountryCode: AU
+  PersonName: Buyer Official Name
+TaxTotal:
+  - TaxAmount: 148.74
+LegalMonetaryTotal:
+  NetAmountInLines: 1487.4
+  NetAmountWithoutTax: 1487.4
+  NetAmountWithTax: 1636.14
+  PayableAmount: 1636.14
+InvoiceLine:
+  - ID: '124124'
+    Quantity: 10
+    QuantityUnitCode: E99
+    LineNetAmount: 299.9
+    Item:
+      Name: True-Widgets
+      TaxCategory:
+        ID: S
+        TaxScheme: GST
+    Price:
+      Amount: 29.99
+  - ID: '124125'
+    Quantity: 5
+    QuantityUnitCode: E99
+    LineNetAmount: 50
+    Item:
+      Name: Fake-Widgets
+      TaxCategory:
+        ID: S
+        TaxScheme: GST
+    Price:
+      Amount: 10

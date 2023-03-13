@@ -6,7 +6,7 @@ import { testAssetsPath } from './spec.config';
 
 const path = join(process.cwd(), testAssetsPath);
 
-describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
   describe('Test compulsory fields', () => {
     test.each([1, 2])(
       'Correct compulsory fields with %s invoice line',

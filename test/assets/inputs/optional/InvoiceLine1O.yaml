@@ -1,0 +1,81 @@
+---
+CustomizationID: urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0
+ProfileID: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+ID: '33445566'
+IssueDate: '2017-11-01'
+DueDate: '2017-11-02'
+InvoiceTypeCode: 380
+Note: Please note our new phone number 33 44 55 66
+TaxPointDate: '2017-11-01'
+InvoiceCurrency: AUD
+TaxCurrency: AUD
+Supplier:
+  ElectronicAddress: '7300010000001'
+  ElectronicAddressScheme: '0151'
+  BusinessName: Seller Business Name AS
+  Address:
+    AddressLineOne: Main Street 1
+    AddressLineTwo: Po Box 351
+    City: London
+    Postcode: '2154'
+    CountrySubdivision: Region A
+    CountryCode: GB
+  PersonName: Full Formal Seller Name LTD.
+  CompanyID: '987654321'
+  ContactInfo:
+    Name: xyz123
+    Phone: 887 654 321
+    Email: test.name@foo.bar
+Buyer:
+  ElectronicAddress: '7300010000001'
+  ElectronicAddressScheme: '0151'
+  BusinessName: Buyer Business Name AS
+  Address:
+    AddressLineOne: Main Street 1
+    AddressLineTwo: Po Box 351
+    City: London
+    Postcode: '2154'
+    CountrySubdivision: Region A
+    CountryCode: GB
+  PersonName: Full Formal Buyer Name LTD.
+  CompanyID: '987654321'
+  ContactInfo:
+    Name: xyz123
+    Phone: 887 654 321
+    Email: test.name@foo.bar
+TaxTotal:
+  - TaxAmount: 486.25
+    TaxSubtotal:
+      - TaxableAmount: 1945
+        TaxAmount: 486.25
+        TaxCategory:
+          ID: S
+          Percent: 25
+          ExemptionReason: Exempt
+          TaxScheme: VAT
+LegalMonetaryTotal:
+  NetAmountInLines: 3800
+  NetAmountWithoutTax: 3600
+  NetAmountWithTax: 4500
+  AllowanceTotalAmount: 200
+  ChargeTotalAmount: 0
+  PrepaidAmount: 1000
+  PayableRoundingAmount: 0
+  PayableAmount: 3500
+InvoiceLine:
+  - ID: '12'
+    Note: New article number 12345
+    Quantity: 100
+    QuantityUnitCode: C62
+    LineNetAmount: 2145
+    Item:
+      Name: Item name
+      Description: Long description of the item on the invoice line
+      TaxCategory:
+        ID: S
+        Percent: 25
+        TaxScheme: VAT
+    Price:
+      Amount: 23.45
+      Quantity: 1
+      QuantityUnitCode: C62
