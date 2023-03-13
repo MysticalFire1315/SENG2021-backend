@@ -76,5 +76,17 @@ describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
           ),
       ).not.toThrowError();
     });
+
+    test('Test fields with weird names should be parsed correctly', async () => {
+      const newInvoice = new InvoiceModel();
+      await newInvoice.parse(
+        readFileSync(
+          path + `inputs/others/FieldsInvoiceLine1M.${parseType}`,
+        ).toString(),
+        parseType,
+      );
+
+      expect(newInvoice.invoiceData).toStrictEqual(InvoiceLine1MOutput);
+    });
   });
 });
