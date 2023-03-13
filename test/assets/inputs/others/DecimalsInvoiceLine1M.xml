@@ -23,19 +23,19 @@
         <PersonName>Buyer Official Name</PersonName>
     </Buyer>
     <TaxTotal>
-        <TaxAmount>148.74</TaxAmount>
+        <TaxAmount>148.741</TaxAmount>
     </TaxTotal>
     <LegalMonetaryTotal>
-        <NetAmountInLines>1487.4</NetAmountInLines>
-        <NetAmountWithoutTax>1487.4</NetAmountWithoutTax>
-        <NetAmountWithTax>1636.14</NetAmountWithTax>
-        <PayableAmount>1636.14</PayableAmount>
+        <NetAmountInLines>1487.403</NetAmountInLines>
+        <NetAmountWithoutTax>1487.402</NetAmountWithoutTax>
+        <NetAmountWithTax>1636.1401</NetAmountWithTax>
+        <PayableAmount>1636.1416</PayableAmount>
     </LegalMonetaryTotal>
     <InvoiceLine>
         <ID>124124</ID>
         <Quantity>10</Quantity>
         <QuantityUnitCode>E99</QuantityUnitCode>
-        <LineNetAmount>299.9</LineNetAmount>
+        <LineNetAmount>299.9022</LineNetAmount>
         <Item>
             <Name>True-Widgets</Name>
             <TaxCategory>
@@ -44,7 +44,7 @@
             </TaxCategory>
         </Item>
         <Price>
-            <Amount>29.99</Amount>
+            <Amount>29.986</Amount>
         </Price>
     </InvoiceLine>
 </Input>

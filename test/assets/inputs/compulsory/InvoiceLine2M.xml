@@ -47,4 +47,20 @@
             <Amount>29.99</Amount>
         </Price>
     </InvoiceLine>
+    <InvoiceLine>
+        <ID>124125</ID>
+        <Quantity>5</Quantity>
+        <QuantityUnitCode>E99</QuantityUnitCode>
+        <LineNetAmount>50</LineNetAmount>
+        <Item>
+            <Name>Fake-Widgets</Name>
+            <TaxCategory>
+                <ID>S</ID>
+                <TaxScheme>GST</TaxScheme>
+            </TaxCategory>
+        </Item>
+        <Price>
+            <Amount>10</Amount>
+        </Price>
+    </InvoiceLine>
 </Input>

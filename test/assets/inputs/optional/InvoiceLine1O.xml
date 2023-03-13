@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Input>
+<Input>
+    <CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</CustomizationID>
+    <ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ProfileID>
+    <ID>33445566</ID>
+    <IssueDate>2017-11-01</IssueDate>
+    <DueDate>2017-11-02</DueDate>
+    <InvoiceTypeCode>380</InvoiceTypeCode>
+    <Note>Please note our new phone number 33 44 55 66</Note>
+    <TaxPointDate>2017-11-01</TaxPointDate>
+    <InvoiceCurrency>AUD</InvoiceCurrency>
+    <TaxCurrency>AUD</TaxCurrency>
+    <Supplier>
+        <ElectronicAddress>7300010000001</ElectronicAddress>
+        <ElectronicAddressScheme>0151</ElectronicAddressScheme>
+        <BusinessName>Seller Business Name AS</BusinessName>
+        <Address>
+            <AddressLineOne>Main Street 1</AddressLineOne>
+            <AddressLineTwo>Po Box 351</AddressLineTwo>
+            <City>London</City>
+            <Postcode>2154</Postcode>
+            <CountrySubdivision>Region A</CountrySubdivision>
+            <CountryCode>GB</CountryCode>
+        </Address>
+        <PersonName>Full Formal Seller Name LTD.</PersonName>
+        <CompanyID>987654321</CompanyID>
+        <ContactInfo>
+            <Name>xyz123</Name>
+            <Phone>887 654 321</Phone>
+            <Email>test.name@foo.bar</Email>
+        </ContactInfo>
+    </Supplier>
+    <Buyer>
+        <ElectronicAddress>7300010000001</ElectronicAddress>
+        <ElectronicAddressScheme>0151</ElectronicAddressScheme>
+        <BusinessName>Buyer Business Name AS</BusinessName>
+        <Address>
+            <AddressLineOne>Main Street 1</AddressLineOne>
+            <AddressLineTwo>Po Box 351</AddressLineTwo>
+            <City>London</City>
+            <Postcode>2154</Postcode>
+            <CountrySubdivision>Region A</CountrySubdivision>
+            <CountryCode>GB</CountryCode>
+        </Address>
+        <PersonName>Full Formal Buyer Name LTD.</PersonName>
+        <CompanyID>987654321</CompanyID>
+        <ContactInfo>
+            <Name>xyz123</Name>
+            <Phone>887 654 321</Phone>
+            <Email>test.name@foo.bar</Email>
+        </ContactInfo>
+    </Buyer>
+    <TaxTotal>
+        <TaxAmount>486.25</TaxAmount>
+        <TaxSubtotal>
+            <TaxableAmount>1945</TaxableAmount>
+            <TaxAmount>486.25</TaxAmount>
+            <TaxCategory>
+                <ID>S</ID>
+                <Percent>25</Percent>
+                <ExemptionReason>Exempt</ExemptionReason>
+                <TaxScheme>VAT</TaxScheme>
+            </TaxCategory>
+        </TaxSubtotal>
+    </TaxTotal>
+    <LegalMonetaryTotal>
+        <NetAmountInLines>3800</NetAmountInLines>
+        <NetAmountWithoutTax>3600</NetAmountWithoutTax>
+        <NetAmountWithTax>4500</NetAmountWithTax>
+        <AllowanceTotalAmount>200</AllowanceTotalAmount>
+        <ChargeTotalAmount>0</ChargeTotalAmount>
+        <PrepaidAmount>1000</PrepaidAmount>
+        <PayableRoundingAmount>0</PayableRoundingAmount>
+        <PayableAmount>3500</PayableAmount>
+    </LegalMonetaryTotal>
+    <InvoiceLine>
+        <ID>12</ID>
+        <Note>New article number 12345</Note>
+        <Quantity>100</Quantity>
+        <QuantityUnitCode>C62</QuantityUnitCode>
+        <LineNetAmount>2145</LineNetAmount>
+        <Item>
+            <Name>Item name</Name>
+            <Description>Long description of the item on the invoice line</Description>
+            <TaxCategory>
+                <ID>S</ID>
+                <Percent>25</Percent>
+                <TaxScheme>VAT</TaxScheme>
+            </TaxCategory>
+        </Item>
+        <Price>
+            <Amount>23.45</Amount>
+            <Quantity>1</Quantity>
+            <QuantityUnitCode>C62</QuantityUnitCode>
+        </Price>
+    </InvoiceLine>
+</Input>

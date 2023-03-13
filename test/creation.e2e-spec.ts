@@ -23,91 +23,93 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  describe('/creation/upload (POST)', () => {
-    it('Success', () => {
-      return spec()
-        .post('/creation/upload')
-        .withFile(
-          'file',
-          join(
-            process.cwd(),
-            'test/assets/inputs/compulsory/InvoiceLine1M.json',
-          ),
-        )
-        .withJson({ type: 'json' })
-        .expectStatus(201)
-        .expectJsonMatchStrict({ timeEstimate: int(), token: string() });
-    });
-  });
-
-  describe('/creation/download (GET)', () => {
-    it('Success', async () => {
-      const token = await spec()
-        .post('/creation/upload')
-        .withFile(
-          'file',
-          join(
-            process.cwd(),
-            'test/assets/inputs/compulsory/InvoiceLine1M.json',
-          ),
-        )
-        .withJson({ type: 'json' })
-        .expectStatus(201)
-        .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
-        .returns('token');
-
-      return spec()
-        .get('/creation/download')
-        .withQueryParams('token', token)
-        .expectStatus(200);
+  describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+    describe('/creation/upload (POST)', () => {
+      it('Success', () => {
+        return spec()
+          .post('/creation/upload')
+          .withHeaders('type', `${parseType}`)
+          .withFile(
+            'file',
+            join(
+              process.cwd(),
+              `test/assets/inputs/compulsory/InvoiceLine1M.${parseType}`,
+            ),
+          )
+          .expectStatus(201)
+          .expectJsonMatchStrict({ timeEstimate: int(), token: string() });
+      });
     });
 
-    it('Failure', async () => {
-      const token = await spec()
-        .post('/creation/upload')
-        .withFile(
-          'file',
-          join(
-            process.cwd(),
-            'test/assets/inputs/others/SupplierCountryError.json',
-          ),
-        )
-        .withJson({ type: 'json' })
-        .expectStatus(201)
-        .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
-        .returns('token');
+    describe('/creation/download (GET)', () => {
+      it('Success', async () => {
+        const token = await spec()
+          .post('/creation/upload')
+          .withHeaders('type', `${parseType}`)
+          .withFile(
+            'file',
+            join(
+              process.cwd(),
+              `test/assets/inputs/compulsory/InvoiceLine1M.${parseType}`,
+            ),
+          )
+          .expectStatus(201)
+          .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
+          .returns('token');
 
-      return spec()
-        .get('/creation/download')
-        .withQueryParams('token', token)
-        .expectStatus(400);
+        return spec()
+          .get('/creation/download')
+          .withQueryParams('token', token)
+          .expectStatus(200);
+      });
+
+      it('Failure', async () => {
+        const token = await spec()
+          .post('/creation/upload')
+          .withHeaders('type', `${parseType}`)
+          .withFile(
+            'file',
+            join(
+              process.cwd(),
+              `test/assets/inputs/others/SupplierCountryError.${parseType}`,
+            ),
+          )
+          .expectStatus(201)
+          .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
+          .returns('token');
+
+        return spec()
+          .get('/creation/download')
+          .withQueryParams('token', token)
+          .expectStatus(400);
+      });
     });
-  });
 
-  describe('/creation/upload/batch (POST)', () => {
-    it('Success', () => {
-      return spec()
-        .post('/creation/upload/batch')
-        .withFile(
-          'files',
-          join(
-            process.cwd(),
-            'test/assets/inputs/compulsory/InvoiceLine1M.json',
-          ),
-        )
-        .withFile(
-          'files',
-          join(
-            process.cwd(),
-            'test/assets/inputs/compulsory/InvoiceLine2M.json',
-          ),
-        )
-        .withJson({ type: 'json' })
-        .expectStatus(201)
-        .expectJsonMatchStrict({
-          timeEstimate: int(),
-          tokens: eachLike(string()),
-        });
+    describe('/creation/upload/batch (POST)', () => {
+      it('Success', () => {
+        return spec()
+          .post('/creation/upload/batch')
+          .withFile(
+            'files',
+            join(
+              process.cwd(),
+              `test/assets/inputs/compulsory/InvoiceLine1M.${parseType}`,
+            ),
+          )
+          .withHeaders('type', `${parseType}`)
+          .withFile(
+            'files',
+            join(
+              process.cwd(),
+              `test/assets/inputs/compulsory/InvoiceLine2M.${parseType}`,
+            ),
+          )
+          .expectStatus(201)
+          .expectJsonMatchStrict({
+            timeEstimate: int(),
+            tokens: eachLike(string()),
+          });
+      });
     });
   });
 });

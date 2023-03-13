@@ -1,8 +1,8 @@
 import {
-  Body,
   Controller,
   Get,
   Header,
+  Headers,
   HttpException,
   HttpStatus,
   Post,
@@ -22,7 +22,7 @@ export class CreationController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() type: string,
+    @Headers('type') type: string,
   ) {
     const output = await this.creationService.invoiceUpload(file, type);
     return output;
@@ -44,7 +44,7 @@ export class CreationController {
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFileBatch(
     @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() type: string,
+    @Headers('type') type: string,
   ) {
     const output = await this.creationService.invoiceUploadBatch(files, type);
     return output;
