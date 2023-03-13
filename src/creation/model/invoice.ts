@@ -14,6 +14,7 @@ import {
 } from 'src/creation/model/invoice.schema';
 import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
+import * as yaml from 'js-yaml';
 
 export class InvoiceModel {
   // Attributes
@@ -627,13 +628,18 @@ export class InvoiceModel {
    */
   public async parse(invoiceString: string, type: string): Promise<void> {
     try {
-      let input: object;
+      let input: any;
       if (InvoiceModel.stripAndLower(type) === 'json') {
         input = JSON.parse(invoiceString);
       } else if (InvoiceModel.stripAndLower(type) === 'xml') {
         input = convert(invoiceString, { format: 'object' });
         // Since 'input' must be root node, extract from there
         input = input[InvoiceModel.findKey(input, 'input')];
+      } else if (InvoiceModel.stripAndLower(type) === 'yaml') {
+        input = yaml.load(invoiceString, {
+          schema: yaml.FAILSAFE_SCHEMA,
+          json: true,
+        });
       } else {
         throw new Error('Invalid type!');
       }

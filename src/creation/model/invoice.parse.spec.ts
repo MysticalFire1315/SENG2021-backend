@@ -10,7 +10,7 @@ import { DecimalsInvoiceLine1MOutput } from '../../../test/assets/inputs/others/
 
 const path = join(process.cwd(), testAssetsPath);
 
-describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
+describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
   describe('Test compulsory fields', () => {
     test.each([
       { lineNum: 1, expectedObj: InvoiceLine1MOutput },
@@ -75,6 +75,18 @@ describe.each(['json', 'xml'])('Test %s parsing', (parseType) => {
             parseType,
           ),
       ).not.toThrowError();
+    });
+
+    test('Test fields with weird names should be parsed correctly', async () => {
+      const newInvoice = new InvoiceModel();
+      await newInvoice.parse(
+        readFileSync(
+          path + `inputs/others/FieldsInvoiceLine1M.${parseType}`,
+        ).toString(),
+        parseType,
+      );
+
+      expect(newInvoice.invoiceData).toStrictEqual(InvoiceLine1MOutput);
     });
   });
 });
