@@ -5,6 +5,8 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
+import { FileUploadResponseEntity } from './entity/file-upload-response.entity';
+import { FilesUploadResponseEntity } from './entity/files-upload-response.entity';
 import { InvoiceModel } from './model/invoice';
 
 const INVOICE_PROCESS_TIME = 1500;
@@ -26,7 +28,7 @@ export class CreationService {
   async invoiceUpload(
     file: Express.Multer.File,
     type: string,
-  ): Promise<{ timeEstimate: number; token: string }> {
+  ): Promise<FileUploadResponseEntity> {
     const invoice = {
       object: new InvoiceModel(),
       token: nanoid(),
@@ -70,7 +72,7 @@ export class CreationService {
   async invoiceUploadBatch(
     files: Array<Express.Multer.File>,
     type: string,
-  ): Promise<{ timeEstimate: number; tokens: string[] }> {
+  ): Promise<FilesUploadResponseEntity> {
     const tokens: string[] = [];
     for (const file of files) {
       const invoice = {
