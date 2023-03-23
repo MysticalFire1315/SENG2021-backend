@@ -5,6 +5,9 @@ import { join } from 'path';
 import { request, spec } from 'pactum';
 import { eachLike, int, string } from 'pactum-matchers';
 
+// Path to the unit being tested
+const unitPath = '/api/creation';
+
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
@@ -24,10 +27,10 @@ describe('AppController (e2e)', () => {
   });
 
   describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
-    describe('/creation/upload (POST)', () => {
+    describe(unitPath + '/upload (POST)', () => {
       it('Success', () => {
         return spec()
-          .post('/creation/upload')
+          .post(unitPath + '/upload')
           .withHeaders('type', `${parseType}`)
           .withFile(
             'file',
@@ -41,10 +44,10 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    describe('/creation/download (GET)', () => {
+    describe(unitPath + '/download (GET)', () => {
       it('Success', async () => {
         const token = await spec()
-          .post('/creation/upload')
+          .post(unitPath + '/upload')
           .withHeaders('type', `${parseType}`)
           .withFile(
             'file',
@@ -58,14 +61,14 @@ describe('AppController (e2e)', () => {
           .returns('token');
 
         return spec()
-          .get('/creation/download')
+          .get(unitPath + '/download')
           .withQueryParams('token', token)
           .expectStatus(200);
       });
 
       it('Failure', async () => {
         const token = await spec()
-          .post('/creation/upload')
+          .post(unitPath + '/upload')
           .withHeaders('type', `${parseType}`)
           .withFile(
             'file',
@@ -79,16 +82,16 @@ describe('AppController (e2e)', () => {
           .returns('token');
 
         return spec()
-          .get('/creation/download')
+          .get(unitPath + '/download')
           .withQueryParams('token', token)
           .expectStatus(400);
       });
     });
 
-    describe('/creation/upload/batch (POST)', () => {
+    describe(unitPath + '/upload/batch (POST)', () => {
       it('Success', () => {
         return spec()
-          .post('/creation/upload/batch')
+          .post(unitPath + '/upload/batch')
           .withFile(
             'files',
             join(
