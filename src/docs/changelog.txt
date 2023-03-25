@@ -1,0 +1,7 @@
+Sun, 26 Mar 2023    Feature: Added route to fetch changelog
+Thu, 23 Mar 2023    Feature: Added Swagger documentation to API directly
+Mon, 13 Mar 2023    Feature: Added yaml as supported format to /upload endpoint
+Mon, 13 Mar 2023    Feature: Added xml as supported format to /upload endpoint
+Mon, 13 Mar 2023    Feature: Batch file uploads added
+Sun, 12 Mar 2023    Bugfix: Renamed /download endpoint's file name
+Sun, 12 Mar 2023    Initial deployment
