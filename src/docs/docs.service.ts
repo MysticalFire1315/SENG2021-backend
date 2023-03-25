@@ -4,12 +4,11 @@ import { join } from 'path';
 
 @Injectable()
 export class DocsService {
-  // async getLogs(): Promise<String> {
-  //   const logs = readFileSync(join(process.cwd(), 'src/docs/changelog.txt'));
-  //   console.log(logs.toString());
-  //   return logs.toString();
-  // }
-
+  /**
+   * Get the changelog file as a NestJS streamable file.
+   *
+   * @returns The contents of the changelog file as a streamable file
+   */
   async getLogs(): Promise<StreamableFile> {
     return new StreamableFile(
       readFileSync(join(process.cwd(), 'src/docs/changelog.txt')),
