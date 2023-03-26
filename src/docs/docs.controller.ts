@@ -13,7 +13,7 @@ export class DocsController {
     type: 'application/json',
     schema: { type: 'string', format: 'binary' },
   })
-  @Get('logs')
+  @Get('changelog')
   @Header('Content-Type', 'application/json')
   @Header('Content-Disposition', 'attachment; filename="changes.log"')
   async getLogs(): Promise<StreamableFile> {
