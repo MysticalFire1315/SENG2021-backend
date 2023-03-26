@@ -4,6 +4,8 @@ import { CreationModule } from './../src/creation/creation.module';
 import { join } from 'path';
 import { request, spec } from 'pactum';
 import { eachLike, int, string } from 'pactum-matchers';
+import { readFileSync } from 'fs';
+import { convert } from 'xmlbuilder2';
 
 // Path to the unit being tested
 const unitPath = '/api/creation';
@@ -60,10 +62,25 @@ describe('AppController (e2e)', () => {
           .expectJsonMatchStrict({ timeEstimate: int(), token: string() })
           .returns('token');
 
-        return spec()
-          .get(unitPath + '/download')
-          .withQueryParams('token', token)
-          .expectStatus(200);
+        const expectedOutput = convert(
+          readFileSync(
+            join(
+              process.cwd(),
+              'test/assets/outputs/compulsory/InvoiceLine1M.xml',
+            ),
+          ).toString(),
+          { format: 'object' },
+        );
+        const actualOutput = convert(
+          await spec()
+            .get(unitPath + '/download')
+            .withQueryParams('token', token)
+            .expectStatus(200)
+            .returns('res.body'),
+          { format: 'object' },
+        );
+
+        expect(actualOutput).toStrictEqual(expectedOutput);
       });
 
       it('Failure', async () => {
@@ -89,8 +106,8 @@ describe('AppController (e2e)', () => {
     });
 
     describe(unitPath + '/upload/batch (POST)', () => {
-      it('Success', () => {
-        return spec()
+      it('Success', async () => {
+        const tokens = await spec()
           .post(unitPath + '/upload/batch')
           .withFile(
             'files',
@@ -111,7 +128,30 @@ describe('AppController (e2e)', () => {
           .expectJsonMatchStrict({
             timeEstimate: int(),
             tokens: eachLike(string()),
-          });
+          })
+          .returns('tokens');
+
+        for (let i = 1; i < 3; i++) {
+          const expectedOutput = convert(
+            readFileSync(
+              join(
+                process.cwd(),
+                `test/assets/outputs/compulsory/InvoiceLine${i}M.xml`,
+              ),
+            ).toString(),
+            { format: 'object' },
+          );
+          const actualOutput = convert(
+            await spec()
+              .get(unitPath + '/download')
+              .withQueryParams('token', tokens[i - 1])
+              .expectStatus(200)
+              .returns('res.body'),
+            { format: 'object' },
+          );
+
+          expect(actualOutput).toStrictEqual(expectedOutput);
+        }
       });
     });
   });
