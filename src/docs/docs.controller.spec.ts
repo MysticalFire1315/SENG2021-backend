@@ -22,9 +22,9 @@ describe('DocsController', () => {
 
   it('Test changelog', async () => {
     const expected = readFileSync(
-      join(process.cwd(), 'changelog.txt'),
+      join(process.cwd(), '/src/docs/changelog.txt'),
     ).toString();
-    const actual = (await controller.getLogs()).getStream().read().toString;
+    const actual = (await controller.getLogs()).getStream().read().toString();
 
     expect(actual).toStrictEqual(expected);
   });
