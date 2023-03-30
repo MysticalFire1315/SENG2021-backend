@@ -29,6 +29,13 @@ export class CreationService {
     file: Express.Multer.File,
     type: string,
   ): Promise<FileUploadResponseEntity> {
+    if (
+      InvoiceModel.stripAndLower(type) !== 'json' &&
+      InvoiceModel.stripAndLower(type) !== 'xml' &&
+      InvoiceModel.stripAndLower(type) !== 'yaml'
+    ) {
+      throw new Error('type must be `json`, `xml` or `yaml`');
+    }
     const invoice = {
       object: new InvoiceModel(),
       token: nanoid(),
@@ -73,6 +80,14 @@ export class CreationService {
     files: Array<Express.Multer.File>,
     type: string,
   ): Promise<FilesUploadResponseEntity> {
+    if (
+      InvoiceModel.stripAndLower(type) !== 'json' &&
+      InvoiceModel.stripAndLower(type) !== 'xml' &&
+      InvoiceModel.stripAndLower(type) !== 'yaml'
+    ) {
+      throw new Error('type must be `json`, `xml` or `yaml`');
+    }
+
     const tokens: string[] = [];
     for (const file of files) {
       const invoice = {

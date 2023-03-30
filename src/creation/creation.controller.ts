@@ -50,8 +50,12 @@ export class CreationController {
     @UploadedFile() file: FileUploadDto['file'],
     @Headers('type') type: string,
   ): Promise<FileUploadResponseEntity> {
-    const output = await this.creationService.invoiceUpload(file, type);
-    return output;
+    try {
+      const output = await this.creationService.invoiceUpload(file, type);
+      return output;
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
@@ -95,7 +99,11 @@ export class CreationController {
     @UploadedFiles() files: FilesUploadDto['files'],
     @Headers('type') type: string,
   ): Promise<FilesUploadResponseEntity> {
-    const output = await this.creationService.invoiceUploadBatch(files, type);
-    return output;
+    try {
+      const output = await this.creationService.invoiceUploadBatch(files, type);
+      return output;
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
