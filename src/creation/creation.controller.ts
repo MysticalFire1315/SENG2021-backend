@@ -50,12 +50,8 @@ export class CreationController {
     @UploadedFile() file: FileUploadDto['file'],
     @Headers('type') type: string,
   ): Promise<FileUploadResponseEntity> {
-    try {
-      const output = await this.creationService.invoiceUpload(file, type);
-      return output;
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    const output = await this.creationService.invoiceUpload(file, type);
+    return output;
   }
 
   /**
@@ -73,12 +69,8 @@ export class CreationController {
   @Header('Content-Type', 'application/xml')
   @Header('Content-Disposition', 'attachment; filename="invoice.xml"')
   async downloadFile(@Query('token') token: string) {
-    try {
-      const output = await this.creationService.invoiceDownload(token);
-      return output;
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    const output = await this.creationService.invoiceDownload(token);
+    return output;
   }
 
   /**
@@ -99,11 +91,7 @@ export class CreationController {
     @UploadedFiles() files: FilesUploadDto['files'],
     @Headers('type') type: string,
   ): Promise<FilesUploadResponseEntity> {
-    try {
-      const output = await this.creationService.invoiceUploadBatch(files, type);
-      return output;
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    const output = await this.creationService.invoiceUploadBatch(files, type);
+    return output;
   }
 }
