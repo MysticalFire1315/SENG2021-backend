@@ -121,7 +121,7 @@ export class InvoiceModel {
    * lowercase.
    * @memberof InvoiceModel
    */
-  private static stripAndLower(str: string): string {
+  public static stripAndLower(str: string): string {
     return str.replace(/[^a-z]/gi, '').toLowerCase();
   }
 
@@ -641,6 +641,7 @@ export class InvoiceModel {
           json: true,
         });
       } else {
+        // SHould not occur, but check anyways
         throw new Error('Invalid type!');
       }
 
