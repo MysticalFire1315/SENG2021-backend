@@ -3,8 +3,6 @@ import {
   Get,
   Header,
   Headers,
-  HttpException,
-  HttpStatus,
   Post,
   Query,
   UploadedFile,
