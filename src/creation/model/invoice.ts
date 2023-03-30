@@ -15,6 +15,8 @@ import {
 import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
 import * as yaml from 'js-yaml';
+import { customAlphabet } from 'nanoid';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class InvoiceModel {
   // Attributes
@@ -27,6 +29,7 @@ export class InvoiceModel {
     ProfileID: 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
   };
   public static literals = ['@', '#'];
+  private static nanoid = customAlphabet('1234567890', 16);
 
   public get invoiceData(): InvoiceSpecification {
     return this._invoiceData;
@@ -137,9 +140,25 @@ export class InvoiceModel {
    * @memberof InvoiceModel
    */
   private static findKey(obj: object, key: string): string {
-    return Object.keys(obj).find(
+    const newKey = Object.keys(obj).find(
       (objKey) => InvoiceModel.stripAndLower(objKey) === key.toLowerCase(),
     );
+    if (newKey) {
+      return newKey;
+    } else {
+      throw new HttpException(
+        `Error: ${key} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private static findOptionalKey(obj: object, key: string): string {
+    try {
+      return this.findKey(obj, key);
+    } catch (e) {
+      return undefined;
+    }
   }
 
   /**
@@ -168,17 +187,17 @@ export class InvoiceModel {
     };
 
     // Handle optional fields
-    const partyNameKey = InvoiceModel.findKey(input, 'BusinessName');
+    const partyNameKey = InvoiceModel.findOptionalKey(input, 'BusinessName');
     if (partyNameKey) {
       parsed.PartyName = {
         Name: input[partyNameKey],
       };
     }
-    const companyIdKey = InvoiceModel.findKey(input, 'CompanyID');
+    const companyIdKey = InvoiceModel.findOptionalKey(input, 'CompanyID');
     if (companyIdKey) {
       parsed.PartyLegalEntity.CompanyID = input[companyIdKey];
     }
-    const contactKey = InvoiceModel.findKey(input, 'ContactInfo');
+    const contactKey = InvoiceModel.findOptionalKey(input, 'ContactInfo');
     if (contactKey) {
       parsed.Contact = this.parseContact(input[contactKey]);
     }
@@ -208,23 +227,23 @@ export class InvoiceModel {
     const optionalKeys = [
       {
         invoiceField: 'StreetName',
-        inputName: InvoiceModel.findKey(input, 'AddressLineOne'),
+        inputName: InvoiceModel.findOptionalKey(input, 'AddressLineOne'),
       },
       {
         invoiceField: 'AdditionalStreetName',
-        inputName: InvoiceModel.findKey(input, 'AddressLineTwo'),
+        inputName: InvoiceModel.findOptionalKey(input, 'AddressLineTwo'),
       },
       {
         invoiceField: 'CityName',
-        inputName: InvoiceModel.findKey(input, 'City'),
+        inputName: InvoiceModel.findOptionalKey(input, 'City'),
       },
       {
         invoiceField: 'PostalZone',
-        inputName: InvoiceModel.findKey(input, 'Postcode'),
+        inputName: InvoiceModel.findOptionalKey(input, 'Postcode'),
       },
       {
         invoiceField: 'CountrySubentity',
-        inputName: InvoiceModel.findKey(input, 'CountrySubdivision'),
+        inputName: InvoiceModel.findOptionalKey(input, 'CountrySubdivision'),
       },
     ];
 
@@ -253,15 +272,15 @@ export class InvoiceModel {
     const optionalKeys = [
       {
         invoiceField: 'Name',
-        inputName: InvoiceModel.findKey(input, 'Name'),
+        inputName: InvoiceModel.findOptionalKey(input, 'Name'),
       },
       {
         invoiceField: 'Telephone',
-        inputName: InvoiceModel.findKey(input, 'Phone'),
+        inputName: InvoiceModel.findOptionalKey(input, 'Phone'),
       },
       {
         invoiceField: 'ElectronicMail',
-        inputName: InvoiceModel.findKey(input, 'EMail'),
+        inputName: InvoiceModel.findOptionalKey(input, 'EMail'),
       },
     ];
 
@@ -315,7 +334,7 @@ export class InvoiceModel {
       },
     };
 
-    const taxSubtotalKey = InvoiceModel.findKey(input, 'TaxSubtotal');
+    const taxSubtotalKey = InvoiceModel.findOptionalKey(input, 'TaxSubtotal');
     if (taxSubtotalKey) {
       parsedTax.TaxSubtotal = this.parseTaxSubtotal(input[taxSubtotalKey]);
     }
@@ -395,11 +414,11 @@ export class InvoiceModel {
     const optionalKeys = [
       {
         invoiceField: 'Percent',
-        inputName: InvoiceModel.findKey(input, 'Percent'),
+        inputName: InvoiceModel.findOptionalKey(input, 'Percent'),
       },
       {
         invoiceField: 'TaxExemptionReason',
-        inputName: InvoiceModel.findKey(input, 'ExemptionReason'),
+        inputName: InvoiceModel.findOptionalKey(input, 'ExemptionReason'),
       },
     ];
 
@@ -449,19 +468,19 @@ export class InvoiceModel {
     const optionalKeys = [
       {
         invoiceField: 'AllowanceTotalAmount',
-        inputName: InvoiceModel.findKey(input, 'AllowanceTotalAmount'),
+        inputName: InvoiceModel.findOptionalKey(input, 'AllowanceTotalAmount'),
       },
       {
         invoiceField: 'ChargeTotalAmount',
-        inputName: InvoiceModel.findKey(input, 'ChargeTotalAmount'),
+        inputName: InvoiceModel.findOptionalKey(input, 'ChargeTotalAmount'),
       },
       {
         invoiceField: 'PrepaidAmount',
-        inputName: InvoiceModel.findKey(input, 'PrepaidAmount'),
+        inputName: InvoiceModel.findOptionalKey(input, 'PrepaidAmount'),
       },
       {
         invoiceField: 'PayableRoundingAmount',
-        inputName: InvoiceModel.findKey(input, 'PayableRoundingAmount'),
+        inputName: InvoiceModel.findOptionalKey(input, 'PayableRoundingAmount'),
       },
     ];
 
@@ -489,7 +508,10 @@ export class InvoiceModel {
    */
   private parseInvoiceLine(input: object[]): InvoiceLineDetails[] {
     if (input.length < 1) {
-      throw new Error('Must have at least one invoice line');
+      throw new HttpException(
+        'Must have at least one invoice line',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const parsed: InvoiceLineDetails[] = [];
@@ -533,7 +555,7 @@ export class InvoiceModel {
       ),
     };
 
-    const optionalKey = InvoiceModel.findKey(input, 'Note');
+    const optionalKey = InvoiceModel.findOptionalKey(input, 'Note');
     if (optionalKey) {
       parsedItem.Note = input[optionalKey];
     }
@@ -558,7 +580,7 @@ export class InvoiceModel {
       ),
     };
 
-    const optionalKey = InvoiceModel.findKey(input, 'Description');
+    const optionalKey = InvoiceModel.findOptionalKey(input, 'Description');
     if (optionalKey) {
       parsed.Description = input[optionalKey];
     }
@@ -583,7 +605,7 @@ export class InvoiceModel {
       },
     };
 
-    const optionalKey = InvoiceModel.findKey(input, 'Quantity');
+    const optionalKey = InvoiceModel.findOptionalKey(input, 'Quantity');
     if (optionalKey) {
       parsed.BaseQuantity = {
         '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],
@@ -612,7 +634,7 @@ export class InvoiceModel {
       },
     };
 
-    const optionalKey = InvoiceModel.findKey(input, 'Percent');
+    const optionalKey = InvoiceModel.findOptionalKey(input, 'Percent');
     if (optionalKey) {
       parsed.Percent = Number(input[optionalKey]);
     }
@@ -674,35 +696,35 @@ export class InvoiceModel {
       const optionalKeys = [
         {
           invoiceField: 'CustomizationID',
-          inputName: InvoiceModel.findKey(input, 'CustomizationID'),
+          inputName: InvoiceModel.findOptionalKey(input, 'CustomizationID'),
         },
         {
           invoiceField: 'ProfileID',
-          inputName: InvoiceModel.findKey(input, 'ProfileID'),
+          inputName: InvoiceModel.findOptionalKey(input, 'ProfileID'),
         },
         {
           invoiceField: 'ID',
-          inputName: InvoiceModel.findKey(input, 'ID'),
+          inputName: InvoiceModel.findOptionalKey(input, 'ID'),
         },
         {
           invoiceField: 'IssueDate',
-          inputName: InvoiceModel.findKey(input, 'IssueDate'),
+          inputName: InvoiceModel.findOptionalKey(input, 'IssueDate'),
         },
         {
           invoiceField: 'DueDate',
-          inputName: InvoiceModel.findKey(input, 'DueDate'),
+          inputName: InvoiceModel.findOptionalKey(input, 'DueDate'),
         },
         {
           invoiceField: 'Note',
-          inputName: InvoiceModel.findKey(input, 'Note'),
+          inputName: InvoiceModel.findOptionalKey(input, 'Note'),
         },
         {
           invoiceField: 'TaxPointDate',
-          inputName: InvoiceModel.findKey(input, 'TaxPointDate'),
+          inputName: InvoiceModel.findOptionalKey(input, 'TaxPointDate'),
         },
         {
           invoiceField: 'TaxCurrencyCode',
-          inputName: InvoiceModel.findKey(input, 'TaxCurrency'),
+          inputName: InvoiceModel.findOptionalKey(input, 'TaxCurrency'),
         },
       ];
 
@@ -731,7 +753,7 @@ export class InvoiceModel {
     // Make a deep clone of the invoice data and add necessary properties
     const cloned = {
       ...InvoiceModel.invoiceDefaults,
-      ID: 1, // generate unique id here
+      ID: InvoiceModel.nanoid(),
       IssueDate: format(new Date(), 'yyyy-MM-dd'),
       ...JSON.parse(JSON.stringify(this.invoiceData)),
     };
