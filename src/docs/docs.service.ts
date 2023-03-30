@@ -14,4 +14,16 @@ export class DocsService {
       readFileSync(join(process.cwd(), 'src/docs/changelog.txt')),
     );
   }
+
+  /**
+   * Get the input schema file for the `api/creation/upload(s)` routes as a
+   * NestJS streamable file.
+   *
+   * @returns The contents of the schema file as a streamable file
+   */
+  async getSchemaCreationUpload(): Promise<StreamableFile> {
+    return new StreamableFile(
+      readFileSync(join(process.cwd(), 'src/docs/input.schema.json')),
+    );
+  }
 }
