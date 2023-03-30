@@ -40,9 +40,11 @@ describe('AppController (e2e)', () => {
       .get(unitPath + '/schema/creation/upload')
       .expectStatus(200)
       .expectBody(
-        readFileSync(
-          join(process.cwd(), 'src/docs/input.schema.json'),
-        ).toString(),
+        JSON.parse(
+          readFileSync(
+            join(process.cwd(), 'src/docs/input.schema.json'),
+          ).toString(),
+        ),
       );
   });
 });
