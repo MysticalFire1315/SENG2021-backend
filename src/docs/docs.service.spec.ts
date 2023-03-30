@@ -26,4 +26,16 @@ describe('DocsService', () => {
 
     expect(actual).toStrictEqual(expected);
   });
+
+  it('Test schema/creation/upload', async () => {
+    const expected = readFileSync(
+      join(process.cwd(), '/src/docs/input.schema.json'),
+    ).toString();
+    const actual = (await service.getSchemaCreationUpload())
+      .getStream()
+      .read()
+      .toString();
+
+    expect(actual).toStrictEqual(expected);
+  });
 });

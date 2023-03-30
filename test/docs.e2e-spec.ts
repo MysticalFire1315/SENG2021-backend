@@ -34,4 +34,15 @@ describe('AppController (e2e)', () => {
         readFileSync(join(process.cwd(), 'src/docs/changelog.txt')).toString(),
       );
   });
+
+  it('Test schema/creation/upload', async () => {
+    return spec()
+      .get(unitPath + '/schema/creation/upload')
+      .expectStatus(200)
+      .expectBody(
+        readFileSync(
+          join(process.cwd(), 'src/docs/input.schema.json'),
+        ).toString(),
+      );
+  });
 });
