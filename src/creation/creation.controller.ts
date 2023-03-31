@@ -3,8 +3,6 @@ import {
   Get,
   Header,
   Headers,
-  HttpException,
-  HttpStatus,
   Post,
   Query,
   UploadedFile,
@@ -69,12 +67,8 @@ export class CreationController {
   @Header('Content-Type', 'application/xml')
   @Header('Content-Disposition', 'attachment; filename="invoice.xml"')
   async downloadFile(@Query('token') token: string) {
-    try {
-      const output = await this.creationService.invoiceDownload(token);
-      return output;
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    const output = await this.creationService.invoiceDownload(token);
+    return output;
   }
 
   /**
