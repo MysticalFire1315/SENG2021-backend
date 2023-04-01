@@ -11,7 +11,7 @@ export class DocsService {
    */
   async getLogs(): Promise<StreamableFile> {
     return new StreamableFile(
-      readFileSync(join(process.cwd(), 'src/docs/changelog.txt')),
+      readFileSync(join(process.cwd(), 'src/docs/static/changelog.txt')),
     );
   }
 
@@ -23,7 +23,7 @@ export class DocsService {
    */
   async getSchemaCreationUpload(): Promise<StreamableFile> {
     return new StreamableFile(
-      readFileSync(join(process.cwd(), 'src/docs/input.schema.json')),
+      readFileSync(join(process.cwd(), 'src/docs/static/input.schema.json')),
     );
   }
 }
