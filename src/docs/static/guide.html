@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>F12A Creation API User Guide</title>
@@ -52,10 +52,10 @@
       <a
         href="http://seng2021-f12a-api-env.eba-pymctycp.ap-southeast-2.elasticbeanstalk.com/docs/schema/creation/upload"
         >http://seng2021-f12a-api-env.eba-pymctycp.ap-southeast-2.elasticbeanstalk.com/docs/schema/creation/upload</a
-      >. This specification is for a <code>json​</code> formatted input file,
-      but a similar structure is required for xml​ or yaml​ (only syntax is
+      >. This specification is for a <code>json</code> formatted input file, but
+      a similar structure is required for xml or yaml (only syntax is
       different). The file is very long, but most of it is repeated examples. A
-      full example is provided from lines 711-813 in the schema​ file.
+      full example is provided from lines 711-813 in the schema file.
     </p>
     <p>
       Note that not all fields are mandatory, although this example includes all
@@ -66,49 +66,48 @@
     <p>A sample workflow for converting 1 invoice file might be as follows:</p>
     <ol>
       <li>
-        Make a <code>POST​</code> request to <code>/creation/upload</code>​
+        Make a <code>POST</code> request to <code>/creation/upload</code>
         with:
         <ul>
           <li>
-            Header as <code>{ &quot;type&quot;: &quot;json&quot; }</code>​
+            Header as <code>{ &quot;type&quot;: &quot;json&quot; }</code>
             (change &quot;json&quot; to either &quot;xml&quot; or
             &quot;yaml&quot; as required), and
           </li>
           <li>
-            Body as <code>{ &quot;file&quot;: &lt;invoice_file&gt; }</code>​,
-            where <code>&lt;invoice_file&gt;</code>​ is the file to be
-            converted.
+            Body as <code>{ &quot;file&quot;: &lt;invoice_file&gt; }</code>,
+            where <code>&lt;invoice_file&gt;</code> is the file to be converted.
           </li>
         </ul>
       </li>
       <li>
-        Retrieve response from <code>/creation/upload</code>​, which should
+        Retrieve response from <code>/creation/upload</code>, which should
         contain two fields:
         <ul>
           <li>
-            <code>timeEstimate​</code> gives a time estimate of how long it will
+            <code>timeEstimate</code> gives a time estimate of how long it will
             take to process the uploaded file, and
           </li>
           <li>
-            <code>token​</code> which is an identifier for the uploaded file.
+            <code>token</code> which is an identifier for the uploaded file.
             This is required to retrieve the UBL version of this invoice.
           </li>
         </ul>
       </li>
       <li>
-        Make a <code>GET​</code> request to <code>/creation/download</code>​
+        Make a <code>GET</code> request to <code>/creation/download</code>
         with:
         <ul>
           <li>
             Query as
-            <code>{ &quot;token&quot;: &lt;token_from_upload&gt; }</code>​,
-            where <code>&lt;token_from_upload&gt;</code>​ is the token retrieved
-            from the response to the first request.
+            <code>{ &quot;token&quot;: &lt;token_from_upload&gt; }</code>, where
+            <code>&lt;token_from_upload&gt;</code> is the token retrieved from
+            the response to the first request.
           </li>
         </ul>
       </li>
       <li>
-        Retrieve response from <code>/creation/download</code>​, which should
+        Retrieve response from <code>/creation/download</code>, which should
         contain an attachment with a file named &quot;invoice.xml&quot;. This is
         the UBL formatted invoice.
       </li>
