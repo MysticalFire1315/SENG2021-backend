@@ -35,4 +35,19 @@ export class DocsController {
     const output = await this.docsService.getSchemaCreationUpload();
     return output;
   }
+
+  /**
+   * Download the user guide for the API.
+   */
+  @ApiOkResponse({
+    type: 'application/json',
+    schema: { type: 'string', format: 'binary' },
+  })
+  @Get('guide')
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename="guide.md"')
+  async getUserGuide(): Promise<StreamableFile> {
+    const output = await this.docsService.getUserGuide();
+    return output;
+  }
 }

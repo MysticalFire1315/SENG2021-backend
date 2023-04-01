@@ -43,4 +43,11 @@ describe('AppController (e2e)', () => {
         JSON.parse(readFileSync(docsPath + 'input.schema.json').toString()),
       );
   });
+
+  it('Test guide', async () => {
+    return spec()
+      .get(unitPath + '/guide')
+      .expectStatus(200)
+      .expectBody(JSON.parse(readFileSync(docsPath + 'guide.md').toString()));
+  });
 });

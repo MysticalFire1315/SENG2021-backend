@@ -4,6 +4,8 @@ import { join } from 'path';
 
 @Injectable()
 export class DocsService {
+  private static docsPath = join(process.cwd(), 'src/docs/static/');
+
   /**
    * Get the changelog file as a NestJS streamable file.
    *
@@ -11,7 +13,7 @@ export class DocsService {
    */
   async getLogs(): Promise<StreamableFile> {
     return new StreamableFile(
-      readFileSync(join(process.cwd(), 'src/docs/static/changelog.txt')),
+      readFileSync(DocsService.docsPath + 'changelog.txt'),
     );
   }
 
@@ -23,7 +25,12 @@ export class DocsService {
    */
   async getSchemaCreationUpload(): Promise<StreamableFile> {
     return new StreamableFile(
-      readFileSync(join(process.cwd(), 'src/docs/static/input.schema.json')),
+      readFileSync(DocsService.docsPath + 'input.schema.json'),
     );
+  }
+
+  async getUserGuide(): Promise<StreamableFile> {
+    return new StreamableFile(
+      readFileSync(DocsService.docsPath + 'guide.md'));
   }
 }
