@@ -4,7 +4,7 @@ import { join } from 'path';
 import { Readable } from 'stream';
 import { convert } from 'xmlbuilder2';
 import { CreationService } from './creation.service';
-import { testAssetsPath } from './model/spec.config';
+import { testAssetsPath } from '../spec.config';
 
 const path = join(process.cwd(), testAssetsPath);
 
