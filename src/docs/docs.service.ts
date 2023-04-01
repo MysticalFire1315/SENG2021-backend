@@ -29,8 +29,7 @@ export class DocsService {
     );
   }
 
-  async getUserGuide(): Promise<StreamableFile> {
-    return new StreamableFile(
-      readFileSync(DocsService.docsPath + 'guide.md'));
+  async getUserGuide(): Promise<String> {
+    return readFileSync(DocsService.docsPath + 'guide.html').toString();
   }
 }
