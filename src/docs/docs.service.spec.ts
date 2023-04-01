@@ -37,8 +37,8 @@ describe('DocsService', () => {
   });
 
   it('Test retrieving guide', async () => {
-    const expected = readFileSync(docsPath + 'guide.md').toString();
-    const actual = (await service.getUserGuide()).getStream().read().toString();
+    const expected = readFileSync(docsPath + 'guide.html').toString();
+    const actual = await service.getUserGuide();
 
     expect(actual).toStrictEqual(expected);
   });

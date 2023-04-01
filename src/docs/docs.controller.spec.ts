@@ -40,11 +40,8 @@ describe('DocsController', () => {
   });
 
   it('Test retrieving guide', async () => {
-    const expected = readFileSync(docsPath + 'guide.md').toString();
-    const actual = (await controller.getUserGuide())
-      .getStream()
-      .read()
-      .toString();
+    const expected = readFileSync(docsPath + 'guide.html').toString();
+    const actual = await controller.getUserGuide();
 
     expect(actual).toStrictEqual(expected);
   });

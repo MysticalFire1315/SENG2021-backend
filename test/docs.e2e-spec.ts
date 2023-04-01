@@ -48,6 +48,6 @@ describe('AppController (e2e)', () => {
     return spec()
       .get(unitPath + '/guide')
       .expectStatus(200)
-      .expectBody(JSON.parse(readFileSync(docsPath + 'guide.md').toString()));
+      .expectBody(readFileSync(docsPath + 'guide.html').toString());
   });
 });
