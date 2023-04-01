@@ -29,6 +29,17 @@ export class CreationService {
     file: Express.Multer.File,
     type: string,
   ): Promise<FileUploadResponseEntity> {
+    if (
+      InvoiceModel.stripAndLower(type) !== 'json' &&
+      InvoiceModel.stripAndLower(type) !== 'xml' &&
+      InvoiceModel.stripAndLower(type) !== 'yaml'
+    ) {
+      throw new HttpException(
+        'type must be `json`, `xml` or `yaml`',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const invoice = {
       object: new InvoiceModel(),
       token: nanoid(),
@@ -58,6 +69,11 @@ export class CreationService {
     const invoice = this.invoiceList.find((invoice) => invoice.token === token);
     if (!invoice) {
       throw new HttpException('Could not find invoice', HttpStatus.NOT_FOUND);
+    } else if (invoice.inUse) {
+      throw new HttpException(
+        'Invoice still being parsed. Try again later',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
     }
     const document = await invoice.object.createUBL();
     return new StreamableFile(Buffer.from(document));
@@ -73,6 +89,17 @@ export class CreationService {
     files: Array<Express.Multer.File>,
     type: string,
   ): Promise<FilesUploadResponseEntity> {
+    if (
+      InvoiceModel.stripAndLower(type) !== 'json' &&
+      InvoiceModel.stripAndLower(type) !== 'xml' &&
+      InvoiceModel.stripAndLower(type) !== 'yaml'
+    ) {
+      throw new HttpException(
+        'type must be `json`, `xml` or `yaml`',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const tokens: string[] = [];
     for (const file of files) {
       const invoice = {
