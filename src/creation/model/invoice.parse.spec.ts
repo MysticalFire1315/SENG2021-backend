@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { InvoiceModel } from './invoice';
-import { testAssetsPath } from './spec.config';
+import { testAssetsPath } from '../../spec.config';
 import { InvoiceLine1MOutput } from '../../../test/assets/inputs/compulsory/InvoiceLine1MObject';
 import { InvoiceLine2MOutput } from '../../../test/assets/inputs/compulsory/InvoiceLine2MObject';
 import { InvoiceLine1OOutput } from '../../../test/assets/inputs/optional/InvoiceLine1OObject';

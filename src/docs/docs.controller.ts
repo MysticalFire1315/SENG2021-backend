@@ -20,4 +20,28 @@ export class DocsController {
     const output = await this.docsService.getLogs();
     return output;
   }
+
+  /**
+   * Download the input schema file for the `/api/creation/upload(s)` routes.
+   */
+  @ApiOkResponse({
+    type: 'application/json',
+    schema: { type: 'string', format: 'binary' },
+  })
+  @Get('schema/creation/upload')
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename="input.schema.json"')
+  async getSchemaCreationUpload(): Promise<StreamableFile> {
+    const output = await this.docsService.getSchemaCreationUpload();
+    return output;
+  }
+
+  /**
+   * Download the user guide for the API.
+   */
+  @Get('guide')
+  async getUserGuide(): Promise<String> {
+    const output = await this.docsService.getUserGuide();
+    return output;
+  }
 }

@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { InvoiceModel } from './invoice';
 import { convert } from 'xmlbuilder2';
-import { testAssetsPath } from './spec.config';
+import { testAssetsPath } from '../../spec.config';
 
 const path = join(process.cwd(), testAssetsPath);
 

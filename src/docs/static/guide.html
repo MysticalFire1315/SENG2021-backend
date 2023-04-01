@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>F12A Creation API User Guide</title>
+    <style>
+      /* From extension vscode.github */
+      /*---------------------------------------------------------------------------------------------
+       *  Copyright (c) Microsoft Corporation. All rights reserved.
+       *  Licensed under the MIT License. See License.txt in the project root for license information.
+       *--------------------------------------------------------------------------------------------*/
+
+      .vscode-dark img[src$='\#gh-light-mode-only'],
+      .vscode-light img[src$='\#gh-dark-mode-only'] {
+        display: none;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css"
+    />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI',
+          system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    </style>
+    <style>
+      .task-list-item {
+        list-style-type: none;
+      }
+
+      .task-list-item-checkbox {
+        margin-left: -20px;
+        vertical-align: middle;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body class="vscode-body vscode-light">
+    <h1 id="f12a-creation-api-user-guide">F12A Creation API User Guide</h1>
+    <h2 id="overview">Overview</h2>
+    <p>
+      The schema for input files is located at
+      <a
+        href="http://seng2021-f12a-api-env.eba-pymctycp.ap-southeast-2.elasticbeanstalk.com/docs/schema/creation/upload"
+        >http://seng2021-f12a-api-env.eba-pymctycp.ap-southeast-2.elasticbeanstalk.com/docs/schema/creation/upload</a
+      >. This specification is for a <code>json</code> formatted input file, but
+      a similar structure is required for xml or yaml (only syntax is
+      different). The file is very long, but most of it is repeated examples. A
+      full example is provided from lines 711-813 in the schema file.
+    </p>
+    <p>
+      Note that not all fields are mandatory, although this example includes all
+      optional fields. Field names are case insensitive and all non-alphabet
+      characters (in the field name) are stripped at runtime.
+    </p>
+    <h2 id="workflow">Workflow</h2>
+    <p>A sample workflow for converting 1 invoice file might be as follows:</p>
+    <ol>
+      <li>
+        Make a <code>POST</code> request to <code>/creation/upload</code>
+        with:
+        <ul>
+          <li>
+            Header as <code>{ &quot;type&quot;: &quot;json&quot; }</code>
+            (change &quot;json&quot; to either &quot;xml&quot; or
+            &quot;yaml&quot; as required), and
+          </li>
+          <li>
+            Body as <code>{ &quot;file&quot;: &lt;invoice_file&gt; }</code>,
+            where <code>&lt;invoice_file&gt;</code> is the file to be converted.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Retrieve response from <code>/creation/upload</code>, which should
+        contain two fields:
+        <ul>
+          <li>
+            <code>timeEstimate</code> gives a time estimate of how long it will
+            take to process the uploaded file, and
+          </li>
+          <li>
+            <code>token</code> which is an identifier for the uploaded file.
+            This is required to retrieve the UBL version of this invoice.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Make a <code>GET</code> request to <code>/creation/download</code>
+        with:
+        <ul>
+          <li>
+            Query as
+            <code>{ &quot;token&quot;: &lt;token_from_upload&gt; }</code>, where
+            <code>&lt;token_from_upload&gt;</code> is the token retrieved from
+            the response to the first request.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Retrieve response from <code>/creation/download</code>, which should
+        contain an attachment with a file named &quot;invoice.xml&quot;. This is
+        the UBL formatted invoice.
+      </li>
+    </ol>
+    <h2 id="sample-workflow-in-javascript">Sample Workflow (in JavaScript)</h2>
+    <pre><code class="language-javascript"><span class="hljs-keyword">const</span> { request, spec } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;pactum&#x27;</span>);
+
+request.<span class="hljs-title function_">setBaseUrl</span>(
+  <span class="hljs-string">&#x27;http://seng2021-f12a-api-env.eba-pymctycp.ap-southeast-2.elasticbeanstalk.com&#x27;</span>,
+);
+
+<span class="hljs-comment">// Wrapper for request to upload endpoint</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">uploadFile</span> = (<span class="hljs-params">pathToFile, fileType</span>) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">spec</span>()
+    .<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/creation/upload&#x27;</span>)
+    .<span class="hljs-title function_">withHeaders</span>(<span class="hljs-string">&#x27;type&#x27;</span>, fileType)
+    .<span class="hljs-title function_">withFile</span>(<span class="hljs-string">&#x27;file&#x27;</span>, pathToFile)
+    .<span class="hljs-title function_">expectStatus</span>(<span class="hljs-number">201</span>)
+    .<span class="hljs-title function_">returns</span>(<span class="hljs-string">&#x27;token&#x27;</span>);
+};
+
+<span class="hljs-comment">// Wrapper for request to download endpoint</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">downloadFile</span> = (<span class="hljs-params">token</span>) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">spec</span>()
+    .<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/api/creation/download&#x27;</span>)
+    .<span class="hljs-title function_">withQueryParams</span>(<span class="hljs-string">&#x27;token&#x27;</span>, token)
+    .<span class="hljs-title function_">expectStatus</span>(<span class="hljs-number">200</span>)
+    .<span class="hljs-title function_">returns</span>(<span class="hljs-string">&#x27;res.body&#x27;</span>);
+};
+
+<span class="hljs-comment">// Sample workflow</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">workflow</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">pathToFile, fileType</span>) =&gt; {
+  <span class="hljs-keyword">const</span> token = <span class="hljs-keyword">await</span> <span class="hljs-title function_">uploadFile</span>(pathToFile, fileType);
+  <span class="hljs-keyword">const</span> output = <span class="hljs-keyword">await</span> <span class="hljs-title function_">downloadFile</span>(token);
+  <span class="hljs-keyword">return</span> output;
+};
+
+<span class="hljs-title function_">workflow</span>(<span class="hljs-string">&#x27;sampleInvoice.json&#x27;</span>, <span class="hljs-string">&#x27;json&#x27;</span>);
+</code></pre>
+  </body>
+</html>

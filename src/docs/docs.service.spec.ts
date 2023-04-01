@@ -5,6 +5,7 @@ import { DocsService } from './docs.service';
 
 describe('DocsService', () => {
   let service: DocsService;
+  const docsPath = join(process.cwd(), 'src/docs/static/');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,11 +19,26 @@ describe('DocsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('Test changelog', async () => {
-    const expected = readFileSync(
-      join(process.cwd(), '/src/docs/changelog.txt'),
-    ).toString();
+  it('Test retrieving changelog', async () => {
+    const expected = readFileSync(docsPath + 'changelog.txt').toString();
     const actual = (await service.getLogs()).getStream().read().toString();
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  it('Test retrieving schema', async () => {
+    const expected = readFileSync(docsPath + 'input.schema.json').toString();
+    const actual = (await service.getSchemaCreationUpload())
+      .getStream()
+      .read()
+      .toString();
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  it('Test retrieving guide', async () => {
+    const expected = readFileSync(docsPath + 'guide.html').toString();
+    const actual = await service.getUserGuide();
 
     expect(actual).toStrictEqual(expected);
   });
