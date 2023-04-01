@@ -7,6 +7,8 @@ import { DocsModule } from './../src/docs/docs.module';
 
 // Path to the unit being tested
 const unitPath = '/docs';
+// Path to all documentation files
+const docsPath = join(process.cwd(), 'src/docs/static/');
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -30,9 +32,7 @@ describe('AppController (e2e)', () => {
     return spec()
       .get(unitPath + '/changelog')
       .expectStatus(200)
-      .expectBody(
-        readFileSync(join(process.cwd(), 'src/docs/changelog.txt')).toString(),
-      );
+      .expectBody(readFileSync(docsPath + 'changelog.txt').toString());
   });
 
   it('Test schema/creation/upload', async () => {
@@ -40,11 +40,7 @@ describe('AppController (e2e)', () => {
       .get(unitPath + '/schema/creation/upload')
       .expectStatus(200)
       .expectBody(
-        JSON.parse(
-          readFileSync(
-            join(process.cwd(), 'src/docs/input.schema.json'),
-          ).toString(),
-        ),
+        JSON.parse(readFileSync(docsPath + 'input.schema.json').toString()),
       );
   });
 });
