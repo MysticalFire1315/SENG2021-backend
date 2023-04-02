@@ -11,7 +11,7 @@ export class FrontendController {
   @Post()
   async createInvoice(
     @Body() createInvoiceDto: CreateInvoiceDto,
-  ): Promise<String> {
+  ): Promise<string[]> {
     const output = await this.frontendService.createInvoice(createInvoiceDto);
     return output;
   }

@@ -8,7 +8,7 @@ export class FrontendService {
   private readonly creationApi = new CreationApi();
   private readonly validationApi = new ValidationApi();
 
-  async createInvoice(createInvoiceDto: CreateInvoiceDto): Promise<String> {
+  async createInvoice(createInvoiceDto: CreateInvoiceDto): Promise<string[]> {
     // Parse Dto
     const invoiceParsed = createInvoiceDto.toString();
 
@@ -16,8 +16,8 @@ export class FrontendService {
     const invoiceString = await this.creationApi.request(invoiceParsed, 'json');
 
     // Call validation api
-    const invoiceValid = await this.validationApi.request(invoiceString);
+    const invoiceViolations = await this.validationApi.request(invoiceString);
 
-    return invoiceString;
+    return invoiceViolations;
   }
 }
