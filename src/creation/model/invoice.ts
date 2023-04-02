@@ -20,7 +20,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class InvoiceModel {
   // Attributes
-  private _invoiceData: InvoiceSpecification;
+  private _invoiceData: any;
   private currencyId = 'AUD';
   private error: Error = undefined;
   public static invoiceDefaults = {
@@ -178,6 +178,7 @@ export class InvoiceModel {
           input[InvoiceModel.findKey(input, 'ElectronicAddressScheme')],
         '#': input[InvoiceModel.findKey(input, 'ElectronicAddress')],
       },
+      PartyName: undefined,
       PostalAddress: this.parsePostalAddress(
         input[InvoiceModel.findKey(input, 'Address')],
       ),
@@ -192,6 +193,8 @@ export class InvoiceModel {
       parsed.PartyName = {
         Name: input[partyNameKey],
       };
+    } else {
+      delete parsed.PartyName;
     }
     const companyIdKey = InvoiceModel.findOptionalKey(input, 'CompanyID');
     if (companyIdKey) {
@@ -217,11 +220,7 @@ export class InvoiceModel {
    */
   private parsePostalAddress(input: object): PostalAddressDetails {
     // Parse compulsory fields
-    const parsed: PostalAddressDetails = {
-      Country: {
-        IdentificationCode: input[InvoiceModel.findKey(input, 'CountryCode')],
-      },
-    };
+    const parsed: any = {};
 
     // Handle optional fields
     const optionalKeys = [
@@ -252,6 +251,9 @@ export class InvoiceModel {
         parsed[invoiceField] = input[inputName];
       }
     });
+    parsed.Country = {
+      IdentificationCode: input[InvoiceModel.findKey(input, 'CountryCode')],
+    };
 
     return parsed;
   }
@@ -404,12 +406,7 @@ export class InvoiceModel {
    * @memberof InvoiceModel
    */
   private parseTaxCategory(input: object): TaxCategoryDetails {
-    const parsed: TaxCategoryDetails = {
-      ID: input[InvoiceModel.findKey(input, 'ID')],
-      TaxScheme: {
-        ID: input[InvoiceModel.findKey(input, 'TaxScheme')],
-      },
-    };
+    const parsed: any = { ID: input[InvoiceModel.findKey(input, 'ID')] };
 
     const optionalKeys = [
       {
@@ -432,6 +429,10 @@ export class InvoiceModel {
       }
     });
 
+    parsed.TaxScheme = {
+      ID: input[InvoiceModel.findKey(input, 'TaxScheme')],
+    };
+
     return parsed;
   }
 
@@ -446,7 +447,7 @@ export class InvoiceModel {
    * @memberof InvoiceModel
    */
   private parseLegalMonetaryTotal(input: object): LegalMonetaryTotalDetails {
-    const parsed: LegalMonetaryTotalDetails = {
+    const parsed: any = {
       LineExtensionAmount: {
         '@currencyID': this.currencyId,
         '#': Number(input[InvoiceModel.findKey(input, 'NetAmountInLines')]),
@@ -458,10 +459,6 @@ export class InvoiceModel {
       TaxInclusiveAmount: {
         '@currencyID': this.currencyId,
         '#': Number(input[InvoiceModel.findKey(input, 'NetAmountWithTax')]),
-      },
-      PayableAmount: {
-        '@currencyID': this.currencyId,
-        '#': Number(input[InvoiceModel.findKey(input, 'PayableAmount')]),
       },
     };
 
@@ -492,6 +489,11 @@ export class InvoiceModel {
         };
       }
     });
+
+    parsed.PayableAmount = {
+      '@currencyID': this.currencyId,
+      '#': Number(input[InvoiceModel.findKey(input, 'PayableAmount')]),
+    };
 
     return parsed;
   }
@@ -539,6 +541,7 @@ export class InvoiceModel {
   private parseOneInvoiceLine(input: object): InvoiceLineDetails {
     const parsedItem: InvoiceLineDetails = {
       ID: input[InvoiceModel.findKey(input, 'ID')],
+      Note: undefined,
       InvoicedQuantity: {
         '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],
         '#': Number(input[InvoiceModel.findKey(input, 'Quantity')]),
@@ -558,6 +561,8 @@ export class InvoiceModel {
     const optionalKey = InvoiceModel.findOptionalKey(input, 'Note');
     if (optionalKey) {
       parsedItem.Note = input[optionalKey];
+    } else {
+      delete parsedItem.Note;
     }
 
     return parsedItem;
@@ -574,6 +579,7 @@ export class InvoiceModel {
    */
   private parseInvoiceLineItem(input: object): InvoiceLineItem {
     const parsed: InvoiceLineItem = {
+      Description: undefined,
       Name: input[InvoiceModel.findKey(input, 'Name')],
       ClassifiedTaxCategory: this.parseItemTaxCategory(
         input[InvoiceModel.findKey(input, 'TaxCategory')],
@@ -583,6 +589,8 @@ export class InvoiceModel {
     const optionalKey = InvoiceModel.findOptionalKey(input, 'Description');
     if (optionalKey) {
       parsed.Description = input[optionalKey];
+    } else {
+      delete parsed.Description;
     }
 
     return parsed;
@@ -629,6 +637,7 @@ export class InvoiceModel {
   private parseItemTaxCategory(input: object): ItemTaxCategory {
     const parsed: ItemTaxCategory = {
       ID: input[InvoiceModel.findKey(input, 'ID')],
+      Percent: undefined,
       TaxScheme: {
         ID: input[InvoiceModel.findKey(input, 'TaxScheme')],
       },
@@ -637,6 +646,8 @@ export class InvoiceModel {
     const optionalKey = InvoiceModel.findOptionalKey(input, 'Percent');
     if (optionalKey) {
       parsed.Percent = Number(input[optionalKey]);
+    } else {
+      delete parsed.Percent;
     }
 
     return parsed;
@@ -669,31 +680,9 @@ export class InvoiceModel {
 
       this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 
-      this._invoiceData = {
-        InvoiceTypeCode: String(
-          input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
-        ),
-        DocumentCurrencyCode: this.currencyId,
-        AccountingSupplierParty: {
-          Party: this.parseParty(
-            input[InvoiceModel.findKey(input, 'Supplier')],
-          ),
-        },
-        AccountingCustomerParty: {
-          Party: this.parseParty(input[InvoiceModel.findKey(input, 'Buyer')]),
-        },
-        TaxTotal: this.parseTaxTotal(
-          input[InvoiceModel.findKey(input, 'TaxTotal')],
-        ),
-        LegalMonetaryTotal: this.parseLegalMonetaryTotal(
-          input[InvoiceModel.findKey(input, 'LegalMonetaryTotal')],
-        ),
-        InvoiceLine: this.parseInvoiceLine(
-          input[InvoiceModel.findKey(input, 'InvoiceLine')],
-        ),
-      };
+      this._invoiceData = {};
 
-      const optionalKeys = [
+      let optionalKeys = [
         {
           invoiceField: 'CustomizationID',
           inputName: InvoiceModel.findOptionalKey(input, 'CustomizationID'),
@@ -714,6 +703,17 @@ export class InvoiceModel {
           invoiceField: 'DueDate',
           inputName: InvoiceModel.findOptionalKey(input, 'DueDate'),
         },
+      ];
+      optionalKeys.forEach(({ invoiceField, inputName }) => {
+        if (inputName) {
+          this._invoiceData[invoiceField] = input[inputName];
+        }
+      });
+      this._invoiceData.InvoiceTypeCode = String(
+        input[InvoiceModel.findKey(input, 'InvoiceTypeCode')],
+      );
+
+      optionalKeys = [
         {
           invoiceField: 'Note',
           inputName: InvoiceModel.findOptionalKey(input, 'Note'),
@@ -722,6 +722,15 @@ export class InvoiceModel {
           invoiceField: 'TaxPointDate',
           inputName: InvoiceModel.findOptionalKey(input, 'TaxPointDate'),
         },
+      ];
+      optionalKeys.forEach(({ invoiceField, inputName }) => {
+        if (inputName) {
+          this._invoiceData[invoiceField] = input[inputName];
+        }
+      });
+      this._invoiceData.DocumentCurrencyCode = this.currencyId;
+
+      optionalKeys = [
         {
           invoiceField: 'TaxCurrencyCode',
           inputName: InvoiceModel.findOptionalKey(input, 'TaxCurrency'),
@@ -731,7 +740,6 @@ export class InvoiceModel {
           inputName: InvoiceModel.findOptionalKey(input, 'BuyerReference'),
         },
       ];
-
       optionalKeys.forEach(({ invoiceField, inputName }) => {
         if (inputName) {
           this._invoiceData[invoiceField] = input[inputName];
@@ -742,6 +750,27 @@ export class InvoiceModel {
       if (orderRefKey) {
         this._invoiceData['OrderReference']['ID'] = input[orderRefKey];
       }
+
+      this._invoiceData = {
+        ...this._invoiceData,
+        AccountingSupplierParty: {
+          Party: this.parseParty(
+            input[InvoiceModel.findKey(input, 'Supplier')],
+          ),
+        },
+        AccountingCustomerParty: {
+          Party: this.parseParty(input[InvoiceModel.findKey(input, 'Buyer')]),
+        },
+        TaxTotal: this.parseTaxTotal(
+          input[InvoiceModel.findKey(input, 'TaxTotal')],
+        ),
+        LegalMonetaryTotal: this.parseLegalMonetaryTotal(
+          input[InvoiceModel.findKey(input, 'LegalMonetaryTotal')],
+        ),
+        InvoiceLine: this.parseInvoiceLine(
+          input[InvoiceModel.findKey(input, 'InvoiceLine')],
+        ),
+      };
     } catch (e) {
       this.error = e;
     }
