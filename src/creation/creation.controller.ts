@@ -22,8 +22,8 @@ import {
 import { CreationService } from './creation.service';
 import { FileUploadDto } from './dto/file-upload.dto';
 import { FilesUploadDto } from './dto/files-upload.dto';
-import { FileUploadResponseEntity } from './entity/file-upload-response.entity';
-import { FilesUploadResponseEntity } from './entity/files-upload-response.entity';
+import { FileUploadResponseEntity } from './entities/file-upload-response.entity';
+import { FilesUploadResponseEntity } from './entities/files-upload-response.entity';
 
 @ApiTags('creation')
 @Controller('api/creation')

@@ -5,8 +5,8 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
-import { FileUploadResponseEntity } from './entity/file-upload-response.entity';
-import { FilesUploadResponseEntity } from './entity/files-upload-response.entity';
+import { FileUploadResponseEntity } from './entities/file-upload-response.entity';
+import { FilesUploadResponseEntity } from './entities/files-upload-response.entity';
 import { InvoiceModel } from './model/invoice';
 
 const INVOICE_PROCESS_TIME = 1500;
