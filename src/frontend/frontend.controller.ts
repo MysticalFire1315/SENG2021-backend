@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FrontendService } from './frontend.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
@@ -12,7 +19,21 @@ export class FrontendController {
   async createInvoice(
     @Body() createInvoiceDto: CreateInvoiceDto,
   ): Promise<{ token: string; violations: string[] }> {
-    const output = await this.frontendService.createInvoice(createInvoiceDto);
-    return output;
+    try {
+      const output = await this.frontendService.createInvoice(createInvoiceDto);
+      return output;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Get('invoice/render')
+  async renderInvoice(@Query('token') token: string): Promise<string> {
+    try {
+      const output = await this.frontendService.renderHtml(token);
+      return output;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 }

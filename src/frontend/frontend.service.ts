@@ -6,13 +6,14 @@ import {
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { CreationApi } from './api/creation.api';
 import { ValidationApi } from './api/validation.api';
-import { nanoid } from 'nanoid';
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { customAlphabet } from 'nanoid';
+import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { RenderingApi } from './api/rendering.api';
 import { ApiError } from './api/error.api';
 
 const pathToDb = join(process.cwd(), 'src/frontend/db/');
+const nanoid = customAlphabet('0123456789', 5);
 
 @Injectable()
 export class FrontendService
@@ -58,17 +59,172 @@ export class FrontendService
    * @returns A path to the invoice itself.
    */
   private retrieveInvoicePath(token: string): string {
+    console.log(token);
+    console.log(this.storedInvoices);
+    console.log(this.storedInvoices.includes(token));
     if (!this.storedInvoices.includes(token)) {
       return undefined;
     }
     return `${pathToDb}/${token}.xml`;
   }
 
+  private parseInvoice(createInvoiceDto: CreateInvoiceDto): string {
+    const parsed = {
+      CustomizationID:
+        'urn:cen.eu:en16931:2017#conformant#urn:fdc:peppol.eu:2017:poacc:billing:international:aunz:3.0',
+      ID: createInvoiceDto.invoiceid,
+      IssueDate: createInvoiceDto.issuedate,
+      DueDate: createInvoiceDto.duedate,
+      InvoiceTypeCode: 380,
+      // TaxPointDate: '2017-11-01',
+      InvoiceCurrency: createInvoiceDto.invoicecurrency,
+      // TaxCurrency: 'SEK',
+      BuyerReference: createInvoiceDto.buyerref,
+      // OrderReference: '98776',
+      Supplier: {
+        ElectronicAddress: createInvoiceDto.sellerelectronicaddress,
+        ElectronicAddressScheme: createInvoiceDto.sellerelectronicaddressscheme,
+        BusinessName: createInvoiceDto.sellercompany,
+        Address: {
+          AddressLineOne: createInvoiceDto.selleraddress,
+          // AddressLineTwo: 'Po Box 351',
+          City: createInvoiceDto.sellercity,
+          Postcode: createInvoiceDto.sellerpostcode,
+          // CountrySubdivision: 'Region A',
+          CountryCode: createInvoiceDto.sellercountry,
+        },
+        PersonName: createInvoiceDto.sellername,
+        // CompanyID: '987654321',
+        // ContactInfo: {
+        //   Name: 'xyz123',
+        //   Phone: '887 654 321',
+        //   Email: 'test.name@foo.bar',
+        // },
+      },
+      Buyer: {
+        ElectronicAddress: createInvoiceDto.buyerelectronicaddress,
+        ElectronicAddressScheme: createInvoiceDto.buyerelectronicaddressscheme,
+        BusinessName: createInvoiceDto.buyercompany,
+        Address: {
+          AddressLineOne: createInvoiceDto.buyeraddress,
+          // AddressLineTwo: 'Po Box 351',
+          City: createInvoiceDto.buyercity,
+          Postcode: createInvoiceDto.buyerpostcode,
+          // CountrySubdivision: 'Region A',
+          CountryCode: createInvoiceDto.buyercountry,
+        },
+        PersonName: createInvoiceDto.buyername,
+        // CompanyID: '987654321',
+        // ContactInfo: {
+        //   Name: 'xyz123',
+        //   Phone: '887 654 321',
+        //   Email: 'test.name@foo.bar',
+        // },
+      },
+      TaxTotal: [
+        {
+          TaxAmount: createInvoiceDto.taxamount,
+          // TaxSubtotal: [
+          //   {
+          //     TaxableAmount: 1945.0,
+          //     TaxAmount: 486.25,
+          //     TaxCategory: {
+          //       ID: 'S',
+          //       Percent: 25.0,
+          //       ExemptionReason: 'Exempt',
+          //       TaxScheme: 'VAT',
+          //     },
+          //   },
+          // ],
+        },
+      ],
+      LegalMonetaryTotal: {
+        NetAmountInLines: 3800.0,
+        NetAmountWithoutTax: 3600.0,
+        NetAmountWithTax: 4500.0,
+        // AllowanceTotalAmount: 200.0,
+        // ChargeTotalAmount: 0.0,
+        // PrepaidAmount: 1000.0,
+        // PayableRoundingAmount: 0.0,
+        PayableAmount: 3500.0,
+      },
+      InvoiceLine: [],
+    };
+
+    // {
+    //   ID: '12',
+    //   Note: 'New article number 12345',
+    //   Quantity: 100,
+    //   QuantityUnitCode: 'C62',
+    //   LineNetAmount: 2145.0,
+    //   Item: {
+    //     Name: 'Item name',
+    //     Description: 'Long description of the item on the invoice line',
+    //     TaxCategory: {
+    //       ID: '5',
+    //       Percent: 25.0,
+    //       TaxScheme: 'VAT',
+    //     },
+    //   },
+    //   Price: {
+    //     Amount: 23.45,
+    //     Quantity: 1,
+    //     QuantityUnitCode: 'C62',
+    //   },
+    // },
+
+    // Handle invoice lines
+    Object.keys(createInvoiceDto)
+      .filter((key) => key.match(/^name[0-9]+/m))
+      .forEach((key) => {
+        const index = key.substring(4);
+        parsed.InvoiceLine.push({
+          ID: nanoid(),
+          Quantity: createInvoiceDto['quantity' + index],
+          QuantityUnitCode: createInvoiceDto['unitcode' + index],
+          LineNetAmount:
+            createInvoiceDto['quantity' + index] *
+            createInvoiceDto['cost' + index],
+          Item: {
+            Name: createInvoiceDto['name' + index],
+            Description: createInvoiceDto['description' + index],
+            TaxCategory: {
+              ID: 'E',
+              Percent: 0,
+              TaxScheme: 'GST',
+            },
+          },
+          Price: {
+            Amount: createInvoiceDto['cost' + index],
+          },
+        });
+      });
+
+    // Handle legal monetary total
+    parsed.LegalMonetaryTotal.NetAmountInLines = parsed.InvoiceLine.reduce(
+      (acc, cur) => acc + cur.LineNetAmount,
+      0,
+    );
+    parsed.LegalMonetaryTotal.NetAmountWithTax =
+      parsed.LegalMonetaryTotal.NetAmountInLines + parsed.TaxTotal[0].TaxAmount;
+    parsed.LegalMonetaryTotal.NetAmountWithoutTax =
+      parsed.LegalMonetaryTotal.NetAmountInLines;
+    parsed.LegalMonetaryTotal.PayableAmount =
+      parsed.LegalMonetaryTotal.NetAmountInLines;
+
+    // Handle optional fields
+    if (createInvoiceDto.notes) {
+      parsed['Note'] = createInvoiceDto.notes;
+    }
+
+    return JSON.stringify(parsed);
+  }
+
   async createInvoice(
     createInvoiceDto: CreateInvoiceDto,
   ): Promise<{ token: string; violations: string[] }> {
     // Parse Dto
-    const invoiceParsed = createInvoiceDto.toString();
+    const invoiceParsed = this.parseInvoice(createInvoiceDto);
 
     // Call creation api
     const invoiceString = await this.creationApi.request(invoiceParsed, 'json');

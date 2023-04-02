@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createReadStream, writeFileSync } from 'fs';
-import tmp from 'tmp';
+import * as tmp from 'tmp';
 import { ApiError } from './error.api';
 
 tmp.setGracefulCleanup();
@@ -72,7 +72,7 @@ export class CreationApi {
 
   async request(invoiceString: string, invoiceType: string): Promise<string> {
     // Request to upload
-    let uploadResponse = await this.uploadFile(invoiceString, invoiceType);
+    const uploadResponse = await this.uploadFile(invoiceString, invoiceType);
 
     // Attempt request to download, keep looping if unsuccessful with 503 code
     let response: { statusCode: number; data: string } = {
