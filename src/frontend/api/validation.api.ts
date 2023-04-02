@@ -62,29 +62,35 @@ export class ValidationApi {
     return response;
   }
 
-  async request(invoiceString: string): Promise<boolean> {
+  private getViolations(apiResponse: object): string[] {
+    const evaluations = {
+      wellformedness: apiResponse['wellformedness_evaluation'],
+      schema: apiResponse['schema_evaluation'],
+      syntax: apiResponse['syntax_evaluation'],
+      peppol: apiResponse['peppol_evaluation'],
+    };
+
+    const violations: string[] = [];
+    Object.values(evaluations).forEach((evaluation) => {
+      if (evaluation) {
+        evaluation.violations.forEach((violation) =>
+          violations.push(violation.message),
+        );
+      }
+    });
+
+    return violations;
+  }
+
+  async request(invoiceString: string): Promise<string[]> {
     // Request to upload
     let uploadResponse = await this.uploadFile(invoiceString);
 
     // Delay for a bit to give server time to process request
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    let response: { statusCode: number; data: string } = undefined;
+    let response = await this.downloadReport(uploadResponse.report_id);
 
-    // Delay for given timeout
-    await new Promise((resolve) =>
-      setTimeout(resolve, uploadResponse.data.timeEstimate),
-    );
-    try {
-      response = await this.downloadFile(uploadResponse.data.token);
-    } catch (error) {
-      if (error.status === 503) {
-        response.statusCode = 503;
-      } else {
-        throw error;
-      }
-    }
-
-    return check_validations;
+    return this.getViolations(response);
   }
 }
