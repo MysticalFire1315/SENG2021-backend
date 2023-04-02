@@ -65,6 +65,16 @@
       "title": "The TaxCurrency Schema",
       "examples": ["SEK"]
     },
+    "BuyerReference": {
+      "type": "string",
+      "title": "The BuyerReference Schema",
+      "examples": ["abs1234"]
+    },
+    "OrderReference": {
+      "type": "string",
+      "title": "The OrderReference Schema",
+      "examples": ["98776"]
+    },
     "Supplier": {
       "type": "object",
       "title": "The Supplier Schema",
@@ -719,6 +729,8 @@
       "TaxPointDate": "2017-11-01",
       "InvoiceCurrency": "EUR",
       "TaxCurrency": "SEK",
+      "BuyerReference": "abs1234",
+      "OrderReference": "98776",
       "Supplier": {
         "ElectronicAddress": "7300010000001",
         "ElectronicAddressScheme": "0151",
