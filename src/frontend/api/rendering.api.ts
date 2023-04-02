@@ -7,20 +7,19 @@ export class RenderingApi {
     baseURL: 'https://macroservices.masterofcubesau.com/api/v2/',
   });
 
-  private key: string;
+  private key: string = undefined;
 
-  constructor() {
-    this.getKey().then((key) => (this.key = key));
-  }
-
-  private async getKey(): Promise<string> {
-    const response = await this.axiosInstance.get('/generatekey');
-    return response.data.key;
+  async setKey() {
+    this.key = await this.axiosInstance.get('/generatekey');
   }
 
   async renderHtml(
     path: string,
   ): Promise<{ statusCode: number; data: string }> {
+    if (this.key === undefined) {
+      await this.setKey();
+    }
+
     let response = undefined;
     try {
       const axiosResponse = await this.axiosInstance.post(
