@@ -4,7 +4,7 @@ export class CreateInvoiceDto {
   duedate: string;
   notes?: string;
   invoicecurrency: string;
-  buyerref: string;
+  buyerreference: string;
   sellerelectronicaddress: string;
   sellerelectronicaddressscheme: string;
   sellercompany: string;
