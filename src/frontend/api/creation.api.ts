@@ -70,7 +70,7 @@ export class CreationApi {
     return response;
   }
 
-  async request(invoiceString: string, invoiceType: string): Promise<String> {
+  async request(invoiceString: string, invoiceType: string): Promise<string> {
     // Request to upload
     let uploadResponse = await this.uploadFile(invoiceString, invoiceType);
 
