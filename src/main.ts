@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['debug'],
+    cors: { origin: '*' },
   });
 
   const APP_NAME = process.env.npm_package_name;
