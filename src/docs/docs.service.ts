@@ -1,10 +1,24 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
-import { readFileSync } from 'fs';
+import {
+  Injectable,
+  OnApplicationShutdown,
+  StreamableFile,
+} from '@nestjs/common';
+import { readFileSync, rmSync } from 'fs';
 import { join } from 'path';
 
 @Injectable()
-export class DocsService {
+export class DocsService implements OnApplicationShutdown {
   private static docsPath = join(process.cwd(), 'src/docs/static/');
+
+  /**
+   * Remove request logs on application end.
+   */
+  onApplicationShutdown() {
+    rmSync(join(process.cwd(), 'src/docs/static/requests.log'), {
+      force: true,
+      recursive: true,
+    });
+  }
 
   /**
    * Get the changelog file as a NestJS streamable file.
