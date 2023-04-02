@@ -9,6 +9,8 @@ import { ValidationApi } from './api/validation.api';
 import { nanoid } from 'nanoid';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { RenderingApi } from './api/rendering.api';
+import { ApiError } from './api/error.api';
 
 const pathToDb = join(process.cwd(), 'src/frontend/db/');
 
@@ -18,6 +20,7 @@ export class FrontendService
 {
   private readonly creationApi = new CreationApi();
   private readonly validationApi = new ValidationApi();
+  private readonly renderingApi = new RenderingApi();
 
   private readonly storedInvoices: string[] = [];
 
@@ -49,13 +52,16 @@ export class FrontendService
   }
 
   /**
-   * Retrieve an invoice from the database.
+   * Retrieve the path to an invoice from the database.
    *
    * @param token The token associated with the invoice.
-   * @returns The invoice itself.
+   * @returns A path to the invoice itself.
    */
-  private retrieveInvoice(token: string): string {
-    return readFileSync(`${pathToDb}/${token}.xml`).toString();
+  private retrieveInvoicePath(token: string): string {
+    if (!this.storedInvoices.includes(token)) {
+      return undefined;
+    }
+    return `${pathToDb}/${token}.xml`;
   }
 
   async createInvoice(
@@ -79,5 +85,16 @@ export class FrontendService
     }
 
     return { token, violations };
+  }
+
+  async renderHtml(token: string): Promise<string> {
+    const invoicePath = this.retrieveInvoicePath(token);
+
+    if (invoicePath === undefined) {
+      throw new ApiError({ status: 400, message: 'Token not found' });
+    }
+
+    const response = await this.renderingApi.renderHtml(invoicePath);
+    return response.data;
   }
 }
