@@ -8,7 +8,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 export class FrontendController {
   constructor(private frontendService: FrontendService) {}
 
-  @Post()
+  @Post('invoice/create')
   async createInvoice(
     @Body() createInvoiceDto: CreateInvoiceDto,
   ): Promise<{ token: string; violations: string[] }> {
