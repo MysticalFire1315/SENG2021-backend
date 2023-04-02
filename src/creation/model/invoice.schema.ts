@@ -123,6 +123,26 @@ type InvoiceSpecification = {
   TaxCurrencyCode?: string;
 
   /**
+   * An identifier assigned by the Buyer used for internal routing purposes.
+   *
+   * @name BuyerReference
+   * @memberof Invoice
+   * @cardinality 0..1
+   * @optional
+   */
+  BuyerReference?: string;
+
+  /**
+   * An identifier of a referenced purchase order, issued by the Buyer.
+   *
+   * @name OrderReference
+   * @memberof Invoice
+   * @cardinality 0..1
+   * @optional
+   */
+  OrderReference?: { ID: string };
+
+  /**
    * A group of business terms providing information about the Seller.
    *
    * @namespace AccountingSupplierParty

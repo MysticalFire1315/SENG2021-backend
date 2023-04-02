@@ -726,6 +726,10 @@ export class InvoiceModel {
           invoiceField: 'TaxCurrencyCode',
           inputName: InvoiceModel.findOptionalKey(input, 'TaxCurrency'),
         },
+        {
+          invoiceField: 'BuyerReference',
+          inputName: InvoiceModel.findOptionalKey(input, 'BuyerReference'),
+        },
       ];
 
       optionalKeys.forEach(({ invoiceField, inputName }) => {
@@ -733,6 +737,11 @@ export class InvoiceModel {
           this._invoiceData[invoiceField] = input[inputName];
         }
       });
+
+      const orderRefKey = InvoiceModel.findOptionalKey(input, 'OrderReference');
+      if (orderRefKey) {
+        this._invoiceData['OrderReference']['ID'] = input[orderRefKey];
+      }
     } catch (e) {
       this.error = e;
     }
