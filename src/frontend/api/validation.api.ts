@@ -45,7 +45,7 @@ export class ValidationApi {
   private async downloadReport(
     report_id: string,
   ): Promise<{ statusCode: number; data: object }> {
-    let response: { statusCode: number; data: string } = undefined;
+    let response: { statusCode: number; data: object } = undefined;
 
     try {
       const axiosResponse = await this.axiosInstance.get(
