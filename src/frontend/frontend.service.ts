@@ -59,9 +59,6 @@ export class FrontendService
    * @returns A path to the invoice itself.
    */
   private retrieveInvoicePath(token: string): string {
-    console.log(token);
-    console.log(this.storedInvoices);
-    console.log(this.storedInvoices.includes(token));
     if (!this.storedInvoices.includes(token)) {
       return undefined;
     }
