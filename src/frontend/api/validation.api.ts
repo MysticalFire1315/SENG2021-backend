@@ -44,7 +44,7 @@ export class ValidationApi {
 
   private async downloadReport(
     report_id: string,
-  ): Promise<{ statusCode: number; data: string }> {
+  ): Promise<{ statusCode: number; data: object }> {
     let response: { statusCode: number; data: string } = undefined;
 
     try {
@@ -84,13 +84,13 @@ export class ValidationApi {
 
   async request(invoiceString: string): Promise<string[]> {
     // Request to upload
-    let uploadResponse = await this.uploadFile(invoiceString);
+    const uploadResponse = await this.uploadFile(invoiceString);
 
     // Delay for a bit to give server time to process request
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    let response = await this.downloadReport(uploadResponse.report_id);
+    const response = await this.downloadReport(uploadResponse.report_id);
 
-    return this.getViolations(response);
+    return this.getViolations(response.data);
   }
 }
