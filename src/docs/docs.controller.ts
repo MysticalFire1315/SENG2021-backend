@@ -1,7 +1,8 @@
 import { Controller, Get, Header, StreamableFile } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { DocsService } from './docs.service';
 
+@ApiTags('documentation')
 @Controller('docs')
 export class DocsController {
   constructor(private docsService: DocsService) {}
