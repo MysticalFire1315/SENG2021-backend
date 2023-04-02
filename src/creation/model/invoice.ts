@@ -198,7 +198,10 @@ export class InvoiceModel {
     }
     const companyIdKey = InvoiceModel.findOptionalKey(input, 'CompanyID');
     if (companyIdKey) {
-      parsed.PartyLegalEntity.CompanyID = input[companyIdKey];
+      parsed.PartyLegalEntity.CompanyID = {
+        '@schemeID': '0151',
+        '#': input[companyIdKey],
+      };
     }
     const contactKey = InvoiceModel.findOptionalKey(input, 'ContactInfo');
     if (contactKey) {
@@ -678,8 +681,6 @@ export class InvoiceModel {
         throw new Error('Invalid type!');
       }
 
-      console.log(invoiceString);
-
       this.currencyId = input[InvoiceModel.findKey(input, 'InvoiceCurrency')];
 
       this._invoiceData = {};
@@ -817,7 +818,6 @@ export class InvoiceModel {
       },
     ).dtd();
     const xml = root.end({ prettyPrint: true });
-    console.log(xml);
 
     return xml;
   }
