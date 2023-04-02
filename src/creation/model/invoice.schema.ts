@@ -256,7 +256,7 @@ type Party = {
      * @cardinality 0..1
      * @optional
      */
-    CompanyID?: string;
+    CompanyID?: { '@schemeID': string; '#': string };
   };
 
   /**
