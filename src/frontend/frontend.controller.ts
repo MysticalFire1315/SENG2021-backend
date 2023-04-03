@@ -29,6 +29,7 @@ export class FrontendController {
 
   @Get('invoice/render')
   async renderInvoice(@Query('token') token: string): Promise<string> {
+    console.log(token);
     try {
       const output = await this.frontendService.renderHtml(token);
       return output;
