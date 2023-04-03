@@ -1,3 +1,4 @@
+Mon, 03 Apr 2023    Feature: Added endpoint to fetch request logs
 Mon, 03 Apr 2023    Bugfix: Patched /api/creation/upload to parse fields in correct order
 Sun, 02 Apr 2023    Bugfix: Added BuyerReference and OrderReference as optional fields
 Sun, 02 Apr 2023    Feature: Added user guide for API
