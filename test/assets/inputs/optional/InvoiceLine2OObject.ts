@@ -31,7 +31,7 @@ export const InvoiceLine2OOutput = {
       },
       PartyLegalEntity: {
         RegistrationName: 'Full Formal Seller Name LTD.',
-        CompanyID: '987654321',
+        CompanyID: { '#': '987654321', '@schemeID': '0151' },
       },
       Contact: {
         Name: 'xyz123',
@@ -61,7 +61,7 @@ export const InvoiceLine2OOutput = {
       },
       PartyLegalEntity: {
         RegistrationName: 'Full Formal Buyer Name LTD.',
-        CompanyID: '987654321',
+        CompanyID: { '#': '987654321', '@schemeID': '0151' },
       },
       Contact: {
         Name: 'xyz123',
