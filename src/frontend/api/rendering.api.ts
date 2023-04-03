@@ -10,7 +10,7 @@ export class RenderingApi {
   private key: string = undefined;
 
   async setKey() {
-    this.key = await this.axiosInstance.get('/generatekey');
+    this.key = (await this.axiosInstance.get('/generatekey')).data.key;
   }
 
   async renderHtml(
