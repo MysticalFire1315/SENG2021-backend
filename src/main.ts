@@ -7,12 +7,23 @@ import {
 import { AppModule } from './app.module';
 import { CreationModule } from './creation/creation.module';
 import { DocsModule } from './docs/docs.module';
+import * as morgan from 'morgan';
+import { createWriteStream } from 'fs';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['debug'],
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
     cors: { origin: '*' },
   });
+  app.use(
+    morgan('common', {
+      stream: createWriteStream(
+        join(process.cwd(), 'src/docs/static/requests.log'),
+        { flags: 'a' },
+      ),
+    }),
+  );
 
   const APP_NAME = process.env.npm_package_name;
   const APP_VERSION = process.env.npm_package_version;

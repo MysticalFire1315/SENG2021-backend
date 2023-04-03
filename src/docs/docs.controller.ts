@@ -38,11 +38,27 @@ export class DocsController {
   }
 
   /**
-   * Download the user guide for the API.
+   * Get the user guide for the API.
    */
   @Get('guide')
-  async getUserGuide(): Promise<String> {
+  async getUserGuide(): Promise<string> {
     const output = await this.docsService.getUserGuide();
+    return output;
+  }
+
+  /**
+   * Download the requests log file for this API. (This includes requests to
+   * the /frontend routes).
+   */
+  @ApiOkResponse({
+    type: 'application/json',
+    schema: { type: 'string', format: 'binary' },
+  })
+  @Get('changelog')
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename="requests.log"')
+  async getRequestLogs(): Promise<StreamableFile> {
+    const output = await this.docsService.getRequestLogs();
     return output;
   }
 }
