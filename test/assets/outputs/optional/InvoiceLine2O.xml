@@ -34,7 +34,7 @@
 
       <cac:PartyLegalEntity>
         <cbc:RegistrationName>Full Formal Seller Name LTD.</cbc:RegistrationName>
-        <cbc:CompanyID>987654321</cbc:CompanyID>
+        <cbc:CompanyID schemeID="0151">987654321</cbc:CompanyID>
       </cac:PartyLegalEntity>
 
       <cac:Contact>
@@ -65,7 +65,7 @@
 
       <cac:PartyLegalEntity>
         <cbc:RegistrationName>Full Formal Buyer Name LTD.</cbc:RegistrationName>
-        <cbc:CompanyID>987654321</cbc:CompanyID>
+        <cbc:CompanyID schemeID="0151">987654321</cbc:CompanyID>
       </cac:PartyLegalEntity>
 
       <cac:Contact>
