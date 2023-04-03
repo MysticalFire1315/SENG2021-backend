@@ -43,7 +43,13 @@ export class DocsService implements OnApplicationShutdown {
     );
   }
 
-  async getUserGuide(): Promise<String> {
+  async getUserGuide(): Promise<string> {
     return readFileSync(DocsService.docsPath + 'guide.html').toString();
+  }
+
+  async getRequestLogs(): Promise<StreamableFile> {
+    return new StreamableFile(
+      readFileSync(DocsService.docsPath + 'requests.log'),
+    );
   }
 }
