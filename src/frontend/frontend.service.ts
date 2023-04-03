@@ -59,9 +59,6 @@ export class FrontendService
    * @returns A path to the invoice itself.
    */
   private retrieveInvoicePath(token: string): string {
-    console.log(token);
-    console.log(this.storedInvoices);
-    console.log(this.storedInvoices.includes(token));
     if (!this.storedInvoices.includes(token)) {
       return undefined;
     }
@@ -79,12 +76,12 @@ export class FrontendService
       // TaxPointDate: '2017-11-01',
       InvoiceCurrency: createInvoiceDto.invoicecurrency,
       // TaxCurrency: 'SEK',
-      BuyerReference: createInvoiceDto.buyerref,
-      // OrderReference: '98776',
+      BuyerReference: createInvoiceDto.buyerreference,
       Supplier: {
         ElectronicAddress: createInvoiceDto.sellerelectronicaddress,
         ElectronicAddressScheme: createInvoiceDto.sellerelectronicaddressscheme,
         BusinessName: createInvoiceDto.sellercompany,
+        CompanyID: '88599352161',
         Address: {
           AddressLineOne: createInvoiceDto.selleraddress,
           // AddressLineTwo: 'Po Box 351',
@@ -105,6 +102,7 @@ export class FrontendService
         ElectronicAddress: createInvoiceDto.buyerelectronicaddress,
         ElectronicAddressScheme: createInvoiceDto.buyerelectronicaddressscheme,
         BusinessName: createInvoiceDto.buyercompany,
+        CompanyID: '88599352161',
         Address: {
           AddressLineOne: createInvoiceDto.buyeraddress,
           // AddressLineTwo: 'Po Box 351',
@@ -124,18 +122,18 @@ export class FrontendService
       TaxTotal: [
         {
           TaxAmount: createInvoiceDto.taxamount,
-          // TaxSubtotal: [
-          //   {
-          //     TaxableAmount: 1945.0,
-          //     TaxAmount: 486.25,
-          //     TaxCategory: {
-          //       ID: 'S',
-          //       Percent: 25.0,
-          //       ExemptionReason: 'Exempt',
-          //       TaxScheme: 'VAT',
-          //     },
-          //   },
-          // ],
+          TaxSubtotal: [
+            {
+              TaxableAmount: 0,
+              TaxAmount: 0,
+              TaxCategory: {
+                ID: 'E',
+                Percent: 0,
+                ExemptionReason: 'Exempt',
+                TaxScheme: 'GST',
+              },
+            },
+          ],
         },
       ],
       LegalMonetaryTotal: {
@@ -205,12 +203,15 @@ export class FrontendService
       (acc, cur) => acc + cur.LineNetAmount,
       0,
     );
+    parsed.TaxTotal[0].TaxSubtotal[0].TaxableAmount =
+      parsed.LegalMonetaryTotal.NetAmountInLines;
     parsed.LegalMonetaryTotal.NetAmountWithTax =
-      parsed.LegalMonetaryTotal.NetAmountInLines + parsed.TaxTotal[0].TaxAmount;
+      Number(parsed.LegalMonetaryTotal.NetAmountInLines) +
+      Number(parsed.TaxTotal[0].TaxAmount);
     parsed.LegalMonetaryTotal.NetAmountWithoutTax =
       parsed.LegalMonetaryTotal.NetAmountInLines;
     parsed.LegalMonetaryTotal.PayableAmount =
-      parsed.LegalMonetaryTotal.NetAmountInLines;
+      parsed.LegalMonetaryTotal.NetAmountWithTax;
 
     // Handle optional fields
     if (createInvoiceDto.notes) {
