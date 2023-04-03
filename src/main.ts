@@ -14,7 +14,11 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
-    cors: { origin: '*' },
+    cors: {
+      origin: '*',
+      methods: 'GET, PUT, POST, DELETE',
+      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+    },
   });
   app.use(
     morgan('common', {
