@@ -4,7 +4,7 @@ import { ApiError } from './error.api';
 
 export class RenderingApi {
   private axiosInstance = axios.create({
-    baseURL: 'https://macroservices.masterofcubesau.com/api/v2/',
+    baseURL: 'https://macroservices.masterofcubesau.com/api/v3/',
   });
 
   private key: string = undefined;
