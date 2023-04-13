@@ -8,13 +8,13 @@ import { join } from 'path';
 
 @Injectable()
 export class DocsService implements OnApplicationShutdown {
-  private static docsPath = join(process.cwd(), 'src/docs/static/');
+  private static docsPath = join(process.cwd(), 'src/server/docs/static/');
 
   /**
    * Remove request logs on application end.
    */
   onApplicationShutdown() {
-    rmSync(join(process.cwd(), 'src/docs/static/requests.log'), {
+    rmSync(join(DocsService.docsPath, 'requests.log'), {
       force: true,
       recursive: true,
     });

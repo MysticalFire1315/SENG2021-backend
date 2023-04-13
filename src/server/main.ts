@@ -23,7 +23,7 @@ async function bootstrap() {
   app.use(
     morgan('common', {
       stream: createWriteStream(
-        join(process.cwd(), 'src/docs/static/requests.log'),
+        join(process.cwd(), 'src/server/docs/static/requests.log'),
         { flags: 'a' },
       ),
     }),
