@@ -11,7 +11,7 @@ import {
   TaxCategoryDetails,
   TaxSubtotalDetails,
   TaxTotalDetails,
-} from 'src/creation/model/invoice.schema';
+} from './invoice.schema';
 import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
 import * as yaml from 'js-yaml';
