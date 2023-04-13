@@ -1,0 +1,11 @@
+.main-component {
+    text-align: center;
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 50px;
+    padding: 20px 70px 50px 70px;
+    margin-bottom: 100px;
+    border: 1px outset black;
+    border-radius: 10px;
+    background-color: #DCD2CC;
+}

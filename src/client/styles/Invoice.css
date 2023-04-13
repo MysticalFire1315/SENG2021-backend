@@ -1,0 +1,185 @@
+#invoice-box {
+  background-color: rgb(250, 250, 250);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 200px;
+  margin-top: 160px;
+  width: 850px;
+  min-height: 1200px; /*subject to change from flexbox invoice items*/
+  border: 1px solid black;
+  padding: 0px; /*subject to change*/
+  box-shadow: 1px 1px 8px 1px gray;
+  font-family: Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-headers {
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.invoice-init-values {
+  display: inline-block;
+}
+/* TODO
+.init-details {
+  display: table-cell;
+  width: 600px;
+} */
+
+#invoice-title {
+  position: absolute;
+  margin-left: 580px;
+  margin-top: 100px;
+}
+
+#invoice-buyer {
+  position: inherit;
+  width: 450px;
+  margin-left: 70px;
+  margin-top: 100px;
+}
+
+#invoice-seller {
+  position: inherit;
+  width: 450px;
+  margin-left: 70px;
+  margin-top: 60px;
+}
+
+#invoice-date {
+  position: absolute;
+  width: 200px;
+  margin-left: 500px;
+  margin-top: 445px;
+}
+
+#invoice-item-tab {
+  border: 1px solid rgb(77, 77, 77);
+  margin: 70px 40px 10px 35px;
+  padding: 5px 2px 0px 2px;
+  background-color: rgb(77, 77, 77);
+  color: rgb(255, 255, 255);
+}
+
+.invoice-elements {
+  vertical-align: middle;
+  margin-bottom: 8px;
+}
+
+.invoice-elements > li {
+  display: inline;
+  font-weight: bold;
+}
+
+.invoice-elements > li:nth-child(2) {
+  margin-left: 220px;
+}
+.invoice-elements > li:nth-child(3) {
+  margin-left: 20px;
+}
+.invoice-elements > li:nth-child(4) {
+  margin-left: 50px;
+}
+.invoice-elements > li:nth-child(5) {
+  margin-left: 160px;
+}
+
+.invoice-element-value > li {
+  display: inline;
+}
+
+.invoice-item {
+  margin-left: 15px;
+}
+
+.item-quantity {
+  margin-left: 15px;
+}
+.item-description {
+  margin-left: 20px;
+}
+.item-cost {
+  margin-left: 15px;
+}
+
+.invoice-item input {
+  padding: 5px;
+  margin: 5px 0;
+  border-width: 0;
+}
+.txtbgcolor:focus {
+  outline-color: rgb(236, 180, 60);
+  outline-style: dotted;
+  border-radius: 10px;
+  /* border-bottom: 2px solid #1c87c9; */
+}
+
+.button-delete {
+  margin-left: 8px;
+  border-radius: 45%;
+  background-color: #c7c7c7;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  border: transparent;
+  display: inline;
+}
+.button-delete:active {
+  color: rgb(235, 46, 46);
+}
+
+#invoice-options {
+  position: absolute;
+  margin: auto;
+  text-align: center;
+  margin-top: -120px;
+  margin-left: 225px;
+}
+
+#invoice-note {
+  position: relative;
+  margin-left: 35px;
+  margin-top: -220px;
+  margin-bottom: 150px;
+  width: 450px;
+}
+
+#invoice-final-details {
+  font-weight: bold;
+  position: relative;
+  margin-left: 550px;
+  margin-top: 60px;
+  margin-bottom: 50px;
+  width: 300px;
+}
+
+#invoice-gross-amount,
+#invoice-tax-amount,
+#invoice-discount,
+#invoice-net-amount {
+  display: inline-flex;
+  text-align: center;
+  margin: 2px 0 2px 0;
+}
+.final-pad {
+  margin-right: 5px;
+}
+
+#invoice-footer {
+  position: relative;
+  font-size: smaller;
+  font-style: italic;
+  margin-left: 30px;
+  margin-bottom: 5px;
+  margin-top: auto;
+}
+
+#formFileSm {
+  width: 200px;
+  margin: auto;
+}
+
+.fileInput {
+  margin: auto;
+}

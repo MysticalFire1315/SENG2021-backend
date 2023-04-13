@@ -1,0 +1,14 @@
+#currency-box{
+    position:absolute;
+    display: inline-block;
+    width: 150px;
+    height: 290px;
+    border: 1px solid #C0C9CC;
+    background-color: #C0C9CC;
+    border-radius: 10px;
+    vertical-align: middle;
+    text-align: center;
+    padding: 20px 15px 20px 15px;
+    margin-top: 800px;
+    margin-left: 880px;
+}
