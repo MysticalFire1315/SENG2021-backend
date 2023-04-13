@@ -30,8 +30,8 @@ export class FrontendController {
 
   @Get('invoice/render')
   @Header('Access-Control-Allow-Origin', '*')
-  @Header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   @Header('Access-Control-Allow-Headers', 'Content-Type')
+  @Header('Content-Type', 'application/html')
   async renderInvoice(@Query('token') token: string): Promise<string> {
     console.log(token);
     try {
