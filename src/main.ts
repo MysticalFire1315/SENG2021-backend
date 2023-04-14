@@ -10,6 +10,7 @@ import { DocsModule } from './docs/docs.module';
 import * as morgan from 'morgan';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -28,6 +29,7 @@ async function bootstrap() {
       ),
     }),
   );
+  app.use('/interface', express.static('../staticInterface'));
 
   const APP_NAME = process.env.npm_package_name;
   const APP_VERSION = process.env.npm_package_version;
