@@ -15,7 +15,7 @@ import {
 import { convert, create } from 'xmlbuilder2';
 import { format } from 'date-fns';
 import * as yaml from 'js-yaml';
-import { customAlphabet } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class InvoiceModel {
@@ -542,8 +542,10 @@ export class InvoiceModel {
    * @memberof InvoiceModel
    */
   private parseOneInvoiceLine(input: object): InvoiceLineDetails {
+    const idKey = InvoiceModel.findOptionalKey(input, 'ID');
+    const id = idKey ? input[idKey] : nanoid();
     const parsedItem: InvoiceLineDetails = {
-      ID: input[InvoiceModel.findKey(input, 'ID')],
+      ID: id,
       Note: undefined,
       InvoicedQuantity: {
         '@unitCode': input[InvoiceModel.findKey(input, 'QuantityUnitCode')],

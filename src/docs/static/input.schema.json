@@ -552,7 +552,7 @@
       "items": {
         "type": "object",
         "title": "A Schema",
-        "required": ["ID", "Quantity", "LineNetAmount", "Item", "Price"],
+        "required": ["Quantity", "LineNetAmount", "Item", "Price"],
         "properties": {
           "ID": {
             "type": "string",
