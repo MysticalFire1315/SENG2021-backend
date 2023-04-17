@@ -45,10 +45,10 @@ describe('CreationService', () => {
 
   describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
     describe('upload', () => {
-      it('Upload success', () => {
+      it('Upload file success', () => {
         expect(() => {
           service
-            .invoiceUpload(
+            .invoiceUploadFile(
               toFile(
                 readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
               ),
@@ -63,8 +63,24 @@ describe('CreationService', () => {
         }).not.toThrowError();
       });
 
-      it('Tokens should be different', async () => {
-        const output1 = await service.invoiceUpload(
+      it('Upload string success', () => {
+        expect(() => {
+          service
+            .invoiceUploadString(
+              readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+              parseType,
+            )
+            .then((value) => {
+              expect(value).toStrictEqual({
+                timeEstimate: expect.any(Number),
+                token: expect.any(String),
+              });
+            });
+        }).not.toThrowError();
+      });
+
+      it('Tokens should be different (file)', async () => {
+        const output1 = await service.invoiceUploadFile(
           toFile(
             readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
           ),
@@ -76,7 +92,7 @@ describe('CreationService', () => {
         });
         const token1 = output1.token;
 
-        const output2 = await service.invoiceUpload(
+        const output2 = await service.invoiceUploadFile(
           toFile(
             readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
           ),
@@ -90,11 +106,35 @@ describe('CreationService', () => {
 
         expect(token1).not.toStrictEqual(token2);
       });
+
+      it('Tokens should be different (string)', async () => {
+        const output1 = await service.invoiceUploadString(
+          readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+          parseType,
+        );
+        expect(output1).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token1 = output1.token;
+
+        const output2 = await service.invoiceUploadString(
+          readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
+          parseType,
+        );
+        expect(output2).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token2 = output2.token;
+
+        expect(token1).not.toStrictEqual(token2);
+      });
     });
 
     describe('download', () => {
-      it('Download success', async () => {
-        const output = await service.invoiceUpload(
+      it('Download file success', async () => {
+        const output = await service.invoiceUploadFile(
           toFile(
             readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
           ),
@@ -107,7 +147,7 @@ describe('CreationService', () => {
         const token = output.token;
 
         expect(() => {
-          service.invoiceDownload(token).then((value) => {
+          service.invoiceDownloadFile(token).then((value) => {
             const expectedOutput = readFile(
               path + 'outputs/compulsory/InvoiceLine1M.xml',
             );
@@ -120,8 +160,33 @@ describe('CreationService', () => {
         }).not.toThrowError();
       });
 
-      it('Download failed', async () => {
-        const output = await service.invoiceUpload(
+      it('Download string success', async () => {
+        const output = await service.invoiceUploadString(
+          readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token = output.token;
+
+        expect(() => {
+          service.invoiceDownloadString(token).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine1M.xml',
+            );
+
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+      });
+
+      it('Download file failed', async () => {
+        const output = await service.invoiceUploadFile(
           toFile(
             readFile(path + `inputs/others/SupplierCountryError.${parseType}`),
           ),
@@ -134,12 +199,28 @@ describe('CreationService', () => {
         const token = output.token;
 
         expect(
-          async () => await service.invoiceDownload(token),
+          async () => await service.invoiceDownloadFile(token),
         ).rejects.toThrowError();
       });
 
-      it('Download success from batch', async () => {
-        const output = await service.invoiceUploadBatch(
+      it('Download string failed', async () => {
+        const output = await service.invoiceUploadString(
+          readFile(path + `inputs/others/SupplierCountryError.${parseType}`),
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token = output.token;
+
+        expect(
+          async () => await service.invoiceDownloadString(token),
+        ).rejects.toThrowError();
+      });
+
+      it('Download success from batch (file)', async () => {
+        const output = await service.invoiceUploadBatchFile(
           [
             toFile(
               readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
@@ -157,7 +238,7 @@ describe('CreationService', () => {
         const tokens = output.tokens;
 
         expect(() => {
-          service.invoiceDownload(tokens[0]).then((value) => {
+          service.invoiceDownloadFile(tokens[0]).then((value) => {
             const expectedOutput = readFile(
               path + 'outputs/compulsory/InvoiceLine1M.xml',
             );
@@ -170,7 +251,7 @@ describe('CreationService', () => {
         }).not.toThrowError();
 
         expect(() => {
-          service.invoiceDownload(tokens[1]).then((value) => {
+          service.invoiceDownloadFile(tokens[1]).then((value) => {
             const expectedOutput = readFile(
               path + 'outputs/compulsory/InvoiceLine2M.xml',
             );
@@ -182,13 +263,52 @@ describe('CreationService', () => {
           });
         }).not.toThrowError();
       });
+
+      it('Download success from batch (string)', async () => {
+        const output = await service.invoiceUploadBatchString(
+          [
+            readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+            readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
+          ],
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          tokens: expect.any(Array<string>),
+        });
+        const tokens = output.tokens;
+
+        expect(() => {
+          service.invoiceDownloadString(tokens[0]).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine1M.xml',
+            );
+
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+
+        expect(() => {
+          service.invoiceDownloadString(tokens[1]).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine2M.xml',
+            );
+
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+      });
     });
 
     describe('uploadBatch', () => {
-      it('Upload success', () => {
+      it('Upload file success', () => {
         expect(() => {
           service
-            .invoiceUploadBatch(
+            .invoiceUploadBatchFile(
               [
                 toFile(
                   readFile(
@@ -200,6 +320,25 @@ describe('CreationService', () => {
                     path + `inputs/compulsory/InvoiceLine2M.${parseType}`,
                   ),
                 ),
+              ],
+              parseType,
+            )
+            .then((value) => {
+              expect(value).toStrictEqual({
+                timeEstimate: expect.any(Number),
+                tokens: expect.any(Array<string>),
+              });
+            });
+        }).not.toThrowError();
+      });
+
+      it('Upload string success', () => {
+        expect(() => {
+          service
+            .invoiceUploadBatchString(
+              [
+                readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+                readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
               ],
               parseType,
             )

@@ -1,10 +1,12 @@
 import {
+  Body,
   Controller,
   Get,
   Header,
   Headers,
   Post,
   Query,
+  StreamableFile,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -22,8 +24,10 @@ import {
 import { CreationService } from './creation.service';
 import { FileUploadDto } from './dto/file-upload.dto';
 import { FilesUploadDto } from './dto/files-upload.dto';
-import { FileUploadResponseEntity } from './entities/file-upload-response.entity';
-import { FilesUploadResponseEntity } from './entities/files-upload-response.entity';
+import { InvoiceUploadResponseEntity } from './entities/invoice-upload-response.entity';
+import { InvoicesUploadResponseEntity } from './entities/invoices-upload-response.entity';
+import { StringUploadDto } from './dto/string-upload.dto';
+import { StringsUploadDto } from './dto/strings-upload.dto';
 
 @ApiTags('creation')
 @Controller('api/creation')
@@ -41,14 +45,36 @@ export class CreationController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
-  @ApiCreatedResponse({ type: FileUploadResponseEntity })
+  @ApiCreatedResponse({ type: InvoiceUploadResponseEntity })
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: FileUploadDto['file'],
     @Headers('type') type: string,
-  ): Promise<FileUploadResponseEntity> {
-    const output = await this.creationService.invoiceUpload(file, type);
+  ): Promise<InvoiceUploadResponseEntity> {
+    const output = await this.creationService.invoiceUploadFile(file, type);
+    return output;
+  }
+
+  /**
+   * Upload an invoice string.
+   */
+  @ApiHeader({
+    name: 'type',
+    description:
+      'The format the invoice details in the string is in. Must be one' +
+      ' of the following:\n- `json`\n- `xml`\n- `yaml`',
+  })
+  @ApiBody({ type: StringUploadDto })
+  @Post('upload/string')
+  async uploadString(
+    @Body('invoice') invoiceString: StringUploadDto['invoice'],
+    @Headers('type') type: string,
+  ): Promise<InvoiceUploadResponseEntity> {
+    const output = await this.creationService.invoiceUploadString(
+      invoiceString,
+      type,
+    );
     return output;
   }
 
@@ -66,8 +92,24 @@ export class CreationController {
   @Get('download')
   @Header('Content-Type', 'application/xml')
   @Header('Content-Disposition', 'attachment; filename="invoice.xml"')
-  async downloadFile(@Query('token') token: string) {
-    const output = await this.creationService.invoiceDownload(token);
+  async downloadFile(@Query('token') token: string): Promise<StreamableFile> {
+    const output = await this.creationService.invoiceDownloadFile(token);
+    return output;
+  }
+
+  /**
+   * Get the UML version of an uploaded invoice.
+   */
+  @ApiOkResponse({
+    type: 'application/xml',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invoice uploaded was unable to be parsed.',
+    type: 'string',
+  })
+  @Get('download/string')
+  async downloadString(@Query('token') token: string): Promise<string> {
+    const output = await this.creationService.invoiceDownloadString(token);
     return output;
   }
 
@@ -82,14 +124,40 @@ export class CreationController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FilesUploadDto })
-  @ApiCreatedResponse({ type: FilesUploadResponseEntity })
+  @ApiCreatedResponse({ type: InvoicesUploadResponseEntity })
   @Post('upload/batch')
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFileBatch(
     @UploadedFiles() files: FilesUploadDto['files'],
     @Headers('type') type: string,
-  ): Promise<FilesUploadResponseEntity> {
-    const output = await this.creationService.invoiceUploadBatch(files, type);
+  ): Promise<InvoicesUploadResponseEntity> {
+    const output = await this.creationService.invoiceUploadBatchFile(
+      files,
+      type,
+    );
+    return output;
+  }
+
+  /**
+   * Upload a batch of invoice strings.
+   */
+  @ApiHeader({
+    name: 'type',
+    description:
+      'The format the invoice details in the strings are in. Must be ' +
+      'one of the following:\n- `json`\n- `xml`\n- `yaml`',
+  })
+  @ApiBody({ type: StringsUploadDto })
+  @ApiCreatedResponse({ type: InvoicesUploadResponseEntity })
+  @Post('upload/batch/string')
+  async uploadStringBatch(
+    @Body('invoices') invoiceStringArray: StringsUploadDto['invoices'],
+    @Headers('type') type: string,
+  ): Promise<InvoicesUploadResponseEntity> {
+    const output = await this.creationService.invoiceUploadBatchString(
+      invoiceStringArray,
+      type,
+    );
     return output;
   }
 }

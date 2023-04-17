@@ -1,4 +1,4 @@
-export class FileUploadResponseEntity {
+export class InvoiceUploadResponseEntity {
   /**
    * A time estimate for how long it will take to parse the file.
    */
