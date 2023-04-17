@@ -16,8 +16,8 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
     cors: {
       origin: '*',
-      methods: ['GET', 'PUT', 'POST', 'DELETE'],
-      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+      methods: 'GET, PUT, POST, DELETE',
+      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
     },
   });
   app.use(
