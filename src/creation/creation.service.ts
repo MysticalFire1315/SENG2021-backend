@@ -5,8 +5,8 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
-import { FileUploadResponseEntity } from './entities/file-upload-response.entity';
-import { FilesUploadResponseEntity } from './entities/files-upload-response.entity';
+import { InvoiceUploadResponseEntity } from './entities/invoice-upload-response.entity';
+import { InvoicesUploadResponseEntity } from './entities/invoices-upload-response.entity';
 import { InvoiceModel } from './model/invoice';
 
 const INVOICE_PROCESS_TIME = 1500;
@@ -25,10 +25,23 @@ export class CreationService {
    * @returns A timeEstimate of time taken to process in milliseconds and
    * generated token string
    */
-  async invoiceUpload(
+  async invoiceUploadFile(
     file: Express.Multer.File,
     type: string,
-  ): Promise<FileUploadResponseEntity> {
+  ): Promise<InvoiceUploadResponseEntity> {
+    return await this.invoiceUploadString(file.buffer.toString(), type);
+  }
+
+  /**
+   * Uploads an invoice
+   * @param invoiceString The string to parse
+   * @returns A timeEstimate of time taken to process in milliseconds and
+   * generated token string
+   */
+  async invoiceUploadString(
+    invoiceString: string,
+    type: string,
+  ): Promise<InvoiceUploadResponseEntity> {
     if (
       InvoiceModel.stripAndLower(type) !== 'json' &&
       InvoiceModel.stripAndLower(type) !== 'xml' &&
@@ -46,7 +59,7 @@ export class CreationService {
       inUse: true,
     };
 
-    invoice.object.parse(file.buffer.toString(), type).then(() => {
+    invoice.object.parse(invoiceString, type).then(() => {
       invoice.inUse = false;
     });
 
@@ -65,7 +78,18 @@ export class CreationService {
    * @param token A unique token corresponding to an E-invoice
    * @returns A streamable file
    */
-  async invoiceDownload(token: string): Promise<StreamableFile> {
+  async invoiceDownloadFile(token: string): Promise<StreamableFile> {
+    return new StreamableFile(
+      Buffer.from(await this.invoiceDownloadString(token)),
+    );
+  }
+
+  /**
+   * Produces a UBL XML formatted E-invoice
+   * @param token A unique token corresponding to an E-invoice
+   * @returns The UBL string of the E-invoice
+   */
+  async invoiceDownloadString(token: string): Promise<string> {
     const invoice = this.invoiceList.find((invoice) => invoice.token === token);
     if (!invoice) {
       throw new HttpException('Could not find invoice', HttpStatus.NOT_FOUND);
@@ -75,8 +99,7 @@ export class CreationService {
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
-    const document = await invoice.object.createUBL();
-    return new StreamableFile(Buffer.from(document));
+    return await invoice.object.createUBL();
   }
 
   /**
@@ -85,10 +108,26 @@ export class CreationService {
    * @returns A timeEstimate of time taken to process in milliseconds and
    * an array of tokens associated with each invoice.
    */
-  async invoiceUploadBatch(
+  async invoiceUploadBatchFile(
     files: Array<Express.Multer.File>,
     type: string,
-  ): Promise<FilesUploadResponseEntity> {
+  ): Promise<InvoicesUploadResponseEntity> {
+    return await this.invoiceUploadBatchString(
+      files.map((f) => f.buffer.toString()),
+      type,
+    );
+  }
+
+  /**
+   * Uploads a batch of invoices
+   * @param invoiceStringArray An array of invoices to parse
+   * @returns A timeEstimate of time taken to process in milliseconds and
+   * an array of tokens associated with each invoice.
+   */
+  async invoiceUploadBatchString(
+    invoiceStringArray: Array<string>,
+    type: string,
+  ): Promise<InvoicesUploadResponseEntity> {
     if (
       InvoiceModel.stripAndLower(type) !== 'json' &&
       InvoiceModel.stripAndLower(type) !== 'xml' &&
@@ -101,20 +140,20 @@ export class CreationService {
     }
 
     const tokens: string[] = [];
-    for (const file of files) {
+    invoiceStringArray.forEach((invoiceString) => {
       const invoice = {
         object: new InvoiceModel(),
         token: nanoid(),
         inUse: true,
       };
 
-      invoice.object.parse(file.buffer.toString(), type).then(() => {
+      invoice.object.parse(invoiceString, type).then(() => {
         invoice.inUse = false;
       });
 
       this.invoiceList.push(invoice);
       tokens.push(invoice.token);
-    }
+    });
 
     const processingInvoices = this.invoiceList.filter(
       (invoice) => invoice.inUse === true,
