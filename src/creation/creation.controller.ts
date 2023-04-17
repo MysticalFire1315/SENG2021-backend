@@ -150,7 +150,7 @@ export class CreationController {
   @ApiBody({ type: StringsUploadDto })
   @ApiCreatedResponse({ type: InvoicesUploadResponseEntity })
   @Post('upload/batch/string')
-  async uploadFileBatchString(
+  async uploadStringBatch(
     @Body('invoices') invoiceStringArray: StringsUploadDto['invoices'],
     @Headers('type') type: string,
   ): Promise<InvoicesUploadResponseEntity> {

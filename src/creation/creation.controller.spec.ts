@@ -48,7 +48,7 @@ describe('CreationController', () => {
 
   describe.each(['json', 'xml', 'yaml'])('Test %s parsing', (parseType) => {
     describe('upload', () => {
-      it('Upload success', async () => {
+      it('Upload file success', async () => {
         expect(() => {
           controller
             .uploadFile(
@@ -65,10 +65,26 @@ describe('CreationController', () => {
             });
         }).not.toThrowError();
       });
+
+      it('Upload string success', async () => {
+        expect(() => {
+          controller
+            .uploadString(
+              readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+              parseType,
+            )
+            .then((value) => {
+              expect(value).toStrictEqual({
+                timeEstimate: expect.any(Number),
+                token: expect.any(String),
+              });
+            });
+        }).not.toThrowError();
+      });
     });
 
     describe('download', () => {
-      it('Download success', async () => {
+      it('Download file success', async () => {
         const output = await controller.uploadFile(
           toFile(
             readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
@@ -95,7 +111,30 @@ describe('CreationController', () => {
         }).not.toThrowError();
       });
 
-      it('Download failed', async () => {
+      it('Download string success', async () => {
+        const output = await controller.uploadString(
+          readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token = output.token;
+
+        expect(() => {
+          controller.downloadString(token).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine1M.xml',
+            );
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+      });
+
+      it('Download file failed', async () => {
         const output = await controller.uploadFile(
           toFile(
             readFile(path + `inputs/others/SupplierCountryError.${parseType}`),
@@ -113,7 +152,23 @@ describe('CreationController', () => {
         ).rejects.toThrowError(HttpException);
       });
 
-      it('Download success from batch', async () => {
+      it('Download string failed', async () => {
+        const output = await controller.uploadString(
+          readFile(path + `inputs/others/SupplierCountryError.${parseType}`),
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          token: expect.any(String),
+        });
+        const token = output.token;
+
+        expect(
+          async () => await controller.downloadString(token),
+        ).rejects.toThrowError(HttpException);
+      });
+
+      it('Download file success from batch', async () => {
         const output = await controller.uploadFileBatch(
           [
             toFile(
@@ -157,10 +212,49 @@ describe('CreationController', () => {
           });
         }).not.toThrowError();
       });
+
+      it('Download string success from batch', async () => {
+        const output = await controller.uploadStringBatch(
+          [
+            readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+            readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
+          ],
+          parseType,
+        );
+        expect(output).toStrictEqual({
+          timeEstimate: expect.any(Number),
+          tokens: expect.any(Array<string>),
+        });
+        const tokens = output.tokens;
+
+        expect(() => {
+          controller.downloadString(tokens[0]).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine1M.xml',
+            );
+
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+
+        expect(() => {
+          controller.downloadString(tokens[1]).then((actualOutput) => {
+            const expectedOutput = readFile(
+              path + 'outputs/compulsory/InvoiceLine2M.xml',
+            );
+
+            const actualObj = convert(actualOutput, { format: 'object' });
+            const expectedObj = convert(expectedOutput, { format: 'object' });
+            expect(actualObj).toStrictEqual(expectedObj);
+          });
+        }).not.toThrowError();
+      });
     });
 
     describe('uploadBatch', () => {
-      it('Upload success', () => {
+      it('Upload file success', () => {
         expect(() => {
           controller
             .uploadFileBatch(
@@ -175,6 +269,25 @@ describe('CreationController', () => {
                     path + `inputs/compulsory/InvoiceLine2M.${parseType}`,
                   ),
                 ),
+              ],
+              parseType,
+            )
+            .then((value) => {
+              expect(value).toStrictEqual({
+                timeEstimate: expect.any(Number),
+                tokens: expect.any(Array<string>),
+              });
+            });
+        }).not.toThrowError();
+      });
+
+      it('Upload string success', () => {
+        expect(() => {
+          controller
+            .uploadStringBatch(
+              [
+                readFile(path + `inputs/compulsory/InvoiceLine1M.${parseType}`),
+                readFile(path + `inputs/compulsory/InvoiceLine2M.${parseType}`),
               ],
               parseType,
             )
