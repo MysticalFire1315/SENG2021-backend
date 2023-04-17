@@ -34,7 +34,7 @@ export class FrontendController {
   @Header('Content-Type', 'application/html')
   async renderInvoice(@Query('token') token: string): Promise<string> {
     console.log(token);
-    return 'test string';
+    // return 'test string';
     try {
       const output = await this.frontendService.renderHtml(token);
       return output;
