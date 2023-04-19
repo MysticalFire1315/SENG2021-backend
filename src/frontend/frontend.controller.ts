@@ -55,7 +55,7 @@ export class FrontendController {
   @Post('invoice/upload')
   async uploadInvoice(
     @Body('invoice') invoice: string,
-    @Body('type') type: string
+    @Body('type') type: string,
   ): Promise<{ token: string; violations: string[] }> {
     try {
       const output = await this.frontendService.uploadInvoice(invoice, type);

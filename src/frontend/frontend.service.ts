@@ -253,7 +253,8 @@ export class FrontendService
   }
 
   async uploadInvoice(
-    invoice: string, type
+    invoice: string,
+    type,
   ): Promise<{ token: string; violations: string[] }> {
     // Call creation api
     const invoiceString = await this.creationApi.request(invoice, type);
