@@ -227,21 +227,7 @@ export class FrontendService
     // Parse Dto
     const invoiceParsed = this.parseInvoice(createInvoiceDto);
 
-    // Call creation api
-    const invoiceString = await this.creationApi.request(invoiceParsed, 'json');
-
-    // Call validation api
-    const violations = await this.validationApi.request(invoiceString);
-
-    // If no violations, store invoice
-    let token = null;
-    if (violations.length === 0) {
-      // Generate a token id for this invoice
-      token = nanoid();
-      this.storeInvoice(token, invoiceString);
-    }
-
-    return { token, violations };
+    return await this.uploadInvoice(invoiceParsed, 'json');
   }
 
   async renderHtml(token: string): Promise<string> {
@@ -264,5 +250,25 @@ export class FrontendService
 
     const response = readFileSync(invoicePath).toString();
     return response;
+  }
+
+  async uploadInvoice(
+    invoice: string, type
+  ): Promise<{ token: string; violations: string[] }> {
+    // Call creation api
+    const invoiceString = await this.creationApi.request(invoice, type);
+
+    // Call validation api
+    const violations = await this.validationApi.request(invoiceString);
+
+    // If no violations, store invoice
+    let token = null;
+    if (violations.length === 0) {
+      // Generate a token id for this invoice
+      token = nanoid();
+      this.storeInvoice(token, invoiceString);
+    }
+
+    return { token, violations };
   }
 }

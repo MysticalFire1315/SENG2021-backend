@@ -33,7 +33,6 @@ export class FrontendController {
   @Header('Access-Control-Allow-Headers', 'Content-Type')
   @Header('Content-Type', 'application/html')
   async renderInvoice(@Query('token') token: string): Promise<string> {
-    console.log(token);
     // return 'test string';
     try {
       const output = await this.frontendService.renderHtml(token);
@@ -47,6 +46,19 @@ export class FrontendController {
   async downloadInvoice(@Query('token') token: string): Promise<string> {
     try {
       const output = await this.frontendService.getUbl(token);
+      return output;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Post('invoice/upload')
+  async uploadInvoice(
+    @Body('invoice') invoice: string,
+    @Body('type') type: string
+  ): Promise<{ token: string; violations: string[] }> {
+    try {
+      const output = await this.frontendService.uploadInvoice(invoice, type);
       return output;
     } catch (error) {
       throw new HttpException(error.message, error.status);
