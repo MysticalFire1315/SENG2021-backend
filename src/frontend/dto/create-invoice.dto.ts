@@ -21,7 +21,6 @@ export class CreateInvoiceDto {
   buyerpostcode: string;
   buyercountry: string;
   buyername: string;
-  taxamount: number;
   // The following are for reference only.
   name?: string;
   cost?: number;
