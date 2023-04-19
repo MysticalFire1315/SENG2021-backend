@@ -20,6 +20,7 @@ export class FrontendController {
   async createInvoice(
     @Body() createInvoiceDto: CreateInvoiceDto,
   ): Promise<{ token: string; violations: string[] }> {
+    console.log(createInvoiceDto);
     try {
       const output = await this.frontendService.createInvoice(createInvoiceDto);
       return output;

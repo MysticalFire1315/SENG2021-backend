@@ -121,7 +121,7 @@ export class FrontendService
       },
       TaxTotal: [
         {
-          TaxAmount: createInvoiceDto.taxamount,
+          TaxAmount: 0,
           TaxSubtotal: [
             {
               TaxableAmount: 0,
@@ -254,7 +254,7 @@ export class FrontendService
 
   async uploadInvoice(
     invoice: string,
-    type,
+    type: string,
   ): Promise<{ token: string; violations: string[] }> {
     // Call creation api
     const invoiceString = await this.creationApi.request(invoice, type);
