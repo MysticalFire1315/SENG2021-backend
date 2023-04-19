@@ -42,4 +42,14 @@ export class FrontendController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  @Get('invoice/download')
+  async downloadInvoice(@Query('token') token: string): Promise<string> {
+    try {
+      const output = await this.frontendService.getUbl(token);
+      return output;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }

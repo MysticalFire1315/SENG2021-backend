@@ -7,7 +7,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { CreationApi } from './api/creation.api';
 import { ValidationApi } from './api/validation.api';
 import { customAlphabet } from 'nanoid';
-import { mkdirSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { RenderingApi } from './api/rendering.api';
 import { ApiError } from './api/error.api';
@@ -253,5 +253,16 @@ export class FrontendService
 
     const response = await this.renderingApi.renderHtml(invoicePath);
     return response.data;
+  }
+
+  async getUbl(token: string): Promise<string> {
+    const invoicePath = this.retrieveInvoicePath(token);
+
+    if (invoicePath === undefined) {
+      throw new ApiError({ status: 400, message: 'Token not found' });
+    }
+
+    const response = readFileSync(invoicePath).toString();
+    return response;
   }
 }
